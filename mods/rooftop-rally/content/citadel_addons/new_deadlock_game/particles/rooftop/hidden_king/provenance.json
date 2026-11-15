@@ -1,0 +1,59 @@
+{
+  "scale": 6.422370395978228,
+  "sources": {
+    "particles/npc/patron_amber/patron_amber_flame.vpcf": {
+      "sha256": "0a4e56b62d6d154a88d2c1120280968fa0dffa4eba94df645db5a9c5a99b8e24",
+      "output": "particles/rooftop/hidden_king/flame.vpcf",
+      "scaledFields": [
+        "root.m_Initializers[1].m_LocalCoordinateSystemSpeedMin",
+        "root.m_Initializers[1].m_LocalCoordinateSystemSpeedMax",
+        "root.m_Initializers[2].m_InputValue",
+        "root.m_Initializers[5].m_OffsetMin",
+        "root.m_Initializers[5].m_OffsetMax",
+        "root.m_Operators[1].m_Gravity",
+        "root.m_Renderers[0].m_flDepthBias",
+        "root.m_Renderers[1].m_flDepthBias"
+      ]
+    },
+    "particles/npc/patron_amber/patron_amber_smoke_solid.vpcf": {
+      "sha256": "7a6a0be27c4f828e7b2f609b321d3ccf4a34714fa84ce3e7afdc00fdce261c25",
+      "output": "particles/rooftop/hidden_king/smoke.vpcf",
+      "scaledFields": [
+        "root.m_Initializers[1].m_LocalCoordinateSystemSpeedMin",
+        "root.m_Initializers[1].m_LocalCoordinateSystemSpeedMax",
+        "root.m_Initializers[2].m_InputValue",
+        "root.m_Initializers[6].m_OffsetMin",
+        "root.m_Initializers[6].m_OffsetMax",
+        "root.m_Operators[1].m_Gravity"
+      ]
+    },
+    "particles/endgame/endgame_amber_effigy_fire.vpcf": {
+      "sha256": "f7835974a62375aadfd05fcf8071b8ad17f48779bbdc42c1fd45a56758ba9777",
+      "output": "particles/rooftop/hidden_king/fire.vpcf",
+      "scaledFields": [
+        "root.m_Initializers[0].m_vecMin",
+        "root.m_Initializers[0].m_vecMax",
+        "root.m_Initializers[1].m_InputValue",
+        "root.m_Initializers[7].m_flInputMax",
+        "root.m_Renderers[0].m_flDepthBias",
+        "root.m_flConstantRadius"
+      ]
+    },
+    "particles/endgame/endgame_amber_effigy_fire_embers.vpcf": {
+      "sha256": "9fd7b85878d66de0851112fe0c077592351c194503f5535edfbb827993281175",
+      "output": "particles/rooftop/hidden_king/embers.vpcf",
+      "scaledFields": [
+        "root.m_Initializers[1].m_OffsetMin",
+        "root.m_Initializers[1].m_OffsetMax",
+        "root.m_Initializers[4].m_InputValue",
+        "root.m_Initializers[6].m_vecOutputMin",
+        "root.m_Initializers[6].m_vecOutputMax",
+        "root.m_Operators[0].m_Gravity",
+        "root.m_Operators[4].m_vecOutputMin",
+        "root.m_Operators[4].m_vecOutputMax",
+        "root.m_ForceGenerators[0].m_vecNoiseScale"
+      ]
+    }
+  },
+  "validation": "Compile results are recorded separately; placement and native visual match require in-game validation."
+}

@@ -1,0 +1,177 @@
+{
+  "slug": "pillars",
+  "name": "Pillars",
+  "version": "0.1.0",
+  "language": "LANGUAGE_TYPESCRIPT",
+  "map": "pillars_arena",
+  "free_for_all": true,
+  "definitions": [
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_atlas",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_punkgoat",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_werewolf",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_viscous",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_tengu",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_hornet",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_lash",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_HEROES",
+      "entry": "hero_yamato",
+      "fields": {
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "citadel_ability_hornet_leap",
+      "properties": {
+        "AbilityDuration": 5
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_shrink_ray",
+      "properties": {
+        "ShrinkDuration": 10
+      },
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_target_stun",
+      "properties": {
+        "BonusHealth": 0
+      },
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_containment",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_metal_skin",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_rocket_booster",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_self_bubble",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_unstoppable",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      },
+      "properties": {
+        "BonusHealth": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_warp_stone",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_fleetfoot_boots",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_magic_carpet",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      },
+      "properties": {
+        "BonusHealth": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "ability_gravity_lasso",
+      "properties": {
+        "AbilityCastRange": 1400
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_cloaking_device_active",
+      "fields": {
+        "CitadelItemVData.m_iItemTier": 0
+      }
+    }
+  ]
+}

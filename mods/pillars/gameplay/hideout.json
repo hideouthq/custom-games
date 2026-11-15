@@ -1,0 +1,93 @@
+{
+  "name": "Pillars",
+  "tagline": "Start on a pillar over a void. Use random drops to knock the others off. Last one standing wins.",
+  "summary": "Everyone gets a random drop every 7 seconds: ammo, stamina, an ability or an item. Shove your rivals into the void before they shove you.",
+  "description": "A free-for-all on ten stone pillars around a higher centre deck, with nothing below but haze. Each player gets a different hero: Abrams, Billy, Silver, Viscous, Ivy, Vindicta, Lash or Yamato. You start with no abilities and no items, one stamina and one magazine, and you can't reload. Everything else comes from drops. Every 7 seconds everyone gets one at random: an Ammo Crate, a Stamina Pip, an ability such as Pillow Toss, Puddle Punch, Paradoxical Swap or Grapple, or an item such as Warp Stone, Majestic Leap or Ethereal Shift. Each drop is one use. Melee knocks back harder the less health its target has. You have one life a round: fall 25 m or run out of health and you watch until one player is left. Every 45 seconds a Legendary waits on the centre deck for the first player to stand there for a second. After 6 minutes drops come every 4 seconds, hits knock harder and the void rises. At 8 minutes the survivors are moved to the centre deck for the Final Stand. A match is five rounds on points: 3 for winning a round, 1 for each knockout, and 1 for finishing in the last three when four or more play.",
+  "kind": "free-for-all",
+  "players": {
+    "min": 2,
+    "max": 8
+  },
+  "creators": [
+    "Hideout team"
+  ],
+  "curated": true,
+  "released": "2026-11-13",
+  "howToPlay": [
+    {
+      "title": "Use your drops",
+      "body": "Every 7 seconds everyone gets a random drop: ammo, stamina, an ability or an item. Each is one use, and you start with almost nothing."
+    },
+    {
+      "title": "Knock them off",
+      "body": "Shove drops like Pillow Toss and Puddle Punch throw a player back, and melee knocks harder the less health they have. A 25 m fall puts them out for the round."
+    },
+    {
+      "title": "Last one standing",
+      "body": "The last player left wins the round. A match is five rounds on points: 3 for a win, 1 for each knockout and 1 for the last three.",
+      "icon": "trophy"
+    }
+  ],
+  "legend": [
+    {
+      "label": "Shove drops knock a player back",
+      "color": "#FD736D"
+    },
+    {
+      "label": "Mobility drops cross the gaps",
+      "color": "#4D75C3"
+    },
+    {
+      "label": "Stamina, for a dash or an air jump",
+      "color": "#36C47F"
+    },
+    {
+      "label": "Legendary, on the centre deck every 45 s",
+      "color": "#EBC934"
+    },
+    {
+      "label": "Out until the next round",
+      "color": "#FF410D"
+    }
+  ],
+  "facts": [
+    {
+      "label": "To win",
+      "value": "Last one standing",
+      "note": "Five rounds on points"
+    },
+    {
+      "label": "Heroes",
+      "value": "One of eight, no repeats",
+      "note": "Assigned at random"
+    },
+    {
+      "label": "Drops",
+      "value": "One every 7 seconds",
+      "note": "Ammo, stamina, abilities and items"
+    },
+    {
+      "label": "Arena",
+      "value": "Ten pillars and a centre deck",
+      "note": "Over a void"
+    }
+  ],
+  "whatsNew": [
+    "First release: free-for-all for up to 8 players, one of each hero.",
+    "18 drops: ammo, stamina, shoves, mobility, defence and four Legendaries.",
+    "Out for the round? Watch the players still in until one is left."
+  ],
+  "art": {
+    "card": "art/card-background@2x.jpg",
+    "backdrop": "art/banner-background@2x.jpg",
+    "render": "art/lash-render@2x.png",
+    "overlay": "art/ivy-throw-layer@2x.png",
+    "tile": "art/ivy-thumb@2x.png",
+    "explainer": "art/how-to-play-map@2x.png",
+    "screenshots": [
+      "art/pillars-shot-drop.jpg",
+      "art/pillars-shot-pillow.jpg",
+      "art/pillars-shot-grapple.jpg"
+    ]
+  }
+}

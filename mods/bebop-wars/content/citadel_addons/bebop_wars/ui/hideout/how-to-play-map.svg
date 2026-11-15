@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2000" height="646" viewBox="0 0 2000 646">
+  <!--
+    Bebop Wars, how a match goes, read left to right: Hook an enemy across the canal, finish them on your
+    bank, hook a pulled teammate home. scripts/hideout-diagram.py renders this to gameplay/art.
+    Amber #E6B977 is your team, blue #8FB4E8 the enemy, #F3EEE4 a Hook cable, #2E6E9E the canal.
+  -->
+  <defs>
+    <pattern id="grid-night" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0V40M0 40H40" stroke="#252E3A" stroke-width="1" fill="none"/>
+    </pattern>
+    <pattern id="grid-bank" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0V40M0 40H40" stroke="#322C24" stroke-width="1" fill="none"/>
+    </pattern>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <clipPath id="face"><circle r="40"/></clipPath>
+    <marker id="head-amber" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="5.4" markerHeight="5.4" orient="auto">
+      <path d="M0 0L12 6L0 12Z" fill="#E6B977"/>
+    </marker>
+
+    <!-- A fighter: a glow and ring in the team's colour (set by the use's color) around the portrait. -->
+    <g id="fighter">
+      <circle r="50" fill="currentColor" opacity=".55" filter="url(#glow)"/>
+      <circle r="44" fill="#141A22"/>
+      <image xlink:href="banner/bebop-icon@2x.png" x="-40" y="-40" width="80" height="80" clip-path="url(#face)"/>
+      <circle r="42" fill="none" stroke="currentColor" stroke-width="6"/>
+    </g>
+    <!-- Where a fighter was, or will land. -->
+    <circle id="ghost" r="36" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="10 9" stroke-linecap="round"/>
+
+    <g id="shop">
+      <rect x="-140" y="8" width="280" height="96" rx="22" fill="#3A3540" stroke="#4A4552" stroke-width="2"/>
+      <path d="M-120 0H120V28a15 15 0 0 1-30 0a15 15 0 0 1-30 0a15 15 0 0 1-30 0a15 15 0 0 1-30 0a15 15 0 0 1-30 0a15 15 0 0 1-30 0a15 15 0 0 1-30 0a15 15 0 0 1-30 0Z" fill="#E6B977"/>
+      <path d="M-90 16V28a15 15 0 0 0 30 0V16ZM-30 16V28a15 15 0 0 0 30 0V16ZM30 16V28a15 15 0 0 0 30 0V16ZM90 16V28a15 15 0 0 0 30 0V16Z" fill="#F1DFB8"/>
+      <text y="82" text-anchor="middle" font-family="Liberation Sans" font-weight="700" font-size="29" fill="#F1DFB8">Curiosity Shop</text>
+    </g>
+  </defs>
+
+  <!-- Their bank, the canal, your bank. -->
+  <rect width="2000" height="262" fill="#1D2633"/>
+  <rect width="2000" height="262" fill="url(#grid-night)"/>
+  <rect y="372" width="2000" height="274" fill="#2A231D"/>
+  <rect y="372" width="2000" height="274" fill="url(#grid-bank)"/>
+  <rect y="262" width="2000" height="110" fill="#2E6E9E"/>
+  <path d="M0 262H2000M0 372H2000" stroke="#67A7B8" stroke-width="4"/>
+
+  <g fill="#FFFFFF" opacity=".28">
+    <circle cx="96" cy="58" r="2.5"/><circle cx="430" cy="84" r="2"/><circle cx="512" cy="212" r="3"/><circle cx="730" cy="33" r="2.5"/>
+    <circle cx="1167" cy="195" r="2"/><circle cx="1353" cy="59" r="2"/><circle cx="1290" cy="228" r="2.5"/><circle cx="1470" cy="120" r="2"/>
+    <circle cx="1905" cy="64" r="3"/><circle cx="1960" cy="238" r="3"/><circle cx="1196" cy="300" r="3"/><circle cx="330" cy="352" r="2"/>
+    <circle cx="1930" cy="330" r="2.5"/><circle cx="205" cy="574" r="2.5"/><circle cx="261" cy="412" r="2"/><circle cx="700" cy="590" r="2"/>
+    <circle cx="768" cy="606" r="2"/><circle cx="1240" cy="600" r="2.5"/><circle cx="1701" cy="592" r="2"/><circle cx="1883" cy="540" r="2"/>
+    <circle cx="1950" cy="420" r="2.5"/><circle cx="1505" cy="612" r="3"/>
+  </g>
+
+  <g font-family="DejaVu Sans Mono" font-size="34" letter-spacing="5">
+    <text x="80" y="150" fill="#8FB4E8">THEIR SIDE</text>
+    <text x="80" y="328" fill="#DCEAF4">THE CANAL</text>
+    <text x="80" y="490" fill="#E6B977">YOUR SIDE</text>
+  </g>
+
+  <use xlink:href="#shop" x="1000" y="18"/>
+  <use xlink:href="#shop" x="1000" y="524"/>
+
+  <!-- 1. Hook: the cable crosses the canal, the hit takes 55% and the enemy is reeled to your bank. -->
+  <g>
+    <use xlink:href="#ghost" x="810" y="172" color="#8FB4E8"/>
+    <path d="M786 199L742 276" stroke="#8FB4E8" stroke-width="5" stroke-dasharray="3 13" stroke-linecap="round" fill="none"/>
+    <path d="M444 462Q560 372 672 334" stroke="#F3EEE4" stroke-width="7" stroke-dasharray="26 13" stroke-linecap="round" fill="none"/>
+    <use xlink:href="#ghost" x="600" y="486" color="#E6B977"/>
+    <path d="M694 360L630 444" stroke="#E6B977" stroke-width="6" stroke-dasharray="3 14" stroke-linecap="round" fill="none" marker-end="url(#head-amber)"/>
+    <use xlink:href="#fighter" x="400" y="486" color="#E6B977"/>
+    <use xlink:href="#fighter" x="718" y="317" color="#8FB4E8"/>
+    <text x="400" y="578" text-anchor="middle" font-family="DejaVu Sans Mono" font-size="32" letter-spacing="4" fill="#E6B977">YOU</text>
+
+    <rect x="432" y="285" width="156" height="64" rx="32" fill="#0F1921" stroke="#2A3541" stroke-width="2"/>
+    <text x="510" y="331" text-anchor="middle" font-family="Liberation Sans" font-weight="700" font-size="40" fill="#F3EEE4">Hook</text>
+    <rect x="578" y="142" width="164" height="60" rx="30" fill="#E6B977"/>
+    <text x="660" y="186" text-anchor="middle" font-family="Liberation Sans" font-weight="700" font-size="38" fill="#1B1611">−55%</text>
+  </g>
+
+  <!-- 2. Finish: a second Hook or a melee hit on your bank scores the kill. -->
+  <g>
+    <path d="M1000 400Q1052 448 1000 496" stroke="#F3EEE4" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M1026 416Q1064 448 1026 480" stroke="#F3EEE4" stroke-width="6" stroke-linecap="round" fill="none" opacity=".6"/>
+    <use xlink:href="#fighter" x="930" y="448" color="#E6B977"/>
+    <g opacity=".5"><use xlink:href="#fighter" x="1110" y="448" color="#8FB4E8"/></g>
+    <path d="M1086 424L1134 472M1134 424L1086 472" stroke="#F3EEE4" stroke-width="9" stroke-linecap="round"/>
+
+    <rect x="928" y="285" width="184" height="64" rx="32" fill="#0F1921" stroke="#2A3541" stroke-width="2"/>
+    <text x="1020" y="331" text-anchor="middle" font-family="Liberation Sans" font-weight="700" font-size="40" fill="#F3EEE4">Finish</text>
+    <rect x="1172" y="418" width="96" height="60" rx="30" fill="#E6B977"/>
+    <text x="1220" y="462" text-anchor="middle" font-family="Liberation Sans" font-weight="700" font-size="38" fill="#1B1611">+1</text>
+  </g>
+
+  <!-- 3. Rescue: an enemy pulled your teammate over, and your Hook brings them home. -->
+  <g>
+    <path d="M1420 458Q1520 320 1604 182" stroke="#F3EEE4" stroke-width="7" stroke-dasharray="26 13" stroke-linecap="round" fill="none"/>
+    <use xlink:href="#ghost" x="1600" y="486" color="#E6B977"/>
+    <path d="M1640 200L1610 438" stroke="#E6B977" stroke-width="6" stroke-dasharray="3 14" stroke-linecap="round" fill="none" marker-end="url(#head-amber)"/>
+    <path d="M1692 150H1750" stroke="#8FB4E8" stroke-width="7" stroke-dasharray="14 10" stroke-linecap="round" fill="none"/>
+    <use xlink:href="#fighter" x="1390" y="486" color="#E6B977"/>
+    <use xlink:href="#fighter" x="1640" y="150" color="#E6B977"/>
+    <use xlink:href="#fighter" x="1800" y="150" color="#8FB4E8"/>
+    <g font-family="DejaVu Sans Mono" font-size="32" letter-spacing="4" fill="#E6B977" text-anchor="middle">
+      <text x="1390" y="578">YOU</text>
+      <text x="1640" y="76">TEAMMATE</text>
+    </g>
+
+    <rect x="1690" y="285" width="204" height="64" rx="32" fill="#0F1921" stroke="#2A3541" stroke-width="2"/>
+    <text x="1792" y="331" text-anchor="middle" font-family="Liberation Sans" font-weight="700" font-size="40" fill="#F3EEE4">Rescue</text>
+    <rect x="1668" y="456" width="234" height="60" rx="30" fill="#E6B977"/>
+    <text x="1785" y="500" text-anchor="middle" font-family="Liberation Sans" font-weight="700" font-size="38" fill="#1B1611">+25 Souls</text>
+  </g>
+</svg>

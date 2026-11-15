@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2000" height="646" viewBox="0 0 2000 646">
+  <!--
+    Rooftop Rally, how a round goes: the rooftop from above at three moments.
+    1 The orb leaves the centre for its target, who blocks it.
+    2 Their aim sends it at someone else, faster than it came.
+    3 Whoever it hits is out until the next round; the last one standing wins.
+    Render with scripts/hideout-diagram.py.
+  -->
+  <defs>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A2036"/>
+      <stop offset="1" stop-color="#4B3346"/>
+    </linearGradient>
+    <radialGradient id="floor" cx="0" cy="0" r="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#C3A07A"/>
+      <stop offset="1" stop-color="#9C7B5A"/>
+    </radialGradient>
+    <radialGradient id="uplight" cx="0" cy="0" r="74" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD79A" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#FFD79A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orbGlow" cx="0" cy="0" r="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#BFE4FF" stop-opacity=".85"/>
+      <stop offset=".45" stop-color="#8CC8FF" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#8CC8FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orbCore" cx="-6" cy="-7" r="26" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".6" stop-color="#D5EEFF"/>
+      <stop offset="1" stop-color="#8CC8FF"/>
+    </radialGradient>
+    <radialGradient id="winGlow" cx="0" cy="0" r="104" gradientUnits="userSpaceOnUse">
+      <stop offset=".45" stop-color="#F6C453" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#F6C453" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8CC8FF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#D5EEFF" stop-opacity=".95"/>
+    </linearGradient>
+    <pattern id="tiles" width="62" height="62" patternUnits="userSpaceOnUse" x="-31" y="-31">
+      <path d="M0 0H62M0 0V62" stroke="#3A2A1E" stroke-opacity=".16" stroke-width="2" fill="none"/>
+    </pattern>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="grey">
+      <feColorMatrix type="saturate" values="0.05"/>
+    </filter>
+    <clipPath id="round">
+      <circle r="54"/>
+    </clipPath>
+
+    <!-- The rooftop: parapet, tiled floor, the compass inlay and the four gate pillars with their uplights. -->
+    <g id="roof">
+      <rect x="-262" y="-246" width="524" height="524" rx="20" fill="#120C18" opacity=".55" filter="url(#soft)"/>
+      <rect x="-262" y="-262" width="524" height="524" rx="16" fill="#6B523F"/>
+      <rect x="-246" y="-246" width="492" height="492" rx="8" fill="url(#floor)"/>
+      <rect x="-246" y="-246" width="492" height="492" rx="8" fill="url(#tiles)"/>
+      <circle r="120" fill="none" stroke="#F1D9AC" stroke-opacity=".6" stroke-width="4"/>
+      <circle r="106" fill="none" stroke="#F1D9AC" stroke-opacity=".3" stroke-width="2"/>
+      <path d="M0 -40L9 -9L40 0L9 9L0 40L-9 9L-40 0L-9 -9Z" fill="#F1D9AC" fill-opacity=".45" transform="rotate(45)"/>
+      <path d="M0 -84L12 -12L84 0L12 12L0 84L-12 12L-84 0L-12 -12Z" fill="#F4DFB6" fill-opacity=".8"/>
+      <g fill="url(#uplight)">
+        <circle r="74" transform="translate(-200 -200)"/>
+        <circle r="74" transform="translate(200 -200)"/>
+        <circle r="74" transform="translate(-200 200)"/>
+        <circle r="74" transform="translate(200 200)"/>
+      </g>
+      <g fill="#EFE3CE" stroke="#7C6248" stroke-width="4">
+        <rect x="-220" y="-220" width="40" height="40" rx="5"/>
+        <rect x="180" y="-220" width="40" height="40" rx="5"/>
+        <rect x="-220" y="180" width="40" height="40" rx="5"/>
+        <rect x="180" y="180" width="40" height="40" rx="5"/>
+      </g>
+    </g>
+
+    <!-- A player's portrait in a dark disc. The ring that says who they are right now is drawn over it. -->
+    <g id="face">
+      <circle r="54" fill="#2B2136"/>
+      <g clip-path="url(#round)">
+        <image x="-80" y="-58" width="150" height="150" xlink:href="banner/yamato-icon@2x.png"/>
+      </g>
+    </g>
+    <g id="player">
+      <use xlink:href="#face"/>
+      <circle r="54" fill="none" stroke="#F3E6D0" stroke-width="6"/>
+    </g>
+    <g id="target">
+      <use xlink:href="#face"/>
+      <circle r="54" fill="none" stroke="#FF5A4F" stroke-width="7"/>
+      <circle r="70" fill="none" stroke="#FF5A4F" stroke-width="5" stroke-dasharray="14 10.4"/>
+    </g>
+    <g id="out">
+      <g opacity=".5" filter="url(#grey)">
+        <use xlink:href="#face"/>
+      </g>
+      <circle r="54" fill="#1A1320" fill-opacity=".35" stroke="#8E8296" stroke-width="6"/>
+      <path d="M-24 -24L24 24M24 -24L-24 24" stroke="#FF5A4F" stroke-width="11" stroke-linecap="round"/>
+    </g>
+    <g id="winner">
+      <circle r="104" fill="url(#winGlow)"/>
+      <use xlink:href="#face"/>
+      <circle r="54" fill="none" stroke="#F6C453" stroke-width="8"/>
+      <path d="M-34 -62L-40 -104L-18 -84L0 -112L18 -84L40 -104L34 -62Z" fill="#F6C453" stroke="#3A2A12" stroke-width="5" stroke-linejoin="round"/>
+    </g>
+
+    <g id="orb">
+      <circle r="60" fill="url(#orbGlow)"/>
+      <circle r="24" fill="url(#orbCore)"/>
+    </g>
+    <!-- Yamato's block: the blue cut the mode plays when a return lands. -->
+    <g id="slash" fill="none" stroke-linecap="round">
+      <path d="M-66 -52A84 84 0 0 1 66 -52" stroke="#6FB4FF" stroke-opacity=".55" stroke-width="20"/>
+      <path d="M-63 -53A82 82 0 0 1 63 -53" stroke="#E4F4FF" stroke-width="7"/>
+    </g>
+    <path id="next" d="M-13 -30L13 0L-13 30" fill="none" stroke="#EADCF2" stroke-opacity=".55" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </defs>
+
+  <rect width="2000" height="646" fill="url(#dusk)"/>
+  <!-- The city below, as dark roofs between and beyond the three views. -->
+  <g fill="#1B1424" fill-opacity=".4" stroke="#6A5070" stroke-opacity=".22" stroke-width="2">
+    <rect x="-40" y="-30" width="96" height="190" rx="6"/>
+    <rect x="-30" y="210" width="74" height="150" rx="6"/>
+    <rect x="-50" y="420" width="104" height="260" rx="6"/>
+    <rect x="628" y="-40" width="90" height="170" rx="6"/>
+    <rect x="636" y="470" width="74" height="200" rx="6"/>
+    <rect x="1284" y="-40" width="88" height="150" rx="6"/>
+    <rect x="1290" y="490" width="76" height="200" rx="6"/>
+    <rect x="1944" y="-30" width="96" height="230" rx="6"/>
+    <rect x="1952" y="260" width="80" height="130" rx="6"/>
+    <rect x="1940" y="450" width="104" height="240" rx="6"/>
+  </g>
+
+  <!-- 1: the orb leaves the centre for its target, and the target blocks. -->
+  <g transform="translate(345 323)">
+    <use xlink:href="#roof"/>
+    <use xlink:href="#player" y="-182"/>
+    <use xlink:href="#player" x="-182"/>
+    <use xlink:href="#player" x="182"/>
+    <path d="M0 36V84" stroke="#E4F4FF" stroke-width="7" stroke-dasharray="14 12" stroke-linecap="round"/>
+    <use xlink:href="#target" y="182"/>
+    <use xlink:href="#slash" y="182"/>
+    <use xlink:href="#orb"/>
+    <g transform="translate(164 110)">
+      <rect x="-80" y="-34" width="160" height="68" rx="34" fill="#15101C" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+      <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#FFFFFF">Block</text>
+    </g>
+  </g>
+  <use xlink:href="#next" x="672" y="323"/>
+
+  <!-- 2: their aim picks the next target, and the orb bends toward them faster than it came. -->
+  <g transform="translate(1000 323)">
+    <use xlink:href="#roof"/>
+    <use xlink:href="#player" y="-182"/>
+    <use xlink:href="#player" x="-182"/>
+    <path d="M0 182L182 -46L182 46Z" fill="#FFFFFF" fill-opacity=".14"/>
+    <path d="M-6 116C-18 20 40 -6 104 0" fill="none" stroke="#E4F4FF" stroke-width="7" stroke-dasharray="14 12" stroke-linecap="round"/>
+    <path d="M-12 98C-16 36 12 6 58 -1" fill="none" stroke="url(#tail)" stroke-width="26" stroke-linecap="round"/>
+    <use xlink:href="#player" y="182"/>
+    <use xlink:href="#target" x="182"/>
+    <use xlink:href="#orb" x="62" y="-2"/>
+    <g transform="translate(150 124)">
+      <rect x="-96" y="-34" width="192" height="68" rx="34" fill="#15101C" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+      <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#BFE4FF">Faster</text>
+    </g>
+  </g>
+  <use xlink:href="#next" x="1328" y="323"/>
+
+  <!-- 3: a hit knocks you out for the round. The last player standing wins it. -->
+  <g transform="translate(1655 323)">
+    <use xlink:href="#roof"/>
+    <use xlink:href="#out" y="-182"/>
+    <use xlink:href="#out" x="-182"/>
+    <use xlink:href="#out" x="182"/>
+    <use xlink:href="#winner" y="182"/>
+    <g transform="translate(150 -112)">
+      <rect x="-62" y="-34" width="124" height="68" rx="34" fill="#15101C" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+      <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#FF8A80">Out</text>
+    </g>
+    <g transform="translate(-152 124)">
+      <rect x="-94" y="-34" width="188" height="68" rx="34" fill="#F6C453"/>
+      <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#2A1C08">Winner</text>
+    </g>
+  </g>
+</svg>

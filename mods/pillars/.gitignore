@@ -1,0 +1,15 @@
+.tools/
+.local/
+.private/
+__pycache__/
+*.pyc
+*.log
+*.dmp
+*.mdmp
+/exceptions.txt
+*.vmap_autosave
+*.vmap_backup
+gameplay/build/
+gameplay/content/
+gameplay/maps/
+gameplay/node_modules/

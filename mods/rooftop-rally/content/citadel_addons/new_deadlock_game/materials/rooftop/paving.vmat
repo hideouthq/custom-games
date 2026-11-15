@@ -1,0 +1,7 @@
+"Layer0"
+{
+    "shader" "pbr.vfx"
+    "TextureColor1" "materials/rooftop/paving.png"
+    "g_vColorTint1" "[0.34 0.31 0.29 1]"
+    "g_flRoughness" "0.85"
+}

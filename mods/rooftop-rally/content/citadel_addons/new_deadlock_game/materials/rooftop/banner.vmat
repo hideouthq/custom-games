@@ -1,0 +1,7 @@
+"Layer0"
+{
+    "shader" "pbr.vfx"
+    "TextureColor1" "materials/rooftop/white.png"
+    "g_vColorTint1" "[0.23 0.055 0.045 1]"
+    "g_flRoughness" "0.85"
+}

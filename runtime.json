@@ -1,0 +1,36 @@
+{
+  "upstream": "https://github.com/hideouthq/modlock.git",
+  "revision": "1c0572400b861b08982ce8e5efbc37949c584c89",
+  "version": "1c05724-hideout.1",
+  "files": {
+    "modlock-linux-amd64": "cac5c83c36842ac3d7d6d8385d6417e818629d550288c4e84c6abda4b4f7a393",
+    "modlock-windows-amd64.exe": "ab29ded0659a8d8d5da0f01e51c5b6881e774ea831e5370fb441e97d42786085",
+    "modlock-host-windows-x64.zip": "168831214334a675769cae59bf74aeb1394e40aeab18280265c41274985071d0"
+  },
+  "toolchains": [
+    {
+      "name": "go",
+      "version": "1.27.3",
+      "url": "https://go.dev/dl/go1.27.3.linux-amd64.tar.gz",
+      "sha256": "65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40",
+      "directory": "go",
+      "bin": "go/bin"
+    },
+    {
+      "name": "zig",
+      "version": "0.16.0",
+      "url": "https://ziglang.org/download/0.16.0/zig-x86_64-linux-0.16.0.tar.xz",
+      "sha256": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00",
+      "directory": "zig-x86_64-linux-0.16.0",
+      "bin": "zig-x86_64-linux-0.16.0"
+    },
+    {
+      "name": "bun",
+      "version": "1.4.4",
+      "url": "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-linux-x64.zip",
+      "sha256": "bf8ccbfb2b0b80159e0f9a6d15c55317add8077534dbc6130a3edb52fccb395c",
+      "directory": "bun-linux-x64",
+      "bin": "bun-linux-x64"
+    }
+  ]
+}

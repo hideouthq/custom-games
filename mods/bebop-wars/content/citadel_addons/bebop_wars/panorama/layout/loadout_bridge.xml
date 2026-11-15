@@ -1,0 +1,8 @@
+<root>
+  <scripts>
+    <include src="file://{resources}/scripts/modlock/layout.js" />
+    <include src="file://{resources}/scripts/{addon}/native_items.js" />
+    <include src="file://{resources}/scripts/{addon}/loadout_bridge.js" />
+  </scripts>
+  <Panel hittest="false" hittestchildren="false" />
+</root>

@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from PIL import Image, ImageFilter
+
+ROOT = Path(__file__).resolve().parents[1]
+BANNER = ROOT / "content/citadel_addons/pillars/ui/hideout/banner"
+ART = ROOT / "gameplay/art"
+RENDER = (1120, 40)
+OVERLAY = (1496, -80)
+CARD = (1152, -72, 2352, 528)
+TILE = (1240, 0, 1720, 480)
+
+
+def window(image: Image.Image, box: tuple[int, int, int, int]) -> Image.Image:
+    left, top, right, bottom = box
+    inside = image.crop((max(left, 0), max(top, 0), min(right, image.width), min(bottom, image.height)))
+    canvas = inside.resize((right - left, bottom - top), Image.BILINEAR)
+    canvas.paste(inside, (max(-left, 0), max(-top, 0)))
+    return canvas
+
+
+def preview(background: Image.Image, render: Image.Image, overlay: Image.Image, above: int, right: int) -> Image.Image:
+    canvas = Image.new("RGBA", (background.width + right, background.height + above), (0, 0, 0, 0))
+    canvas.paste(background, (0, above))
+    for layer, (x, y) in ((render, RENDER), (overlay, OVERLAY)):
+        canvas.alpha_composite(layer, (x, y + above))
+    return canvas
+
+
+def main() -> None:
+    anchors = json.loads((BANNER / "asset-manifest.json").read_text())["anchors"]
+    near = (RENDER[0] + anchors["body"][0], RENDER[1] + anchors["body"][1])
+    far = (OVERLAY[0] + anchors["tether"][0], OVERLAY[1] + anchors["tether"][1])
+    if max(abs(near[0] - far[0]), abs(near[1] - far[1])) > 1:
+        raise ValueError("The two halves of the pillow's trail no longer meet at the positions Hideout draws the layers")
+    background = Image.open(BANNER / "arena-background@2x.png").convert("RGB")
+    render = Image.open(BANNER / "lash-render@2x.png").convert("RGBA")
+    overlay = Image.open(BANNER / "ivy-throw-layer@2x.png").convert("RGBA")
+    icon = Image.open(BANNER / "ivy-icon@2x.png").convert("RGBA")
+    if background.size != (2256, 640) or render.size != (520, 600) or overlay.size != (800, 440):
+        raise ValueError("A banner layer is not the size Hideout draws it at")
+
+    ART.mkdir(exist_ok=True)
+    background.save(ART / "banner-background@2x.jpg", quality=90, optimize=True)
+    card = window(background, CARD).resize((600, 300), Image.LANCZOS).filter(ImageFilter.GaussianBlur(5))
+    card.save(ART / "card-background@2x.jpg", quality=90, optimize=True)
+    render.save(ART / "lash-render@2x.png", optimize=True)
+    overlay.save(ART / "ivy-throw-layer@2x.png", optimize=True)
+    tile = background.crop(TILE).resize((96, 96), Image.LANCZOS).filter(ImageFilter.GaussianBlur(2)).convert("RGBA")
+    tile.alpha_composite(icon.resize((96, 96), Image.LANCZOS))
+    tile.save(ART / "ivy-thumb@2x.png", optimize=True)
+
+    preview(background, render, overlay, 0, 0).crop((0, 0, 2256, 640)).save(BANNER / "banner-preview@2x.png", optimize=True)
+    preview(background, render, overlay, 80, 40).save(BANNER / "banner-preview-expanded@2x.png", optimize=True)
+
+
+if __name__ == "__main__":
+    main()

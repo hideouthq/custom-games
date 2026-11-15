@@ -1,0 +1,19 @@
+"Layer0"
+{
+ "shader" "pbr.vfx"
+ "F_SELF_ILLUM" "1"
+ "TextureColor1" "materials/bebop_wars/statue/sapphire_color.tga"
+ "TextureRoughness1" "[0.78 0.78 0.78 0]"
+ "TextureMetalness1" "[0 0 0 0]"
+ "g_vColorTint1" "[1 1 1 1]"
+ "g_vAlbedoTexcoordScale1" "[1.0 1.0 0.0 0.0]"
+ "g_vNormalTexcoordScale1" "[1.0 1.0 0.0 0.0]"
+ "g_vSelfIllumTexcoordScale1" "[1.0 1.0 0.0 0.0]"
+ "g_flOpacityScale1" "1.0"
+ "g_flHighlightTintBrightness1" "1.0"
+ "g_flVertexAOAmount1" "1.0"
+ "g_flSelfIllumAlbedoFactor1" "1.0"
+ "g_flSelfIllumScale1" "0.65"
+ "g_vSelfIllumTint1" "[1 1 1 1]"
+ "Attributes" { "physSurfaceProperties" "rock" }
+}

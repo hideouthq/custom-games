@@ -1,0 +1,9 @@
+<root>
+  <Panel hittest="false">
+    <Image src="file://{images}/overlay/icons/check-white.png" />
+    <Image src="file://{images}/overlay/icons/clock-white.png" />
+    <Image src="file://{images}/overlay/icons/info-white.png" />
+    <Image src="file://{images}/overlay/icons/lock-white.png" />
+    <Image src="file://{images}/overlay/items/snow-globe.png" />
+  </Panel>
+</root>

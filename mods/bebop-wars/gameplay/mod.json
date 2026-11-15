@@ -1,0 +1,162 @@
+{
+  "slug": "bebop-wars",
+  "name": "Bebop Wars",
+  "version": "0.1.0",
+  "language": "LANGUAGE_TYPESCRIPT",
+  "map": "winter_arena",
+  "free_for_all": false,
+  "definitions": [
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_fleetfoot_boots",
+      "properties": {
+        "AbilityDuration": 3,
+        "ActiveBonusMoveSpeed": 196.8503937,
+        "BaseAttackDamagePercent": 0,
+        "BulletResist": 0,
+        "SlideScale": 0,
+        "MoveWhileShootingSpeedPenaltyReductionPercent": 0,
+        "MoveWhileZoomedSpeedPenaltyReductionPercent": 0,
+        "SlowResistancePercent": 0,
+        "AbilityCooldown": 15
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "citadel_ability_hook",
+      "fields": {
+        "CAbilityHookVData.m_flFriendlyHookIgnoreRange": 0
+      },
+      "properties": {
+        "AbilityCooldown": 5,
+        "AbilityCastRange": 1181.1023622,
+        "FriendlyHookIgnoreRange": 0,
+        "ResetCooldownOnFriendlyHook": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "citadel_ability_hook",
+      "upgrade_order": [
+        2,
+        3,
+        1
+      ],
+      "upgrades": [
+        {
+          "tier": 1,
+          "properties": {
+            "AbilityCastRange": 236.2204724409449
+          }
+        },
+        {
+          "tier": 2,
+          "properties": {
+            "AbilityCooldown": -1
+          }
+        },
+        {
+          "tier": 3,
+          "properties": {
+            "BulletAmp": 0,
+            "BulletAmpDuration": 0
+          }
+        }
+      ]
+    },
+    {
+      "file": "FILE_MODIFIERS",
+      "entry": "citadel_ability_hook/modifier_citadel_hooktarget",
+      "fields": {
+        "CCitadel_Modifier_HookTargetVData.m_flReturnPositionForwardOffset": 0,
+        "CCitadel_Modifier_HookTargetVData.m_flCloseEnoughDistance": 16,
+        "CCitadel_Modifier_HookTargetVData.m_flReturnSpeed": 1333.3333333333333
+      }
+    },
+    {
+      "file": "FILE_MODIFIERS",
+      "entry": "citadel_ability_mantle/mantle_hit_slow",
+      "fields": {
+        "CCitadel_Modifier_RampSlowModifierVData.m_flRampUpTime": 0,
+        "CCitadel_Modifier_RampSlowModifierVData.m_flPercentageMultiplierStart": 40,
+        "CCitadel_Modifier_RampSlowModifierVData.m_flPercentageMultiplierEnd": 40
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_cold_front",
+      "properties": {
+        "AbilityCooldown": 16,
+        "TechResist": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_ability_power_shard",
+      "properties": {
+        "AbilityCooldown": 20,
+        "TechResist": 0,
+        "BulletResist": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_self_bubble",
+      "properties": {
+        "AbilityCooldown": 22,
+        "AbilityDuration": 1.5,
+        "BuffDuration": 0,
+        "TechResist": 0,
+        "BonusSpirit": 0,
+        "BonusMoveSpeed": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_grit",
+      "properties": {
+        "AbilityCooldown": 24,
+        "CombatBarrier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_shrink_ray",
+      "properties": {
+        "AbilityCooldown": 25,
+        "ShrinkDuration": 6,
+        "BonusMoveSpeed": 78.7401575,
+        "BonusFireRate": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_return_fire",
+      "properties": {
+        "AbilityCooldown": 35,
+        "BulletResist": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "upgrade_rescue_beam",
+      "properties": {
+        "AbilityCooldown": 30,
+        "HealPercentAmount": 10,
+        "BonusSprintSpeed": 0,
+        "TechRangeMultiplier": 0,
+        "TechRadiusMultiplier": 0
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "name": "bebop.kills",
+      "kind": "KIND_COUNT"
+    },
+    {
+      "name": "bebop.saves",
+      "kind": "KIND_COUNT"
+    }
+  ]
+}

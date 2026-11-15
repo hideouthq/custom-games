@@ -1,0 +1,44 @@
+#Leaderboard {
+  horizontal-align: right; vertical-align: top; margin: 96px 28px 0px 0px; width: 268px;
+  padding: 10px 12px 8px; flow-children: down; visibility: collapse;
+  background-color: gradient(linear, 0% 0%, 100% 0%, from(#0b0f1400), color-stop(0.25, #0b0f14b3), to(#0b0f14cc));
+  border-right: 2px solid #e9e5dd66;
+}
+.ShowLeaderboard #Leaderboard { visibility: visible; }
+#Standings {
+  horizontal-align: center; vertical-align: top; margin-top: 112px; width: 660px;
+  padding: 16px 20px 14px; flow-children: down; visibility: collapse;
+  background-color: #0b0f14d9; border-top: 2px solid #e9c46a; box-shadow: 0px 8px 28px #000a;
+}
+.ShowStandings #Standings { visibility: visible; }
+#LeaderboardRows, #StandingsRows { width: 100%; flow-children: down; }
+
+.ScoreHeading {
+  width: 100%; font-family: "VALVEPulp"; font-size: 15px; letter-spacing: 3px; color: #b8b2a6;
+  text-align: right; margin-bottom: 6px;
+}
+#Standings .ScoreHeading { font-size: 22px; color: #e9e5dd; text-align: center; margin-bottom: 10px; }
+
+.ScoreRow { width: 100%; height: 26px; flow-children: right; margin-top: 2px; padding: 0px 6px; }
+#Standings .ScoreRow { height: 34px; padding: 0px 10px; }
+.ScoreRow Label {
+  vertical-align: center; font-size: 16px; color: #d9d4ca; text-shadow: 0px 1px 3px 2 #000c;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+#Standings .ScoreRow Label { font-size: 19px; }
+.ScoreRank { width: 26px; color: #8f897e; font-weight: bold; }
+.ScoreName { width: fill-parent-flow(1); }
+.ScoreStat { width: 40px; text-align: right; font-weight: bold; }
+#Standings .ScoreRank { width: 40px; }
+#Standings .ScoreStat { width: 96px; }
+
+.ScoreColumns { height: 24px; border-bottom: 1px solid #e9e5dd33; margin-bottom: 4px; }
+#Standings .ScoreColumns Label { font-size: 12px; letter-spacing: 2px; color: #8f897e; font-weight: bold; }
+
+.ScoreRow.Self { background-color: #e9e5dd24; }
+.ScoreRow.Self .ScoreName { color: #ffffff; font-weight: bold; }
+.ScoreRow.Leader .ScoreRank, .ScoreRow.Leader #Stat_wins { color: #e9c46a; }
+.ScoreRow.Leader .ScoreName { color: #f4dfa4; }
+.ScoreRow.OnStreak #Stat_streak { color: #ff8e7b; }
+.ScoreRow.Out { opacity: 0.45; }
+#Standings .ScoreRow.Out { opacity: 1; }

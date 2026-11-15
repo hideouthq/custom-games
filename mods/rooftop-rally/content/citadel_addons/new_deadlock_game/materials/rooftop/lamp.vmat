@@ -1,0 +1,12 @@
+"Layer0"
+{
+    "shader" "pbr.vfx"
+    "TextureColor1" "materials/rooftop/white.png"
+    "g_vColorTint1" "[1.0 0.48 0.12 1]"
+    "g_flRoughness" "0.85"
+    "F_SELF_ILLUM" "1"
+    "TextureSelfIllumMask" "materials/rooftop/white.png"
+    "g_vSelfIllumTint1" "[1 1 1 1]"
+    "g_flSelfIllumAlbedoFactor1" "1"
+    "g_flSelfIllumScale1" "4"
+}

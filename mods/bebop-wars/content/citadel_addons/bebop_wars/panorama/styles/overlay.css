@@ -1,0 +1,6 @@
+.OverlayButton { horizontal-align: left; vertical-align: top; background-color: transparent; border: 0px solid transparent; }
+.OverlayImage { background-size: 100% 100%; background-repeat: no-repeat; background-position: center; }
+.icon-check-white { background-image: url("file://{images}/{addon}/overlay/icons/check-white.png"); }
+.icon-clock-white { background-image: url("file://{images}/{addon}/overlay/icons/clock-white.png"); }
+.icon-info-white { background-image: url("file://{images}/{addon}/overlay/icons/info-white.png"); }
+.icon-lock-white { background-image: url("file://{images}/{addon}/overlay/icons/lock-white.png"); }

@@ -1,0 +1,16 @@
+"Layer0"
+{
+ "shader" "pbr.vfx"
+ "TextureColor1" "materials/bebop_wars/statue/stone_color.tga"
+ "TextureNormal1" "materials/bebop_wars/statue/stone_normal.tga"
+ "TextureRoughness1" "materials/bebop_wars/statue/stone_rough.tga"
+ "TextureMetalness1" "[0 0 0 0]"
+ "g_vColorTint1" "[1 1 1 1]"
+ "g_vAlbedoTexcoordScale1" "[1.0 1.0 0.0 0.0]"
+ "g_vNormalTexcoordScale1" "[1.0 1.0 0.0 0.0]"
+ "g_flOpacityScale1" "1.0"
+ "g_flHighlightTintBrightness1" "1.0"
+ "g_flSelfIllumScale1" "0.0"
+ "g_flVertexAOAmount1" "1.0"
+ "Attributes" { "physSurfaceProperties" "rock" }
+}

@@ -1,0 +1,9 @@
+[submodule "bebop-wars-sdk"]
+	path = mods/bebop-wars/tools/modlock-sdk
+	url = https://github.com/paralin/modlock-sdk.git
+[submodule "rooftop-rally-sdk"]
+	path = mods/rooftop-rally/tools/modlock-sdk
+	url = https://github.com/paralin/modlock-sdk.git
+[submodule "pillars-sdk"]
+	path = mods/pillars/tools/modlock-sdk
+	url = https://github.com/paralin/modlock-sdk.git

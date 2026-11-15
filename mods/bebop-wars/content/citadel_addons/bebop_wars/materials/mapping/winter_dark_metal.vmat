@@ -1,0 +1,9 @@
+"Layer0"
+{
+ "shader" "pbr.vfx"
+ "TextureColor1" "materials/mapping/winter_white.tga"
+ "g_vColorTint1" "[0.055 0.075 0.09 1.0]"
+ "g_flOpacityScale1" "1.0"
+ "TextureRoughness1" "[0.45 0.45 0.45 1.0]"
+ "TextureMetalness1" "[0.0 0.0 0.0 1.0]"
+}

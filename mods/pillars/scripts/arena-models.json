@@ -1,0 +1,80 @@
+{
+  "ringPillar": {
+    "model": "models/pillars/ring_pillar.vmdl",
+    "triangles": 806,
+    "bounds": [
+      [
+        -134.0,
+        -134.0,
+        -3937.0
+      ],
+      [
+        134.0,
+        134.0,
+        46.0
+      ]
+    ]
+  },
+  "guard": {
+    "model": "models/props_statues/statue_light_guard_01.vmdl",
+    "scale": 1.43407,
+    "origin": [
+      -0.0,
+      0.0,
+      -674.7
+    ]
+  },
+  "tint": [
+    171,
+    197,
+    168
+  ],
+  "centreColumn": {
+    "model": "models/pillars/centre_column.vmdl",
+    "triangles": 764,
+    "bounds": [
+      [
+        -236.0,
+        -236.0,
+        -5781.0
+      ],
+      [
+        236.0,
+        236.0,
+        79.0
+      ]
+    ]
+  },
+  "centreVines": {
+    "model": "models/pillars/centre_vines.vmdl",
+    "triangles": 6788,
+    "bounds": [
+      [
+        -309.35,
+        -316.61,
+        -3627.46
+      ],
+      [
+        309.35,
+        316.61,
+        -1431.66
+      ]
+    ]
+  },
+  "centreWings": {
+    "model": "models/pillars/centre_wings.vmdl",
+    "triangles": 2402,
+    "bounds": [
+      [
+        -433.62,
+        -484.64,
+        -1351.4
+      ],
+      [
+        433.62,
+        484.64,
+        -833.95
+      ]
+    ]
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "rooftop-background@2x.png": {
+    "size": [
+      2256,
+      640
+    ],
+    "mode": "RGB",
+    "alphaBounds": null,
+    "sha256": "78d3b0a43612983eba4b444889b2cb37e9c9ab6209fd5c55430b0a2e4c0b97e0"
+  },
+  "rooftop-background.png": {
+    "size": [
+      1128,
+      320
+    ],
+    "mode": "RGB",
+    "alphaBounds": null,
+    "sha256": "f67a303218bc3047ff778ecd0178fc7eb5a95294af951d3f3e9dd6e9d6338305"
+  },
+  "rooftop-scene.png": {
+    "size": [
+      1600,
+      1000
+    ],
+    "mode": "RGB",
+    "alphaBounds": null,
+    "sha256": "04c615396e4275336b135c54c08029f955a92a44bccf13cc049e6e7b9ce6051c"
+  },
+  "yamato-render@2x.png": {
+    "size": [
+      520,
+      600
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      17,
+      118,
+      510,
+      600
+    ],
+    "sha256": "2e6162a174a4acc3221a4dc111c315a886a1af849538091e1aa2ac965eaa2c46"
+  },
+  "yamato-render.png": {
+    "size": [
+      260,
+      300
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      7,
+      57,
+      255,
+      300
+    ],
+    "sha256": "68cc95aa323087ff6a9be1dec2ce71bea58102f89aac600c8b79af926c3ad437"
+  },
+  "celeste-ball-front@2x.png": {
+    "size": [
+      800,
+      440
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      17,
+      21,
+      763,
+      428
+    ],
+    "sha256": "da8f5ca21efc855f210d10eccca27e9164264898c41cef64eb235980dd825263"
+  },
+  "celeste-ball-front.png": {
+    "size": [
+      400,
+      220
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      9,
+      11,
+      383,
+      214
+    ],
+    "sha256": "5e6724107ea857827f770d8ae72d0b4808c9c3de0cab4931f825888953ab61fc"
+  },
+  "yamato-icon@2x.png": {
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      21,
+      8,
+      128,
+      128
+    ],
+    "sha256": "6dead1e52af6c4081a3de7d210451a1d6bc125bff7e6ea888eed4037a0777bbf"
+  },
+  "yamato-icon.png": {
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      9,
+      3,
+      64,
+      64
+    ],
+    "sha256": "93f63e9c9540a810580e1a2e3ff272dfcd3d3c4240d439aa43395822d473a54b"
+  },
+  "banner-preview@2x.png": {
+    "size": [
+      2256,
+      640
+    ],
+    "mode": "RGB",
+    "alphaBounds": null,
+    "sha256": "0771fa76967cef81df3d9e3b84dfe8b9bb109435d11d60ffde834818ec633099"
+  },
+  "banner-preview-expanded@2x.png": {
+    "size": [
+      2296,
+      720
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      0,
+      21,
+      2259,
+      720
+    ],
+    "sha256": "5eed255c4035d4f994f57f20c6d5e71d1c0917a07f7ddac730872279899fcfa1"
+  },
+  "anchors": {
+    "body": [
+      492.0,
+      250.92
+    ],
+    "tether": [
+      116.0,
+      370.92
+    ],
+    "projectile": [
+      294.0,
+      258.0
+    ],
+    "alignmentErrorPixels": 1
+  },
+  "layoutAt1x": {
+    "banner": [
+      1128,
+      320
+    ],
+    "body": {
+      "position": [
+        560,
+        20
+      ],
+      "size": [
+        260,
+        300
+      ]
+    },
+    "front": {
+      "position": [
+        748,
+        -40
+      ],
+      "size": [
+        400,
+        220
+      ]
+    }
+  },
+  "yamatoPose": {
+    "clip": "models/heroes_wip/yamato/clips/ability_healingslash_cast.vnmclip_c",
+    "frame": 7.55,
+    "fps": 24,
+    "cameraYawDegrees": -85,
+    "pixelsPerUnitAt2x": 199.54,
+    "feetLineAt2x": 566
+  },
+  "airborneYamatoPose": {
+    "layer": "celeste-ball-front@2x.png",
+    "clip": "models/heroes_wip/yamato/clips/ability_powerslash_in_air_cast.vnmclip_c",
+    "frame": 11.0,
+    "fps": 24,
+    "cameraYawDegrees": 58.0,
+    "pixelsPerUnitAt2x": 152.69,
+    "boundsAt2x": [
+      385.0,
+      50.0,
+      760.0,
+      416.5
+    ],
+    "swordHandAt2x": [
+      477.9,
+      85.5
+    ],
+    "bladeTipAt2x": [
+      385.0,
+      149.5
+    ]
+  }
+}

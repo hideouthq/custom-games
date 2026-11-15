@@ -1,0 +1,150 @@
+{
+  "lash-render@2x.png": {
+    "size": [
+      520,
+      600
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      5,
+      4,
+      517,
+      600
+    ],
+    "sha256": "548e502c8b7342e5cad3662d474cf4391d3d2f5380b1ad3f2758a3f3637a6356"
+  },
+  "ivy-throw-layer@2x.png": {
+    "size": [
+      800,
+      440
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      66,
+      137,
+      783,
+      434
+    ],
+    "sha256": "b39c49d98b69e5d2018f5fa114847b47f7a2b91ca3c954671400ac8cf156ffb0"
+  },
+  "ivy-icon@2x.png": {
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      0,
+      4,
+      128,
+      128
+    ],
+    "sha256": "450853f80b471611b151ddc494a50f74485750a98508618dd96443f33059db6b"
+  },
+  "lash-render.png": {
+    "size": [
+      260,
+      300
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      3,
+      2,
+      258,
+      300
+    ],
+    "sha256": "75dd52e782b5df679e2de72a551008378b12aee1fcb92784bfd6a5c33790f928"
+  },
+  "ivy-throw-layer.png": {
+    "size": [
+      400,
+      220
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      33,
+      68,
+      392,
+      217
+    ],
+    "sha256": "6cda8b94bf9a0600ec55e4c7cb6d5e875315fb726ddba44ba9ded95ea3071549"
+  },
+  "ivy-icon.png": {
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alphaBounds": [
+      0,
+      1,
+      64,
+      64
+    ],
+    "sha256": "6ec9b074fadd0fb72cca03bd09ace109bc24b3053cb8c66442a98c85fd844d3f"
+  },
+  "arena-background@2x.png": {
+    "size": [
+      2256,
+      640
+    ],
+    "mode": "RGB",
+    "sha256": "34bb67fb825ddedb4d260c1d2408e5966fe82048bef5fbcecc4d5d8736ef6f63"
+  },
+  "banner-preview@2x.png": {
+    "size": [
+      2256,
+      640
+    ],
+    "mode": "RGBA",
+    "sha256": "64e473acca4cfab94dfb3c24016399d764a5c421db7174dea16b275627156af8"
+  },
+  "banner-preview-expanded@2x.png": {
+    "size": [
+      2296,
+      720
+    ],
+    "mode": "RGBA",
+    "sha256": "e0480939ad779e097d01e4ff3408623c5a428d672e229acc786b680adc721b50"
+  },
+  "layoutAt1x": {
+    "canvas": [
+      1128,
+      320
+    ],
+    "body": {
+      "file": "lash-render.png",
+      "position": [
+        560,
+        20
+      ]
+    },
+    "front": {
+      "file": "ivy-throw-layer.png",
+      "position": [
+        748,
+        -40
+      ]
+    }
+  },
+  "anchors": {
+    "body": [
+      483.95,
+      193.63
+    ],
+    "tether": [
+      107.95,
+      313.63
+    ],
+    "projectile": [
+      272.0,
+      206.0
+    ],
+    "throwingHand": [
+      572.0,
+      237.74
+    ],
+    "alignmentErrorPixels": 0.0,
+    "pillarTopLine": 440
+  }
+}

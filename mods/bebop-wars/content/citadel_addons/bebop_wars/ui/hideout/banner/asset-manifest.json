@@ -1,0 +1,107 @@
+{
+  "bebop-render@2x.png": {
+    "size": [
+      520,
+      600
+    ],
+    "alphaBounds": [
+      91,
+      31,
+      480,
+      600
+    ],
+    "sha256": "29c53abe933548a01f4180524c3bba1489e4c27e3417a35a815d67540f51866a"
+  },
+  "bebop-render.png": {
+    "size": [
+      260,
+      300
+    ],
+    "alphaBounds": [
+      43,
+      14,
+      242,
+      300
+    ],
+    "sha256": "7e095b4cd8a48d6c186786f71180c49c9d879a92d4a24f9f5da8255ebacb4f17"
+  },
+  "bebop-hook-layer@2x.png": {
+    "size": [
+      800,
+      440
+    ],
+    "alphaBounds": [
+      64,
+      249,
+      761,
+      437
+    ],
+    "sha256": "1103aca562277736451b94bfaebf4dc3746f5428e1eaa446f191fa4a297b4503"
+  },
+  "bebop-hook-layer.png": {
+    "size": [
+      400,
+      220
+    ],
+    "alphaBounds": [
+      32,
+      124,
+      380,
+      219
+    ],
+    "sha256": "f9984f59c9dba4d00c713c1fd4459977d2b847ab62c0dfd50d752079fcd35d6f"
+  },
+  "bebop-icon@2x.png": {
+    "size": [
+      128,
+      128
+    ],
+    "alphaBounds": [
+      0,
+      10,
+      128,
+      128
+    ],
+    "sha256": "cc22b2c040072ea40f19d59f42f0caa1075153dabde6c381f0c18570ce3ac341"
+  },
+  "bebop-icon.png": {
+    "size": [
+      64,
+      64
+    ],
+    "alphaBounds": [
+      0,
+      4,
+      64,
+      64
+    ],
+    "sha256": "8864e8f3be7e777887b66e23f9cb87b662564090dfeb2b34feca32f4310fad47"
+  },
+  "arena-background@2x.png": {
+    "size": [
+      2256,
+      640
+    ],
+    "sha256": "87b104c0ff030d7b60e91d9a9c7636f03e3767480253717af57648e1a831f394"
+  },
+  "anchors": {
+    "body": [
+      463.0,
+      276.0
+    ],
+    "tether": [
+      87,
+      396
+    ],
+    "projectile": [
+      656,
+      339
+    ],
+    "tetherEnd": [
+      583,
+      366
+    ],
+    "cableRiseDegrees": 3.5,
+    "alignmentErrorPixels": 1
+  }
+}

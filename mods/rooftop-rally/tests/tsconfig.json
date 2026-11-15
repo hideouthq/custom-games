@@ -1,0 +1,12 @@
+{
+  "extends": "../gameplay/tsconfig.json",
+  "compilerOptions": {
+    "types": ["bun"],
+    "typeRoots": ["../.tools/modlock/node_modules/@types"],
+    "paths": {
+      "modlock": ["../.tools/modlock/js/src/index.ts"],
+      "modlock/console": ["../.tools/modlock/js/src/console.ts"]
+    }
+  },
+  "include": ["*.ts"]
+}

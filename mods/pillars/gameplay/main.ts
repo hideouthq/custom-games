@@ -1,0 +1,29 @@
+import {
+  command,
+  onAbilityCast,
+  onDamage,
+  onDamaged,
+  onFrame,
+  onInput,
+  onPlayerJoin,
+  onPlayerLeave,
+  onSpawn,
+  onStart,
+  onWorld,
+} from 'modlock'
+
+import { Game } from './game'
+
+export const game = new Game()
+
+onStart((args) => game.start(args))
+onWorld(() => game.world())
+onPlayerJoin(({ connection }) => game.join(connection))
+onPlayerLeave(({ connection }) => game.leave(connection))
+onSpawn((player) => game.spawned(player))
+onAbilityCast((cast) => game.cast(cast))
+onDamage((hit) => game.damage(hit))
+onDamaged((hit) => game.damaged(hit))
+onFrame((frame) => game.frame(frame.timeSeconds, frame.movement))
+onInput((player, pressed) => game.input(player, pressed))
+command('pillars', (player, args) => game.dev(player, args))

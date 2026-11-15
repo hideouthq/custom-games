@@ -1,0 +1,9 @@
+{
+  "name": "bebop-wars-gameplay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.ts",
+    "typecheck": "../.tools/modlock/node_modules/.bin/tsrs --noEmit -p tsconfig.json"
+  }
+}

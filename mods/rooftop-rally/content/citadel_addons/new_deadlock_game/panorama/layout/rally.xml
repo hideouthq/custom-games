@@ -1,0 +1,72 @@
+<root>
+  <styles>
+    <include src="s2r://panorama/styles/citadel_base_styles.vcss" />
+    <include src="file://{resources}/styles/{addon}/rally.css" />
+    <include src="file://{resources}/styles/{addon}/specials.css" />
+    <include src="file://{resources}/styles/{addon}/scores.css" />
+    <include src="file://{resources}/styles/{addon}/meter.css" />
+  </styles>
+  <scripts>
+    <include src="file://{resources}/scripts/modlock/layout.js" />
+    <include src="file://{resources}/scripts/{addon}/camera.js" />
+    <include src="file://{resources}/scripts/{addon}/rally.js" />
+    <include src="file://{resources}/scripts/{addon}/specials.js" />
+    <include src="file://{resources}/scripts/{addon}/scores.js" />
+    <include src="file://{resources}/scripts/{addon}/meter.js" />
+  </scripts>
+  <Panel id="RallyHud" hittest="false" hittestchildren="true">
+    <Panel id="TargetEdge" hittest="false" />
+    <Panel id="RoundNotice" hittest="false" hittestchildren="false">
+      <Label id="RoundLabel" />
+      <Label id="RoundDetail" />
+    </Panel>
+    <Panel id="AimPoint" hittest="false" />
+    <Panel id="RallyMeter" hittest="false" hittestchildren="false">
+      <Panel id="RallyFigure">
+        <Label id="RallyTimes" text="×" />
+        <Label id="RallyCount" />
+      </Panel>
+      <Label id="RallyCaption" text="RALLY" />
+      <Panel id="RallyPips">
+        <Panel class="RallyPip" />
+        <Panel class="RallyPip" />
+        <Panel class="RallyPip" />
+        <Panel class="RallyPip" />
+        <Panel class="RallyPip" />
+      </Panel>
+    </Panel>
+    <Panel id="Leaderboard" hittest="false" hittestchildren="false">
+      <Label class="ScoreHeading" text="STANDINGS" />
+      <Panel id="LeaderboardRows" />
+    </Panel>
+    <Panel id="Standings" hittest="false" hittestchildren="false">
+      <Label class="ScoreHeading" text="STANDINGS" />
+      <Panel class="ScoreRow ScoreColumns">
+        <Label class="ScoreRank" text="#" />
+        <Label class="ScoreName" text="PLAYER" />
+        <Label class="ScoreStat" text="WINS" />
+        <Label class="ScoreStat" text="STREAK" />
+        <Label class="ScoreStat" text="KOS" />
+        <Label class="ScoreStat" text="PARRIES" />
+      </Panel>
+      <Panel id="StandingsRows" />
+    </Panel>
+    <Panel id="AbilityPicker" hittest="true">
+      <Panel id="SelectionSheet">
+        <Image id="SelectionPaper" src="s2r://panorama/images/shop/catalog/catalog_shop_generic_bg2_psd.vtex" scaling="stretch-to-fit" hittest="false" />
+        <Panel id="SelectionContent">
+          <Label class="PickerEyebrow" text="ROOFTOP RALLY" />
+          <Label class="PickerTitle" text="Choose your ability" />
+          <Label class="PickerSubtitle" text="One ability for this match. Ready again each round." />
+          <Panel id="AbilityCards" />
+          <Label class="PickerFooter" text="The round waits for everyone" />
+        </Panel>
+      </Panel>
+    </Panel>
+    <Panel id="SpecialHud" hittest="false" hittestchildren="true">
+      <Label id="SpecialStatus" />
+      <CitadelHudAbilities id="RallyAbility" class="abilities" slots="signature_3" />
+      <Label id="SpecialName" />
+    </Panel>
+  </Panel>
+</root>

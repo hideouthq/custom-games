@@ -1,0 +1,233 @@
+{
+  "schema": 2,
+  "sequence": 7,
+  "runtime": {
+    "modlock": "v0.1.72",
+    "cli": {
+      "linux": {
+        "url": "https://github.com/paralin/modlock/releases/download/v0.1.72/modlock-linux-amd64",
+        "bytes": 9,
+        "sha256": "aac1cd68d0e2760b83e90214da039873232d1b0912669816d29252dce71490d7"
+      },
+      "windows": {
+        "url": "https://github.com/paralin/modlock/releases/download/v0.1.72/modlock-windows-amd64.exe",
+        "bytes": 11,
+        "sha256": "7fd2c56af2baf95728c3acc1fee86f3acae8034a939f49222811cf8102a463ff"
+      }
+    },
+    "host": {
+      "url": "https://github.com/paralin/modlock/releases/download/v0.1.72/modlock-host-windows-x64.zip",
+      "bytes": 11,
+      "sha256": "84e35e3aa7afd26025ecb8ae3ad60dc9524254f3985302933cc46323e64144c7"
+    },
+    "platform": {
+      "url": "https://feed.example/packages/platform-2.0.0-ea6719afcff5.zip",
+      "bytes": 292,
+      "sha256": "ea6719afcff50586c660b91686bcd6c5d87148d7d1c68ff7926fb332d82bf730"
+    },
+    "renderer": {
+      "url": "https://feed.example/packages/renderer-v0.1.72-f97654071c1c.zip",
+      "bytes": 232,
+      "sha256": "f97654071c1cf024ad0745ec369b2cd067916b5df2e3760dd9a0945ff39a99ea"
+    }
+  },
+  "modes": [
+    {
+      "id": "plain-mode",
+      "version": "1.0.0",
+      "listing": {
+        "name": "Plain",
+        "tagline": "A mode with only what a listing needs.",
+        "description": "Nothing more than the required fields.",
+        "players": {
+          "min": 1,
+          "max": 8
+        },
+        "creators": [
+          "Someone"
+        ],
+        "released": "2026-11-01"
+      },
+      "rules": {
+        "url": "https://feed.example/packages/rules-plain-mode-1.0.0-84c6ab8a3c6b.zip",
+        "bytes": 279,
+        "sha256": "84c6ab8a3c6b14bce09425ecb3360e72e17f1b40c8cbee6a1d81d84d967077a5"
+      }
+    },
+    {
+      "id": "rich-mode",
+      "version": "1.0.0",
+      "listing": {
+        "name": "Bebop Wars",
+        "tagline": "Hook your opponent across the canal. First to 25 wins.",
+        "summary": "Hook your opponent across the canal to score. Spend souls on upgrades in the Winter Shop. First to 25 wins.",
+        "description": "A winter hook arena for 1v1, 2v2, and 3v3. Pull an enemy to your bank to score one capture. First to 25 wins, or lead after eight minutes; ties go to overtime. Start with Hook and 300 Souls, then earn tools and capped Hook upgrades through captures, team income and saves. Death keeps your purchases and returns you to your shop after four seconds.",
+        "kind": "teams",
+        "players": {
+          "min": 2,
+          "max": 6
+        },
+        "creators": [
+          "Hideout team"
+        ],
+        "curated": true,
+        "released": "2026-11-06",
+        "howToPlay": [
+          {
+            "title": "Hook them across",
+            "body": "Aim across the canal and throw. Pull your opponent onto your side to score.",
+            "icon": "hook"
+          },
+          {
+            "title": "Spend souls",
+            "body": "Souls come in as you play. Upgrades from the Winter Shop last the whole match.",
+            "icon": "souls"
+          },
+          {
+            "title": "First to 25",
+            "body": "Each capture is a point. If time runs out, it goes to overtime and the shop closes.",
+            "icon": "trophy"
+          }
+        ],
+        "legend": [
+          {
+            "label": "Your side",
+            "color": "#E6B977"
+          },
+          {
+            "label": "The canal",
+            "color": "#2E6E9E"
+          },
+          {
+            "label": "Their side",
+            "color": "#8FB4E8"
+          },
+          {
+            "label": "Each side has its own Curiosity Shop",
+            "color": "#E6B977"
+          }
+        ],
+        "facts": [
+          {
+            "label": "To win",
+            "value": "First to 25",
+            "note": "Overtime if time runs out"
+          },
+          {
+            "label": "Arena",
+            "value": "The canal by the Curiosity Shop"
+          }
+        ],
+        "whatsNew": [
+          "First release: 1v1, 2v2 and 3v3.",
+          "Winter Shop: five upgrades to buy with souls.",
+          "Overtime when the clock runs out."
+        ],
+        "art": {
+          "card": "https://feed.example/packages/art/4049d7e8b8b5-card-background%402x.jpg",
+          "backdrop": "https://feed.example/packages/art/a4ca8528afe2-banner-background%402x.jpg",
+          "render": "https://feed.example/packages/art/1a80536cba74-bebop-render%402x.png",
+          "overlay": "https://feed.example/packages/art/b3a053a28a26-bebop-hook-layer%402x.png",
+          "tile": "https://feed.example/packages/art/cbe745b3c710-bebop-thumb%402x.png",
+          "explainer": "https://feed.example/packages/art/da1e2ef9127b-how-to-play-map%402x.png",
+          "screenshots": [
+            "https://feed.example/packages/art/fef3a0ddcaa3-bebop-wars-shot-hook.jpg",
+            "https://feed.example/packages/art/888874e1117b-bebop-wars-shot-hook-tight.jpg",
+            "https://feed.example/packages/art/9c6f3e9f9262-bebop-wars-shot-shop.jpg"
+          ]
+        },
+        "settings": [
+          {
+            "key": "teams",
+            "label": "Teams",
+            "hint": "Players per team. Every format has the same shop prices and capture payout.",
+            "default": "2v2",
+            "options": [
+              {
+                "value": "1v1",
+                "label": "1v1",
+                "players": 2
+              },
+              {
+                "value": "2v2",
+                "label": "2v2",
+                "players": 4
+              },
+              {
+                "value": "3v3",
+                "label": "3v3",
+                "players": 6
+              }
+            ]
+          }
+        ],
+        "sections": [
+          "scoreboard"
+        ]
+      },
+      "rules": {
+        "url": "https://feed.example/packages/rules-rich-mode-1.0.0-60ebd96476a6.zip",
+        "bytes": 402,
+        "sha256": "60ebd96476a66e8559f6988c79f8bd022861a22add058de9033b2780d93dae31"
+      },
+      "client": {
+        "url": "https://feed.example/packages/client-rich-mode-1.0.0-87935ff17d0a.zip",
+        "bytes": 290,
+        "sha256": "87935ff17d0a528cc43312c1b5b77f9e5f2143bdd4bddd3d781ea9ce807f3ff5"
+      }
+    }
+  ],
+  "upcoming": [
+    {
+      "id": "heaven-or-else",
+      "listing": {
+        "name": "Heaven or Else",
+        "tagline": "Knock the other team off the platforms in the clouds. Every hit sends them flying.",
+        "description": "Knock the other team off the platforms in the clouds. Every hit sends them flying.",
+        "kind": "teams",
+        "players": {
+          "min": 10,
+          "max": 10
+        },
+        "creators": [
+          "Hideout team"
+        ],
+        "curated": true
+      }
+    },
+    {
+      "id": "dodgeball",
+      "listing": {
+        "name": "Dodgeball",
+        "tagline": "One ball, and it's coming for you. Parry it at the right moment to send it on, faster every time. Miss and you're out.",
+        "description": "One ball, and it's coming for you. Parry it at the right moment to send it on, faster every time. Miss and you're out.",
+        "kind": "free-for-all",
+        "players": {
+          "min": 2,
+          "max": 12
+        },
+        "creators": [
+          "Hideout team"
+        ],
+        "curated": true
+      }
+    },
+    {
+      "id": "hero-roulette",
+      "listing": {
+        "name": "Hero Roulette",
+        "tagline": "Every kill swaps your hero. First to twenty.",
+        "description": "Every kill swaps your hero. First to twenty.",
+        "kind": "free-for-all",
+        "players": {
+          "min": 2,
+          "max": 12
+        },
+        "creators": [
+          "Hideout team"
+        ],
+        "curated": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2000" height="646" viewBox="0 0 2000 646">
+  <!--
+    Pillars, how a round goes: the pillars from the side at three moments.
+    1 Everyone gets a random drop every 7 s.
+    2 A shove sends a player off their pillar, and the fall puts them out.
+    3 The last one standing wins the round; a Legendary waits on the centre deck.
+    The drop colours are the HUD's role tones. Render with scripts/hideout-diagram.py.
+  -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F2440"/>
+      <stop offset=".5" stop-color="#4B3E63"/>
+      <stop offset=".78" stop-color="#A9706C"/>
+      <stop offset="1" stop-color="#96A0BE"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0" cy="0" r="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD9A8" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#FFD9A8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#96A0BE" stop-opacity="0"/>
+      <stop offset=".55" stop-color="#96A0BE" stop-opacity=".62"/>
+      <stop offset="1" stop-color="#96A0BE" stop-opacity=".97"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C9B596"/>
+      <stop offset=".55" stop-color="#A8957A"/>
+      <stop offset="1" stop-color="#75675A"/>
+    </linearGradient>
+    <linearGradient id="cap" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#EAD9B8"/>
+      <stop offset="1" stop-color="#B3A083"/>
+    </linearGradient>
+    <linearGradient id="thrown" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FD736D" stop-opacity="0"/>
+      <stop offset="1" stop-color="#FD736D" stop-opacity=".9"/>
+    </linearGradient>
+    <radialGradient id="goldGlow" cx="0" cy="0" r="92" gradientUnits="userSpaceOnUse">
+      <stop offset=".2" stop-color="#EBC934" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#EBC934" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- A ring pillar from the side, its top at y = 0: the flat cap, the low wall across it and the shaft into the haze. -->
+    <g id="ring">
+      <rect x="-52" y="18" width="104" height="700" fill="url(#stone)"/>
+      <path d="M-52 18H52V34H-52Z" fill="#3A3140" fill-opacity=".35"/>
+      <g stroke="#3A3140" stroke-opacity=".22" stroke-width="3">
+        <path d="M-52 130H52M-52 250H52M-52 370H52"/>
+      </g>
+      <rect x="30" y="-30" width="30" height="32" rx="3" fill="#CDBB9C" stroke="#5E5247" stroke-width="3"/>
+      <rect x="-68" y="0" width="136" height="20" rx="4" fill="url(#cap)" stroke="#5E5247" stroke-width="3"/>
+    </g>
+    <!-- The centre deck: wider and higher, on a narrower column. -->
+    <g id="deck">
+      <path d="M-102 22C-98 62 -76 92 -46 104V22Z M102 22C98 62 76 92 46 104V22Z" fill="#8C7B66" stroke="#5E5247" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="-46" y="20" width="92" height="700" fill="url(#stone)"/>
+      <path d="M-46 20H46V38H-46Z" fill="#3A3140" fill-opacity=".35"/>
+      <g stroke="#3A3140" stroke-opacity=".22" stroke-width="3">
+        <path d="M-46 170H46M-46 290H46M-46 410H46"/>
+      </g>
+      <rect x="-112" y="0" width="224" height="22" rx="4" fill="url(#cap)" stroke="#5E5247" stroke-width="3"/>
+    </g>
+    <!-- A far pillar, lost in the haze. -->
+    <g id="far" fill="#6E6789" fill-opacity=".55">
+      <rect x="-22" y="8" width="44" height="700"/>
+      <rect x="-30" y="0" width="60" height="10" rx="2"/>
+    </g>
+
+    <!-- A player, feet at the origin. Fill and outline come from where it is used. -->
+    <g id="body" stroke-width="5" stroke-linejoin="round">
+      <path d="M-25 -60C-25 -78 25 -78 25 -60L18 -4C18 0 -18 0 -18 -4Z"/>
+      <circle cy="-94" r="19"/>
+    </g>
+    <g id="player">
+      <ellipse rx="34" ry="6" fill="#1A1620" fill-opacity=".35"/>
+      <use xlink:href="#body" fill="#FFEFD7" stroke="#1A1620"/>
+    </g>
+    <g id="rival">
+      <ellipse rx="34" ry="6" fill="#1A1620" fill-opacity=".35"/>
+      <use xlink:href="#body" fill="#BFB3A1" stroke="#1A1620"/>
+    </g>
+    <g id="winner">
+      <circle cy="-66" r="92" fill="url(#goldGlow)"/>
+      <ellipse rx="34" ry="6" fill="#1A1620" fill-opacity=".35"/>
+      <use xlink:href="#body" fill="#FFEFD7" stroke="#EBC934"/>
+      <path d="M-24 -121L-28 -150L-13 -136L0 -156L13 -136L28 -150L24 -121Z" fill="#EBC934" stroke="#2E2608" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+
+    <!-- A drop's mark, in its role's tone, and the plate its name sits on. -->
+    <path id="mark" d="M0 -13L13 0L0 13L-13 0Z"/>
+    <path id="star" d="M0 -36L10.6 -11.5L37 -9.5L16.5 7.5L23 33L0 19L-23 33L-16.5 7.5L-37 -9.5L-10.6 -11.5Z"/>
+    <path id="next" d="M-13 -30L13 0L-13 30" fill="none" stroke="#FFEFD7" stroke-opacity=".55" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </defs>
+
+  <rect width="2000" height="646" fill="url(#sky)"/>
+  <circle cx="1000" cy="640" r="420" fill="url(#sun)"/>
+  <g fill="#FFD9C0" fill-opacity=".1">
+    <ellipse cx="250" cy="330" rx="330" ry="16"/>
+    <ellipse cx="820" cy="270" rx="260" ry="12"/>
+    <ellipse cx="1450" cy="318" rx="360" ry="15"/>
+    <ellipse cx="1840" cy="250" rx="220" ry="11"/>
+  </g>
+  <use xlink:href="#far" x="64" y="452"/>
+  <use xlink:href="#far" x="250" y="470"/>
+  <use xlink:href="#far" x="452" y="462"/>
+  <use xlink:href="#far" x="590" y="448"/>
+  <use xlink:href="#far" x="760" y="466"/>
+  <use xlink:href="#far" x="950" y="452"/>
+  <use xlink:href="#far" x="1210" y="470"/>
+  <use xlink:href="#far" x="1410" y="456"/>
+  <use xlink:href="#far" x="1650" y="470"/>
+  <use xlink:href="#far" x="1930" y="452"/>
+
+  <!-- 1: every 7 s everyone gets a random drop. -->
+  <g transform="translate(345 0)">
+    <use xlink:href="#ring" x="-195" y="410"/>
+    <use xlink:href="#ring" y="410"/>
+    <use xlink:href="#ring" x="195" y="410"/>
+    <use xlink:href="#rival" x="-205" y="410"/>
+    <use xlink:href="#player" x="-10" y="410"/>
+    <use xlink:href="#rival" x="185" y="410"/>
+    <g fill="none" stroke-width="6" stroke-dasharray="4 13" stroke-linecap="round">
+      <path d="M-205 190V280" stroke="#4D75C3"/>
+      <path d="M-10 270V284" stroke="#FD736D"/>
+      <path d="M185 190V280" stroke="#36C47F"/>
+    </g>
+    <g transform="translate(-200 150)">
+      <rect x="-99" y="-30" width="198" height="60" rx="12" fill="#151611" stroke="#FFEFD7" stroke-opacity=".16" stroke-width="2"/>
+      <use xlink:href="#mark" x="-71" fill="#4D75C3"/>
+      <text x="-47" y="12" font-family="Fira Sans" font-weight="700" font-size="34" fill="#FFEFD7">Grapple</text>
+    </g>
+    <g transform="translate(190 150)">
+      <rect x="-101" y="-30" width="202" height="60" rx="12" fill="#151611" stroke="#FFEFD7" stroke-opacity=".16" stroke-width="2"/>
+      <use xlink:href="#mark" x="-73" fill="#36C47F"/>
+      <text x="-49" y="12" font-family="Fira Sans" font-weight="700" font-size="34" fill="#FFEFD7">Stamina</text>
+    </g>
+    <g transform="translate(-6 236)">
+      <rect x="-124" y="-30" width="248" height="60" rx="12" fill="#151611" stroke="#FFEFD7" stroke-opacity=".16" stroke-width="2"/>
+      <use xlink:href="#mark" x="-96" fill="#FD736D"/>
+      <text x="-72" y="12" font-family="Fira Sans" font-weight="700" font-size="34" fill="#FFEFD7">Pillow Toss</text>
+    </g>
+    <g transform="translate(-6 62)">
+      <rect x="-132" y="-34" width="264" height="68" rx="34" fill="#15101C" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+      <circle cx="-96" r="16" fill="none" stroke="#EBC934" stroke-width="5"/>
+      <path d="M-96 -9V0L-89 5" fill="none" stroke="#EBC934" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="-68" y="15" font-family="Fira Sans" font-weight="700" font-size="42" fill="#FFFFFF">Every 7 s</text>
+    </g>
+  </g>
+  <use xlink:href="#next" x="672" y="300"/>
+
+  <!-- 2: a shove sends a player off their pillar, and the fall puts them out. -->
+  <g transform="translate(972 0)">
+    <g transform="translate(-185 410) scale(-1 1)">
+      <use xlink:href="#ring"/>
+    </g>
+    <g transform="translate(85 410) scale(-1 1)">
+      <use xlink:href="#ring"/>
+    </g>
+    <use xlink:href="#player" x="-170" y="410"/>
+    <use xlink:href="#body" x="100" y="410" fill="none" stroke="#FFEFD7" stroke-opacity=".5" stroke-dasharray="7 9"/>
+    <path d="M-128 338C-70 322 -10 322 44 334" fill="none" stroke="url(#thrown)" stroke-width="22" stroke-linecap="round"/>
+    <g transform="translate(58 336) rotate(14)">
+      <path d="M-26 -19C-10 -14 10 -14 26 -19C21 -7 21 7 26 19C10 14 -10 14 -26 19C-21 7 -21 -7 -26 -19Z" fill="#FFF7EA" stroke="#1A1620" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+    <g fill="none" stroke="#FD736D" stroke-width="6" stroke-linecap="round">
+      <path d="M134 318L160 310M138 342L166 340M136 366L160 372"/>
+    </g>
+    <g transform="translate(204 372) rotate(34)">
+      <use xlink:href="#body" fill="#BFB3A1" stroke="#1A1620"/>
+    </g>
+    <g transform="translate(-52 232)">
+      <rect x="-84" y="-34" width="168" height="68" rx="34" fill="#15101C" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+      <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#FD736D">Shove</text>
+    </g>
+  </g>
+  <use xlink:href="#next" x="1328" y="300"/>
+
+  <!-- 3: the last one standing wins the round. A Legendary waits on the centre deck. -->
+  <g transform="translate(1655 0)">
+    <use xlink:href="#deck" x="-150" y="372"/>
+    <use xlink:href="#ring" x="130" y="410"/>
+    <circle cx="-150" cy="306" r="92" fill="url(#goldGlow)"/>
+    <use xlink:href="#star" x="-150" y="306" fill="#EBC934" stroke="#2E2608" stroke-width="4" stroke-linejoin="round"/>
+    <use xlink:href="#winner" x="120" y="410"/>
+    <g transform="translate(-150 180)">
+      <rect x="-126" y="-34" width="252" height="68" rx="34" fill="#15101C" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+      <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#EBC934">Legendary</text>
+    </g>
+    <g transform="translate(120 180)">
+      <rect x="-94" y="-34" width="188" height="68" rx="34" fill="#EBC934"/>
+      <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#2E2608">Winner</text>
+    </g>
+  </g>
+
+  <!-- The void's haze hides where the pillars end. -->
+  <rect y="430" width="2000" height="216" fill="url(#haze)"/>
+  <g transform="translate(972 0)" fill="none" stroke="#FF410D" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M218 396C244 440 252 500 248 566" stroke-dasharray="14 12"/>
+    <path d="M232 560L248 590L264 560"/>
+  </g>
+  <g transform="translate(1092 588)">
+    <rect x="-62" y="-34" width="124" height="68" rx="34" fill="#15101C" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>
+    <text y="15" text-anchor="middle" font-family="Fira Sans" font-weight="700" font-size="42" fill="#FF6A3D">Out</text>
+  </g>
+</svg>

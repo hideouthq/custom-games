@@ -1,0 +1,88 @@
+{
+  "name": "Rooftop Rally",
+  "tagline": "Parry the orb at your rivals on a city rooftop. Last one standing wins.",
+  "summary": "Everyone plays Yamato. Block the orb when it comes for you and aim it at someone else. It gets faster with every return.",
+  "description": "A free-for-all on a rooftop above the city, with Archmother and the Hidden King looking on. A Celeste orb chases one player at a time, and only that player can send it back. Block with left click or your parry key, and your aim picks the next target. Weapons and Yamato's own abilities are off. A hit knocks you out until the next round, and so does falling off the roof. Before the first round, pick one special for the match: Power Slash makes your next return 50% faster, Blink teleports you up to 12 m, and Time Freeze stops the orb for 0.6 seconds while it's coming for you.",
+  "kind": "free-for-all",
+  "players": {
+    "min": 2,
+    "max": 8
+  },
+  "creators": [
+    "Hideout team"
+  ],
+  "curated": true,
+  "released": "2026-11-10",
+  "howToPlay": [
+    {
+      "title": "Block the orb",
+      "body": "When the orb turns on you, block with left click or your parry key. Only its target can send it back."
+    },
+    {
+      "title": "Aim your return",
+      "body": "Your aim picks the next target. The orb curves toward them and gets faster with every return."
+    },
+    {
+      "title": "Last one standing",
+      "body": "A hit knocks you out until the next round. The last player left wins, and the next round starts five seconds later.",
+      "icon": "trophy"
+    }
+  ],
+  "legend": [
+    {
+      "label": "The orb",
+      "color": "#BFE4FF"
+    },
+    {
+      "label": "Its target, the only one who can block it",
+      "color": "#FF5A4F"
+    },
+    {
+      "label": "Out until the next round",
+      "color": "#8E8296"
+    },
+    {
+      "label": "Last one standing",
+      "color": "#F6C453"
+    }
+  ],
+  "facts": [
+    {
+      "label": "To win",
+      "value": "Last one standing",
+      "note": "Rounds restart on their own"
+    },
+    {
+      "label": "Hero",
+      "value": "Yamato for everyone"
+    },
+    {
+      "label": "Specials",
+      "value": "Power Slash, Blink or Time Freeze",
+      "note": "Pick one for the match"
+    },
+    {
+      "label": "Arena",
+      "value": "A rooftop above the city"
+    }
+  ],
+  "whatsNew": [
+    "First release: free-for-all for up to 8 players.",
+    "Three specials: Power Slash, Blink and Time Freeze.",
+    "Knocked out? Watch the players still in until the next round.",
+    "A rally meter counts the returns in each exchange and heats up as it grows."
+  ],
+  "art": {
+    "card": "art/card-background@2x.jpg",
+    "backdrop": "art/banner-background@2x.jpg",
+    "render": "art/yamato-render@2x.png",
+    "overlay": "art/celeste-ball-layer@2x.png",
+    "tile": "art/yamato-thumb@2x.png",
+    "explainer": "art/how-to-play-map@2x.png",
+    "screenshots": [
+      "art/rooftop-rally-shot-rally.jpg",
+      "art/rooftop-rally-shot-abilities.jpg",
+      "art/rooftop-rally-shot-winner.jpg"
+    ]
+  }
+}

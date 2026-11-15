@@ -1,0 +1,14 @@
+{
+  "unitsPerMetre": 39.37,
+  "pillars": 10,
+  "ringRadius": 1453,
+  "topSize": 268,
+  "topZ": 0,
+  "pillarDepth": 3937,
+  "centreRadius": 236,
+  "centreZ": 79,
+  "wallLength": 110,
+  "wallThickness": 14,
+  "wallHeight": 46,
+  "standOffset": 70
+}

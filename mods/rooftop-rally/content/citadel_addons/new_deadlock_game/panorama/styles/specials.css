@@ -1,0 +1,68 @@
+#AbilityPicker {
+  width: 100%; height: 100%; background-color: #080c12bb; visibility: collapse;
+}
+.Choosing #AbilityPicker { visibility: visible; }
+.Choosing #RoundNotice, .Choosing #AimPoint { visibility: collapse; }
+#SelectionSheet {
+  horizontal-align: center; vertical-align: center; width: 1016px;
+  background-color: #b5a58a; box-shadow: 0px 8px 32px #0009;
+}
+#SelectionPaper { width: 100%; height: 100%; }
+#SelectionContent { width: 100%; padding: 28px 32px 24px; flow-children: down; }
+.PickerEyebrow {
+  color: #39392f; font-weight: bold; letter-spacing: 3px; font-size: 14px; horizontal-align: center;
+}
+.PickerTitle {
+  font-family: "VALVEPulp"; font-size: 38px; color: #252923; horizontal-align: center; margin: 4px 0px;
+}
+.PickerSubtitle, .PickerFooter {
+  horizontal-align: center; color: #39392f; font-size: 16px;
+}
+.PickerFooter { font-size: 14px; }
+#AbilityCards { horizontal-align: center; flow-children: right; margin: 24px 0px 18px; }
+.ChoiceCardButton {
+  width: 296px; height: 412px; margin: 0px 8px;
+  background-color: #d7c8ab; box-shadow: 0px 4px 12px #0006;
+  transition-property: brightness, transform; transition-duration: 0.12s;
+}
+.ChoiceCardButton:hover, .ChoiceCardButton:focus { brightness: 1.12; transform: translateY(-4px); }
+#CardPaper { width: 100%; height: 100%; }
+#CardContent { width: 100%; height: 100%; padding: 6px; flow-children: down; }
+#ChoiceHeading { width: 100%; height: 116px; }
+.isWeapon #ChoiceHeading { background-color: #694313; }
+.isTech #ChoiceHeading { background-color: #3a315c; }
+.isArmor #ChoiceHeading { background-color: #284b36; }
+#CardHeader, #CardBody { width: 100%; height: 100%; }
+#RallyCardArt {
+  width: 66px; height: 66px; margin: 23px 0px 0px 15px; wash-color: #f3ead8;
+}
+#ChoiceName {
+  width: 180px; margin: 27px 0px 0px 92px;
+  font-family: "VALVEPulp"; font-size: 26px; color: #fff1d9;
+}
+#ChoiceCooldown { margin: 65px 0px 0px 94px; font-size: 16px; color: #e8d9c2; }
+#ChoiceBody { width: 100%; height: 240px; }
+#ChoiceText {
+  width: 100%; height: 164px; padding: 18px 18px 0px;
+  color: #f0e6d4; font-size: 18px; line-height: 24px; white-space: normal; text-overflow: clip;
+}
+#ChoiceStat {
+  width: 248px; height: 42px; margin: 0px 0px 18px; padding: 10px 8px;
+  horizontal-align: center; vertical-align: bottom; text-align: center;
+  color: #fff1d9; font-weight: bold; font-size: 18px; background-color: #0003;
+}
+#ChoiceSelect {
+  width: 100%; height: 44px; padding-top: 12px; text-align: center;
+  color: #252923; font-weight: bold; font-size: 14px; letter-spacing: 1px;
+}
+#SpecialHud {
+  horizontal-align: center; vertical-align: bottom; width: 180px; margin-bottom: 24px;
+  flow-children: down; visibility: collapse;
+}
+.HasSpecial #SpecialHud { visibility: visible; }
+#RallyAbility { horizontal-align: center; width: 180px; height: 130px; }
+#SpecialStatus, #SpecialName {
+  width: 100%; horizontal-align: center; text-align: center;
+  color: #e6dfcf; font-size: 16px; font-weight: bold; text-shadow: 0px 2px 5px 2 #000c;
+}
+#SpecialStatus { color: #7be6b2; height: 22px; }
