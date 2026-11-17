@@ -683,12 +683,12 @@ export class Game {
       Math.min(pips, rules.maxStamina, member.maxStamina || rules.maxStamina),
     )
     const ok = member.player.setStamina(member.pips)
-    member.stamina = member.pips
     if (this.devMode) {
       log(
         `dev stamina ${member.name}: given ${member.pips} of ${member.maxStamina}, had ${member.stamina.toFixed(2)}${ok ? '' : ', REFUSED'}`,
       )
     }
+    member.stamina = member.pips
   }
 
   private ammo(member: Member): void {
