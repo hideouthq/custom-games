@@ -33,6 +33,10 @@ command('rally_choose', (player, value) => {
   game.choose(player, value)
 })
 command('rally_special', (player) => game.requestSpecial(player))
+// The hero menu and the console both send this; every rally is played as Yamato.
+command('selecthero', (player) =>
+  player.chat('Rooftop Rally is played as Yamato.'),
+)
 onDamage(() => ({ block: true }))
 onFrame((frame) => {
   game.frame(frame.timeSeconds, frame.movement)
