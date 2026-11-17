@@ -36,8 +36,8 @@ import {
   specials,
   type SpecialId,
 } from './special'
-import { length, type Vec3 } from './geometry'
-import { cleanHud, drawHud } from './hud'
+import type { Vec3 } from './geometry'
+import { cleanHud, drawHud, notice } from './hud'
 import { Scores, type Contender } from './score'
 import {
   Round,
@@ -839,72 +839,31 @@ export class Game {
       name: seat.connection.name,
       alive: this.round.lobby || this.round.living.has(id),
     }))
+    const context = {
+      now,
+      round: this.round.number,
+      remaining: this.round.living.size,
+      seats: this.seats.size,
+      winnerName: this.winnerName,
+      resumeCueUntil: this.resumeCueUntil,
+    }
     for (const [id, seat] of this.seats) {
       if (seat.connection.bot) continue
       const player = seat.connection.player
-      const targeted = ball?.target === id
-      const spectating =
-        seat.state.kind === 'spectating' || seat.state.kind === 'eliminated'
-      let title = `ROUND ${this.round.number} · ${this.round.living.size} REMAINING`,
-        detail = ''
-      if (phase.kind === 'flight')
-        title += ` · ${(length(phase.velocity) * 0.0254).toFixed(1)} m/s`
-      if (phase.kind === 'waiting') {
-        title = 'WAITING FOR PLAYERS'
-        detail = 'Two players needed · Left click or parry to block'
-      } else if (phase.kind === 'countdown') {
-        title = 'ROUND STARTING'
-        detail = `${Math.max(1, Math.ceil(phase.until - now))}`
-      } else if (phase.kind === 'spawning') {
-        title = 'GET READY'
-        detail = 'One life · Last player standing wins'
-      } else if (phase.kind === 'intermission') {
-        title = `${this.winnerName.toUpperCase()} WINS`
-        detail = 'Next round shortly'
-      } else if (spectating) detail = 'SPECTATING · You return next round'
-      else if (seat.penalty)
-        detail = `ORBIT PENALTY · Stunned for ${(seat.penalty.until - now).toFixed(1)}s`
-      else if (targeted) {
-        const cooldown = seat.block.cooldown(now)
-        detail =
-          phase.kind === 'serve'
-            ? 'YOU ARE TARGETED · Ball launches in 1 second'
-            : cooldown > 0
-              ? `YOU ARE TARGETED · Block ready in ${cooldown.toFixed(1)}s`
-              : 'YOU ARE TARGETED · LEFT CLICK / PARRY'
-        if (phase.kind === 'flight' && phase.orbitSeconds >= rules.orbitWarning)
-          detail = `ORBIT WARNING · Parry or separate from the ball · ${(rules.orbitTime - phase.orbitSeconds).toFixed(1)}s`
-      } else
-        detail =
-          phase.kind === 'reset'
-            ? 'Ball returning to center'
-            : 'Aim your return · Left click or parry when targeted'
-      if (!seat.special.choice) {
-        title = 'CHOOSE YOUR ABILITY'
-        detail = 'One choice for this match · Abilities reset each round'
-      } else if (phase.kind === 'waiting' && this.seats.size >= 2) {
-        title = 'WAITING FOR CHOICES'
-        detail = 'The round starts when everyone has chosen'
-      }
-      const ballCue =
-        phase.kind === 'frozen'
-          ? phase.until - now <= 0.2
-            ? 'restarting'
-            : 'frozen'
-          : phase.kind === 'flight' && now < this.resumeCueUntil
-            ? 'resumed'
-            : 'none'
-      if (phase.kind === 'frozen') {
-        title = `TIME FROZEN · ${(phase.until - now).toFixed(1)}s`
-        detail =
-          ballCue === 'restarting'
-            ? 'BALL RESTARTING'
-            : 'Ball resumes with the same target and momentum'
-      } else if (ballCue === 'resumed') {
-        title = 'BALL RESUMED'
-      }
       drawHud(player, {
-        notice: { title, ballCue, detail, targeted, spectating },
+        notice: notice(
+          phase,
+          {
+            chosen: seat.special.choice !== undefined,
+            spectating:
+              seat.state.kind === 'spectating' ||
+              seat.state.kind === 'eliminated',
+            targeted: ball?.target === id,
+            penaltyUntil: seat.penalty?.until,
+            blockCooldown: seat.block.cooldown(now),
+          },
+          context,
+        ),
         special: {
           choice: seat.special.choice ?? null,
           armed: seat.special.armed,
