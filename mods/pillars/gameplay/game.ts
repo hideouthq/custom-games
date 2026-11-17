@@ -632,11 +632,13 @@ export class Game {
     }
   }
 
+  /** Outside play nothing kills a fall, so a hero in the void is put back. */
   private lobby(member: Member): void {
+    const seated = this.round.inRound(member.id)
     if (
       !member.alive ||
-      member.step !== 'idle' ||
-      this.round.inRound(member.id)
+      this.round.playing ||
+      (this.round.phase === 'countdown' && seated)
     ) {
       return
     }
@@ -644,9 +646,11 @@ export class Game {
       Math.hypot(member.position.x, member.position.y) < arena.centreRadius &&
       member.position.z < arena.centreZ - sunk
     if (inColumn || member.position.z < arena.topZ - 200) {
-      member.seat = member.player.slot % arena.pillars
+      if (!seated) {
+        member.seat = member.player.slot % arena.pillars
+      }
       log(
-        `${member.name} stood at ${Math.round(member.position.x)} ${Math.round(member.position.y)} ${Math.round(member.position.z)} outside a round; onto pillar ${member.seat}`,
+        `${member.name} stood at ${Math.round(member.position.x)} ${Math.round(member.position.y)} ${Math.round(member.position.z)} between rounds; onto pillar ${member.seat}`,
       )
       this.toPillar(member)
     }

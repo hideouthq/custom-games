@@ -458,6 +458,25 @@ describe('spawns', () => {
     ])
   })
 
+  test('stand a hero who falls between rounds back on their pillar', () => {
+    const game = dev()
+    const round = live(game, 2)
+    const loser = pawns.get(0)
+    if (loser?.position) loser.position = { ...loser.position, z: -2000 }
+    run(game, clock + 0.1)
+    expect(round.phase).toBe('intermission')
+    const winner = pawns.get(1)
+    if (winner?.position) winner.position = { ...winner.position, z: -400 }
+    const before = calls.length
+    run(game, clock + 0.1)
+    const stand = pillarStand(game['members'].get(1)?.seat ?? -1)
+    expect(sent('Teleport', TeleportRequest, before)).toContainEqual(
+      expect.objectContaining({
+        position: { x: stand.x, y: stand.y, z: stand.z + 24 },
+      }),
+    )
+  })
+
   test('leave a hero in a round in play alone', () => {
     const game = dev()
     live(game, 2)
