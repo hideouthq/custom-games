@@ -172,6 +172,24 @@ test('a pending cast is dropped without a refund when its Bebop dies', () => {
   assert.equal(m.fighter(ada!).notice.text, '')
 })
 
+test('Sprint and a defense item pressed together each settle on their own', () => {
+  const m = match(), [ada] = m.players
+  m.goLive()
+  const boots = m.buy(ada!, 'sprint', 'upgrade_fleetfoot_boots')
+  const shift = m.buy(ada!, 'etherealShift', 'upgrade_self_bubble')
+  const sprintReady = m.fighter(ada!).utilityUntil
+  m.game.input(ada!, button(boots) | button(shift), 0n)
+  m.run(frame)
+  assert.deepEqual(ada!.presses.slice().sort(), [button(boots), button(shift)].sort())
+  m.game.cast({ ability: shift.entity })
+  m.run(frame)
+  assert.deepEqual(ada!.cancelled, [button(shift) | Buttons.attack], 'the cast settles while Sprint still waits')
+  m.run(1.2)
+  assert.deepEqual(ada!.cancelled, [button(shift) | Buttons.attack, button(boots)])
+  assert.equal(m.fighter(ada!).utilityUntil, sprintReady, 'the Sprint that never started is refunded')
+  assert.ok(m.fighter(ada!).defenseUntil > m.now, 'the defense item that started keeps its cooldown')
+})
+
 test('Mystical Piano shows its warning until it lands, then the smash', () => {
   const m = match(), [ada] = m.players
   m.goLive()
