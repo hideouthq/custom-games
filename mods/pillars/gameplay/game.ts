@@ -38,6 +38,7 @@ import { assignHero, donors, pool, type PoolHero, reserveAfter } from './heroes'
 import { hud, type HudDrop, type HudRow, type HudView, samples } from './hud'
 import {
   catalog,
+  dropsFor,
   freshPity,
   Inventory,
   lingerSeconds,
@@ -1413,7 +1414,7 @@ export class Game {
               this.roll,
               member.pity,
               effect.mobility,
-              catalog,
+              dropsFor(member.health < member.maxHealth),
               holding,
             )
             if (!member.bot) {

@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import {
   ammoEvery,
   catalog,
+  dropsFor,
   freshPity,
   Inventory,
   type Loot,
@@ -107,6 +108,19 @@ describe('roll', () => {
       const drop = roll(next, pity, true, catalog, holding)
       expect(holding.has(drop.id)).toBe(false)
     }
+  })
+
+  test('a Medkit drops only to a hurt player', () => {
+    const rolled = (hurt: boolean) => {
+      const next = random(9)
+      const pity = freshPity()
+      return Array.from(
+        { length: 2000 },
+        () => roll(next, pity, true, dropsFor(hurt)).id,
+      )
+    }
+    expect(rolled(false)).not.toContain('medkit')
+    expect(rolled(true)).toContain('medkit')
   })
 
   test('without mobility neither stamina nor mobility drops', () => {

@@ -272,6 +272,13 @@ export const catalog: readonly Loot[] = [
   },
 ]
 
+const unhurt = catalog.filter((loot) => loot.kind !== 'heal')
+
+/** A Medkit does nothing at full health. */
+export function dropsFor(hurt: boolean): readonly Loot[] {
+  return hurt ? catalog : unhurt
+}
+
 export const weights: Readonly<Record<Role, number>> = {
   ammo: 10,
   stamina: 14,
