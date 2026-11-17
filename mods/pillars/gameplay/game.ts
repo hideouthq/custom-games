@@ -1744,7 +1744,12 @@ export class Game {
     const gun = this.gunOf(member)
     const rounds =
       gun === 0 ? undefined : readField(gun, gunClass, 'm_iClip', 'int32')
-    return typeof rounds === 'number' ? rounds : 0
+    if (typeof rounds !== 'number') {
+      // The hero was given a new gun; find it again next frame.
+      member.gun = 0
+      return 0
+    }
+    return rounds
   }
 
   private setClip(member: Member, rounds: number): void {
