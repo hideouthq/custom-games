@@ -29,6 +29,7 @@ class FakePlayer {
   readonly presses: bigint[] = []
   readonly cancelled: bigint[] = []
   readonly writes: { ability: string; cooldownEnd: number | undefined }[] = []
+  refuseSouls = false
   body: { entity: number; hero: number; team: number; health: number; maxHealth: number; souls: number; abilityPoints: number; abilityUnlocks: number; position: Vec3; velocity: Vec3; cameraAngles: Angles; eyeAngles: Angles } | undefined
   items: FakeAbility[]
 
@@ -68,7 +69,7 @@ class FakePlayer {
   }
   resetHero(): boolean { if (this.body) this.body.souls = 0; return true }
   adjustSouls(delta: number): boolean {
-    if (!this.body) return false
+    if (!this.body || this.refuseSouls) return false
     this.body.souls += delta
     return true
   }

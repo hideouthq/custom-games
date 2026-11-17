@@ -159,6 +159,7 @@ export class Game {
     this.receipts.length = 0
     for (const id of this.sprintPending.keys()) this.cancelSprint(id)
     for (const id of this.castPending.keys()) this.cancelCast(id)
+    this.releaseReload()
     this.changed.clear()
     this.hudDue.clear()
     resetHud()
@@ -243,19 +244,27 @@ export class Game {
   }
 
   private checkpoint(): void {
+    // A paused match settles nothing in flight, so a hold would only keep out the build that fixes it.
+    if (this.failure) {
+      this.releaseReload()
+      return
+    }
     const native = this.progress.export()
     const busy = native === undefined || Array.from(this.state.fighters.values()).some(fighter => fighter.chillUntil > this.frame.now) || this.sprintPending.size > 0 || this.castPending.size > 0 || this.state.globes.length > 0 || this.frame.players.some(sample => sample.body?.hook && hookBusy(sample.body.hook)) || Array.from(this.state.fighters.values()).some(fighter => fighter.life.kind === 'alive' && fighter.life.transit.kind !== 'none')
     if (busy) {
       if (!this.reloadHeld && holdReload(true)) this.reloadHeld = true
       return
     }
-    if (this.failure) return
     const checkpoint = JSON.stringify({ mode: encodeCheckpoint(this.state), native })
     if (checkpoint !== this.lastCheckpoint) {
       if (handoff(checkpoint)) this.lastCheckpoint = checkpoint
       else log('[BebopWars] ERROR match state handoff refused')
     }
-    if (this.reloadHeld && this.lastCheckpoint === checkpoint && holdReload(false)) this.reloadHeld = false
+    if (this.lastCheckpoint === checkpoint) this.releaseReload()
+  }
+
+  private releaseReload(): void {
+    if (this.reloadHeld && holdReload(false)) this.reloadHeld = false
   }
 
   player(id: AccountId): Player | undefined {

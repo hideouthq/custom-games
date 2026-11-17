@@ -190,6 +190,32 @@ test('Sprint and a defense item pressed together each settle on their own', () =
   assert.ok(m.fighter(ada!).defenseUntil > m.now, 'the defense item that started keeps its cooldown')
 })
 
+test('a match that pauses on a failure stops holding reloads', () => {
+  const m = match(), [ada, bo] = m.players
+  m.goLive()
+  const boots = m.buy(ada!, 'sprint', 'upgrade_fleetfoot_boots')
+  m.run(8)
+  m.press(ada!, boots)
+  m.run(frame)
+  assert.equal(host.reloadHeld, true)
+  bo!.refuseSouls = true
+  m.run(1)
+  assert.equal(m.game.failure, 'Soul reward could not be applied. Match paused.')
+  m.run(2)
+  assert.equal(host.reloadHeld, false, 'a paused match lets a new build load')
+})
+
+test('leaving the arena map stops holding reloads', () => {
+  const m = match(), [ada] = m.players
+  const boots = m.buy(ada!, 'sprint', 'upgrade_fleetfoot_boots')
+  m.press(ada!, boots)
+  m.run(frame)
+  assert.equal(host.reloadHeld, true)
+  m.game.world('street_test')
+  m.run(1)
+  assert.equal(host.reloadHeld, false)
+})
+
 test('Mystical Piano shows its warning until it lands, then the smash', () => {
   const m = match(), [ada] = m.players
   m.goLive()
