@@ -574,7 +574,7 @@ function requests(state: State, frame: Frame, pending: readonly Request[], comma
     if (!scripted(product) && fighter.life.kind === 'alive' && fighter.life.transit.kind !== 'none') { notice(state, fighter, 'You are caught'); continue }
     if (product === 'knockdown') {
       const victim = request.sighted === undefined ? undefined : state.fighters.get(request.sighted)
-      const marked = victim && victim.life.kind === 'alive' && victim.life.protectionUntil <= state.now && victim.membership.kind === 'seated' && fighter.membership.kind === 'seated' && victim.membership.side !== fighter.membership.side ? actor(victim) : undefined
+      const marked = victim && fighter.membership.kind === 'seated' && exposed(victim, fighter.membership.side, state.now) ? actor(victim) : undefined
       if (!marked) { notice(state, fighter, 'No enemy in your sights'); continue }
       fighter.setupUntil = state.now + item.cooldown
       const id = state.nextEvent++
@@ -616,11 +616,15 @@ export function canAct(state: State, fighter: Fighter): boolean {
   return (playing(state) || state.phase.kind === 'warmup') && fighter.membership.kind === 'seated' && fighter.life.kind === 'alive' && fighter.life.protectionUntil <= state.now && fighter.menu === 'closed' && fighter.life.transit.kind === 'none'
 }
 
+function exposed(target: Fighter, side: Side, now: number): target is Fighter & { life: Extract<Life, { kind: 'alive' }> } {
+  return target.presence.kind === 'connected' && target.membership.kind === 'seated' && target.membership.side !== side && target.life.kind === 'alive' && target.life.protectionUntil <= now
+}
+
 function burst(state: State, globe: SnowGlobe, frame: Frame, commands: Command[]): void {
   commands.push({ kind: 'impact', id: globe.id, position: globe.position, side: globe.side })
   const clear = frame.globes.get(globe.id)?.clear ?? []
   for (const target of state.fighters.values()) {
-    if (target.presence.kind !== 'connected' || target.membership.kind !== 'seated' || target.membership.side === globe.side || target.life.kind !== 'alive' || target.life.protectionUntil > state.now || !clear.includes(target.id)) continue
+    if (!exposed(target, globe.side, state.now) || !clear.includes(target.id)) continue
     if (!burstContains(globe.position, target.life.position)) continue
     const ref = actor(target)
     if (!ref) continue
@@ -636,7 +640,7 @@ function landings(state: State, commands: Command[]): void {
     if (state.now < piano.landsAt) { falling.push(piano); continue }
     commands.push({ kind: 'pianoLand', id: piano.id, mark: piano.mark })
     for (const target of state.fighters.values()) {
-      if (target.presence.kind !== 'connected' || target.membership.kind !== 'seated' || target.membership.side === piano.side || target.life.kind !== 'alive' || target.life.protectionUntil > state.now) continue
+      if (!exposed(target, piano.side, state.now)) continue
       if (!flattened(piano.mark, target.life.position)) continue
       const ref = actor(target)
       if (!ref) continue
