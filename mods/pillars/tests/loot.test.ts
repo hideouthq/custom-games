@@ -4,7 +4,6 @@ import {
   catalog,
   dropsFor,
   freshPity,
-  Inventory,
   type Loot,
   moveEvery,
   repeatGap,
@@ -145,108 +144,6 @@ describe('roll', () => {
       return Array.from({ length: 30 }, () => roll(generator, state, true).id)
     }
     expect(again(11)).toEqual(again(11))
-  })
-})
-
-describe('inventory', () => {
-  test('fills empty slots, then replaces the oldest of its kind', () => {
-    const inventory = new Inventory()
-    expect(inventory.add(named('warp'))).toEqual({
-      kind: 'item',
-      slot: 0,
-      replaced: undefined,
-      stacked: false,
-    })
-    inventory.add(named('leap'))
-    inventory.add(named('knockdown'))
-    inventory.add(named('hex'))
-    const gain = inventory.add(named('anchor'))
-    expect(gain).toEqual({
-      kind: 'item',
-      slot: 0,
-      replaced: named('warp'),
-      stacked: false,
-    })
-    expect(inventory.add(named('pillow'))?.kind).toBe('ability')
-    expect(inventory.held('ability')[0]?.loot.id).toBe('pillow')
-  })
-
-  test('a second copy adds charges and counts as the newest', () => {
-    const inventory = new Inventory()
-    inventory.add(named('warp'))
-    inventory.add(named('leap'))
-    inventory.add(named('knockdown'))
-    inventory.add(named('hex'))
-    expect(inventory.add(named('warp'))).toEqual({
-      kind: 'item',
-      slot: 0,
-      stacked: true,
-    })
-    expect(inventory.held('item')[0]?.charges).toBe(2)
-    expect(inventory.add(named('anchor'))?.replaced?.id).toBe('leap')
-  })
-
-  test('ammo and stamina take no slot', () => {
-    const inventory = new Inventory()
-    expect(inventory.add(named('ammo'))).toBeUndefined()
-    expect(inventory.add(named('pip'))).toBeUndefined()
-  })
-
-  test('a drop is one use, a second copy adds one, and a spent drop keeps its slot', () => {
-    const inventory = new Inventory()
-    inventory.add(named('pillow'))
-    inventory.add(named('pillow'))
-    const where = inventory.find('ability_familiar_ability02')
-    expect(where).toEqual({ kind: 'ability', slot: 0 })
-    expect(inventory.spend('ability', 0)).toBe(1)
-    expect(inventory.spend('ability', 0)).toBe(0)
-    expect(inventory.spend('ability', 0)).toBeUndefined()
-    expect(inventory.find('ability_familiar_ability02')).toEqual(where)
-    expect(inventory.held('ability')[0]?.charges).toBe(0)
-  })
-
-  test('a new drop takes an empty slot, then the oldest spent one, then the oldest', () => {
-    const inventory = new Inventory()
-    for (const id of ['warp', 'leap', 'knockdown', 'hex']) {
-      inventory.add(named(id))
-    }
-    inventory.spend('item', 2)
-    inventory.spend('item', 1)
-    expect(inventory.add(named('anchor'))).toMatchObject({
-      slot: 1,
-      replaced: named('leap'),
-    })
-    expect(inventory.add(named('shift'))).toMatchObject({
-      slot: 2,
-      replaced: named('knockdown'),
-    })
-    expect(inventory.add(named('unstoppable'))).toMatchObject({
-      slot: 0,
-      replaced: named('warp'),
-    })
-  })
-
-  test('a copy of a spent drop makes it ready again', () => {
-    const inventory = new Inventory()
-    inventory.add(named('warp'))
-    inventory.spend('item', 0)
-    expect(inventory.add(named('warp'))).toMatchObject({
-      slot: 0,
-      stacked: true,
-    })
-    expect(inventory.held('item')[0]?.charges).toBe(1)
-  })
-
-  test('drop removes what matches and reports it', () => {
-    const inventory = new Inventory()
-    inventory.add(named('grapple'))
-    inventory.add(named('pillow'))
-    inventory.add(named('warp'))
-    inventory.add(named('anchor'))
-    const gone = inventory.drop((loot) => loot.role === 'mobility')
-    expect(gone.map((loot) => loot.id).sort()).toEqual(['grapple', 'warp'])
-    expect(inventory.find('ability_familiar_ability02')).toBeDefined()
-    expect(inventory.find('upgrade_warp_stone')).toBeUndefined()
   })
 })
 

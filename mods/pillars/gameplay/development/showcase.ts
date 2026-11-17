@@ -12,7 +12,8 @@ import {
 
 import type { Game } from '../game'
 import { pool } from '../heroes'
-import { catalog, type Inventory, type Loot } from '../loot'
+import type { Inventory } from '../inventory'
+import { catalog, type Loot } from '../loot'
 import type { Phase } from '../round'
 import type { Point } from '../seating'
 

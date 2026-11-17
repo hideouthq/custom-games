@@ -34,11 +34,11 @@ import { Credit, knock, type Melee, meleeDamage, meleeOf } from './combat'
 import { arena, combat, rules, unitsPerMetre } from './config'
 import { assignHero, donors, pool, type PoolHero, reserveAfter } from './heroes'
 import { hud, type HudDrop, type HudRow, type HudView, samples } from './hud'
+import { Inventory } from './inventory'
 import {
   catalog,
   dropsFor,
   freshPity,
-  Inventory,
   lingerSeconds,
   legendary,
   type Loot,
@@ -90,10 +90,6 @@ const placeholders = [
 const shoveSeconds = 5
 
 const effectSeconds = 0.25
-
-const goneLooks = 2
-
-const ageSlack = 0.2
 
 const staminaSlack = 0.02
 
@@ -149,17 +145,6 @@ const spoilSeconds = 3
 
 type Step = 'idle' | 'revive' | 'reset' | 'place' | 'ready'
 
-interface Emptying {
-  readonly native: string
-  readonly kind: 'ability' | 'item'
-  readonly ability: number
-  readonly at: number
-  readonly until: number
-  readonly watched: boolean
-  seen: boolean
-  gone: number
-}
-
 interface Member {
   readonly id: PlayerId
   readonly player: Player
@@ -193,13 +178,6 @@ interface Member {
   struck: Melee | undefined
   gun: number
   gunOf: number
-  emptying: Emptying[]
-  /**
-   * Giving items again cuts short, and leaves behind the particles of, any
-   * item effect still playing.
-   */
-  itemsDue: boolean
-  itemsHeldUntil: number
   effects: { state: string; until: number }[]
   drawn: string
   card: HudDrop | undefined
@@ -430,7 +408,7 @@ export class Game {
           )
           .join(
             ' ',
-          )}${member.itemsDue ? ' (due)' : ''}, pos ${Math.round(member.position.x)} ${Math.round(member.position.y)} ${Math.round(member.position.z)}, abilities ${held}`,
+          )}${member.inventory.itemsDue ? ' (due)' : ''}, pos ${Math.round(member.position.x)} ${Math.round(member.position.y)} ${Math.round(member.position.z)}, abilities ${held}`,
       )
     }
   }
@@ -492,9 +470,6 @@ export class Game {
       struck: undefined,
       gun: 0,
       gunOf: 0,
-      emptying: [],
-      itemsDue: false,
-      itemsHeldUntil: 0,
       effects: [],
       drawn: '',
       card: undefined,
@@ -1120,12 +1095,11 @@ export class Game {
     if (member === undefined || native === '') {
       return
     }
-    const where = member.inventory.find(native)
-    if (where === undefined) {
+    const spent = member.inventory.spend(native, event.ability, this.now)
+    if (spent === undefined) {
       return
     }
-    const spent = member.inventory.held(where.kind)[where.slot]?.loot
-    if (spent?.role === 'force') {
+    if (spent.loot.role === 'force') {
       const target = this.byEntity.get(event.target)
       if (target !== undefined && target !== member) {
         this.credit.hit(target.id, member.id, this.now)
@@ -1136,28 +1110,13 @@ export class Game {
         `shove ${native} by ${member.name} at ${target === undefined || target === member ? 'nobody' : target.name}`,
       )
     }
-    const left = member.inventory.spend(where.kind, where.slot)
-    if (left !== 0) {
+    if (spent.lingers === undefined) {
       return
     }
-    const seconds = spent?.linger ?? lingerSeconds
-    this.lock(member, native, seconds)
+    this.lock(member, native, spent.lingers)
     // A cooldown the game starts later, as a channel ends, runs as long, so
     // the drop cannot come ready again before its slot empties.
-    this.pace(member, native, seconds)
-    member.emptying.push({
-      native,
-      kind: where.kind,
-      ability: event.ability,
-      at: this.now,
-      until: this.now + seconds,
-      // An ability waits out its time: a shove still in flight, a pad or a
-      // path holds no modifier, and replacing the ability mid-flight cancels
-      // it.
-      watched: where.kind === 'item',
-      seen: false,
-      gone: 0,
-    })
+    this.pace(member, native, spent.lingers)
   }
 
   private lock(member: Member, native: string, seconds: number): void {
@@ -1197,10 +1156,10 @@ export class Game {
     if (this.now < this.effectsAt) {
       return
     }
-    const watched = [...this.members.values()].flatMap((member) =>
-      member.emptying.filter((timer) => timer.watched),
+    const watching = [...this.members.values()].filter((member) =>
+      member.inventory.watching(),
     )
-    if (watched.length === 0) {
+    if (watching.length === 0) {
       return
     }
     this.effectsAt = this.now + effectSeconds
@@ -1214,73 +1173,38 @@ export class Game {
         }
       }
     }
-    for (const timer of watched) {
-      const playing = held.some(
-        (modifier) =>
-          modifier.ability === timer.ability &&
-          modifier.age <= this.now - timer.at + ageSlack,
-      )
-      if (playing) {
-        timer.seen = true
-        timer.gone = 0
-      } else if (timer.seen) {
-        timer.gone++
-      }
+    for (const member of watching) {
+      member.inventory.observe(held, this.now)
     }
   }
 
   private empty(member: Member): void {
-    for (let index = member.emptying.length - 1; index >= 0; index--) {
-      const timer = member.emptying[index]
-      if (timer === undefined) {
-        continue
-      }
-      const over = timer.seen && timer.gone >= goneLooks
-      if (!over && this.now < timer.until) {
-        continue
-      }
-      member.emptying.splice(index, 1)
-      const where = member.inventory.find(timer.native)
-      const held =
-        where === undefined
-          ? undefined
-          : member.inventory.held(where.kind)[where.slot]
-      if (where === undefined || held === undefined || held.charges > 0) {
-        continue
-      }
+    for (const emptied of member.inventory.expire(this.now)) {
       log(
-        `${member.name}'s spent ${timer.native} ${over ? 'played out' : 'timed out'} after ${(this.now - timer.at).toFixed(1)} s`,
+        `${member.name}'s spent ${emptied.native} ${emptied.playedOut ? 'played out' : 'timed out'} after ${emptied.after.toFixed(1)} s`,
       )
-      if (where.kind === 'ability') {
-        member.inventory.clear(where.kind, where.slot)
-        member.player.replaceAbility(where.slot, placeholders[where.slot] ?? '')
-      } else {
-        member.itemsDue = true
+      if (emptied.kind === 'ability') {
+        member.player.replaceAbility(
+          emptied.slot,
+          placeholders[emptied.slot] ?? '',
+        )
       }
     }
     this.settleItems(member)
   }
 
   private settleItems(member: Member): void {
-    if (!member.itemsDue) {
-      return
-    }
-    const playing = member.emptying
-      .filter((timer) => timer.kind === 'item')
-      .reduce((latest, timer) => Math.max(latest, timer.until), 0)
-    if (playing <= this.now) {
-      member.itemsDue = false
-      member.itemsHeldUntil = 0
+    const settled = member.inventory.settle(this.now)
+    if (settled === 'rebuild') {
       this.rebuildItems(member)
       return
     }
-    if (playing === member.itemsHeldUntil) {
+    if (settled === undefined) {
       return
     }
-    member.itemsHeldUntil = playing
     for (const held of member.inventory.held('item')) {
       if (held !== undefined && held.charges <= 0 && held.loot.native) {
-        this.lock(member, held.loot.native, playing - this.now)
+        this.lock(member, held.loot.native, settled - this.now)
       }
     }
   }
@@ -1373,9 +1297,6 @@ export class Game {
           member.damage = 0
           member.inventory = new Inventory()
           member.pity = freshPity()
-          member.emptying = []
-          member.itemsDue = false
-          member.itemsHeldUntil = 0
           member.card = undefined
           member.step = 'revive'
           member.stepAt = this.now
@@ -1540,9 +1461,6 @@ export class Game {
       member.graveAt = 0
       member.player.clearItems()
       member.inventory = new Inventory()
-      member.emptying = []
-      member.itemsDue = false
-      member.itemsHeldUntil = 0
       for (const effect of member.effects) {
         holdModifierState(member.entity, effect.state, false)
       }
@@ -1651,7 +1569,6 @@ export class Game {
         member.player.setAbility({ ability: loot.native, upgrades: 1 })
         this.pace(member, loot.native, rules.chargeSeconds)
       } else if (gain.replaced !== undefined) {
-        member.itemsDue = true
         this.settleItems(member)
       } else {
         member.player.giveItem(loot.native)
