@@ -1,10 +1,10 @@
 import {
-  Buttons, Layers, Player, blockInput, clearMap, connection, createParticle, damage as strike,
-  emitSound, findEntities, fireInput, freeCursor, handedOff, handoff, heroNamed, holdReload, holdModifierState, log,
+  Buttons, Layers, Player, blockInput, clearMap, connection, damage as strike,
+  findEntities, fireInput, freeCursor, handedOff, handoff, heroNamed, holdReload, holdModifierState, log,
   modifierState, players, precache, readDefinitionField, readField, readModifierField,
   setFreeForAll, setTeamSeating, trace, watchInput,
   type Ability, type AbilityCastEvent, type Connection, type DamageEvent, type DamageResult, type FrameEvent,
-  type Pawn, type WorldObject, type DamagedEvent,
+  type Pawn, type DamagedEvent,
 } from 'modlock'
 import { apply, arena as arenaSettings } from 'modlock/console'
 import { activationStatus, type NativeActivation } from './activation.ts'
@@ -13,11 +13,12 @@ import { advanceGlobe, burstContains, chilledMomentum, globeAim, globeRules, typ
 import { decodeCheckpoint, encodeCheckpoint } from './checkpoint.ts'
 import { hookContacts, hookDamageShare, type Landed } from './contact.ts'
 import { drawHud, resetHud } from './hud.tsx'
-import type { HudAction, Side } from './hud-model.ts'
+import type { HudAction } from './hud-model.ts'
 import { inputGate, type InputGate } from './input.ts'
 import { catalog, hookAbility, productIds, shrinkSeconds, type HookRank, type ProductId } from './catalog.ts'
-import { pianoMark, pianoRules } from './piano.ts'
+import { pianoMark } from './piano.ts'
 import { inSights, knockdownRules } from './sight.ts'
+import { NativeEffects, effectResources } from './native-effects.ts'
 import { NativeProgress, exactWallet, hookRank } from './native-progress.ts'
 import { equippedProducts, nativeItemButton, observeEquipment, reconcileEquipment } from './native-equipment.ts'
 import {
@@ -33,19 +34,12 @@ const nativeItemKeys = (1n << 37n) | (1n << 38n) | (1n << 39n) | (1n << 40n)
 const actionKeys = Buttons.ability3 | nativeItemKeys
 const cancelAbilityKey = 1n << 60n
 const disabled = Buttons.attack | Buttons.altFire | Buttons.reload | Buttons.ability1 | Buttons.ability2 | Buttons.ultimate | nativeItemKeys
-const globeResource = 'particles/abilities/kelvin/kelvin_ice_grenade_projectile.vpcf'
 export const chillModifier = 'citadel_ability_mantle/mantle_hit_slow'
-const chillResource = 'particles/abilities/kelvin/kelvin_ice_grenade_slow.vpcf'
-const impactResource = 'particles/abilities/kelvin/kelvin_ice_grenade_explode_v2.vpcf'
-const pianoResource = 'particles/upgrades/mystical_piano.vpcf'
-const pianoWarningResource = 'particles/upgrades/mystical_piano_aoe_indicator.vpcf'
-const pianoHitResource = 'particles/upgrades/mystical_piano_hit.vpcf'
 const knockdownMark = 'upgrade_target_stun/modifier_citadel_delayed_stun'
 // The Salvage stun is a plain stun the game files under another ability.
 const pianoStuns = ['upgrade_mystical_piano/modifier_mystical_piano_aura/modifier_stun', 'ability_wrecker_salvage/modifier_wrecker_salvage_stun']
 const shrinkModifier = 'upgrade_shrink_ray/modifier_shrink_ray'
 const confirmSeconds = 0.1
-const rescueResource = 'particles/{addon}/bebop_rescue_pulse.vpcf'
 const sprintDonor = 'upgrade_fleetfoot_boots'
 const terrainTrace = { layers: Layers.solid | Layers.staticLevel, exclude: Layers.hero | Layers.player | Layers.hitbox }
 const zero = { x: 0, y: 0, z: 0 }
@@ -59,7 +53,6 @@ const profiles = [
 ] as const
 
 interface InputState { gate: InputGate; cursor: boolean; generation: number; blocked: bigint }
-interface Effect { object: WorldObject; until: number }
 const castSeconds = 1.2
 interface PendingCast { readonly product: ProductId; readonly ability: number; readonly failure: Failure; readonly player: Player; readonly button: bigint; readonly generation: number; readonly requestedAt: number; confirmed: boolean }
 interface PendingSprint { readonly attempt: NativeActivation; readonly failure: Failure; readonly player: Player; readonly button: bigint }
@@ -82,7 +75,7 @@ export class Game {
   private readonly heldInput = new Map<AccountId, { generation: number; buttons: bigint }>()
   private readonly inputs = new Map<AccountId, InputState>()
   private readonly claims = new Map<number, Map<string, boolean>>()
-  private readonly effects = new Map<number, Effect>()
+  private readonly effects = new NativeEffects()
   private readonly snapshots = new Map<AccountId, { pawn: Pawn | undefined; abilities: readonly Ability[] }>()
   private readonly transferred = new Map<AccountId, { entity: number; cast: number; cancelled: boolean }>()
   private readonly casts = new Map<AccountId, { entity: number; serial: number; rank: HookRank; refunded: boolean }>()
@@ -121,7 +114,7 @@ export class Game {
     })
     if (refused.length) log(`[BebopWars] refused settings: ${refused.join(', ')}`)
     this.rewardSetupFailed = refused.some(name => name in rewards)
-    precache({ heroes: ['hero_bebop', 'hero_kelvin'], resources: [globeResource, impactResource, chillResource, rescueResource, pianoResource, pianoWarningResource, pianoHitResource, 'particles/upgrades/upgrade_fleet_foot_boost_buff.vpcf'] })
+    precache({ heroes: ['hero_bebop', 'hero_kelvin'], resources: [...effectResources, 'particles/upgrades/upgrade_fleet_foot_boost_buff.vpcf'] })
     blockInput(disabled)
     watchInput(actionKeys)
     setFreeForAll(false)
@@ -228,10 +221,7 @@ export class Game {
         connection.player.centerText(this.failure)
       }
     }
-    for (const globe of this.state.globes) this.effects.get(globe.id)?.object.move(globe.position)
-    for (const [key, effect] of this.effects) {
-      if (effect.until <= this.frame.now || (key > 0 && !this.state.globes.some(snowGlobe => snowGlobe.id === key))) { effect.object.remove(); this.effects.delete(key) }
-    }
+    this.effects.update(this.state.globes, this.frame.now)
     const entities = new Set(this.frame.players.flatMap(p => p.body ? [p.body.entity] : []))
     for (const [entity, states] of this.claims) {
       if (entities.has(entity)) continue
@@ -531,15 +521,7 @@ export class Game {
   private execute(command: Command): void {
     if (command.kind === 'piano') {
       const { piano } = command
-      // The warning and the fall take the landing's radius on their second control point; the smash needs none.
-      const radius = { index: 1, position: { x: pianoRules.radius, y: 1, z: 1 } }
-      const warning = createParticle({ resource: pianoWarningResource, position: piano.mark, point: radius })
-      const falling = createParticle({ resource: pianoResource, position: piano.mark, point: radius })
-      if (warning) this.effects.set(-piano.id - 0.25, { object: warning, until: piano.landsAt })
-      if (falling) this.effects.set(-piano.id - 0.5, { object: falling, until: piano.landsAt + 0.3 })
-      if (!warning && !falling) log('[BebopWars] ERROR Mystical Piano effects unavailable')
-      const entity = (warning ?? falling)?.entity()
-      if (entity !== undefined) emitSound(entity, 'Mystical.Piano.AOE.Warning')
+      this.effects.pianoCast(piano)
       const player = this.player(piano.actor.id), fighter = this.state.fighters.get(piano.actor.id)
       player?.sound('Mods.Mystical.Piano.Cast')
       if (fighter) player?.setAbility({ ability: catalog.piano.nativeItem, cooldownEnd: fighter.setupUntil })
@@ -547,20 +529,11 @@ export class Game {
       return
     }
     if (command.kind === 'pianoLand') {
-      this.effects.get(-command.id - 0.25)?.object.remove()
-      this.effects.delete(-command.id - 0.25)
-      const effect = createParticle({ resource: pianoHitResource, position: command.mark })
-      if (effect) {
-        this.effects.set(-command.id - 0.75, { object: effect, until: this.state.now + 3 })
-        const entity = effect.entity()
-        if (entity !== undefined) emitSound(entity, 'Mystical.Piano.AOE.Explode')
-      }
+      this.effects.pianoLanded(command.id, command.mark, this.state.now)
       return
     }
     if (command.kind === 'snowGlobe') {
-      const effect = createParticle({ resource: globeResource, position: command.snowGlobe.position })
-      if (effect) {
-        this.effects.set(command.snowGlobe.id, { object: effect, until: this.state.now + globeRules.range / globeRules.speed + 1 })
+      if (this.effects.globeLaunched(command.snowGlobe, this.state.now)) {
         const player = this.player(command.snowGlobe.actor.id)
         player?.sound('Kelvin.IceGrenade.Cast')
         const fighter = this.state.fighters.get(command.snowGlobe.actor.id)
@@ -572,19 +545,11 @@ export class Game {
           fighter.notice = { text: 'Snow Globe unavailable; cooldown restored', until: this.state.now + 3 }
         }
         this.state.globes = this.state.globes.filter(globe => globe.id !== command.snowGlobe.id)
-        log(`[BebopWars] ERROR Snow Globe particle unavailable: ${globeResource}`)
       }
       return
     }
     if (command.kind === 'impact') {
-      this.effects.get(command.id)?.object.remove()
-      this.effects.delete(command.id)
-      const effect = createParticle({ resource: impactResource, position: command.position, point: { index: 1, position: { x: globeRules.radius, y: 1, z: 1 } } })
-      if (effect) {
-        this.effects.set(-command.id, { object: effect, until: this.state.now + 3 })
-        const entity = effect.entity()
-        if (entity !== undefined) emitSound(entity, 'Kelvin.IceGrenade.Explode')
-      } else log(`[BebopWars] ERROR Snow Globe explosion unavailable: ${impactResource}`)
+      this.effects.globeBurst(command.id, command.position, this.state.now)
       return
     }
     const fighter = this.state.fighters.get(command.actor.id)
@@ -655,8 +620,7 @@ export class Game {
           log('[BebopWars] ERROR Snow Globe chill was refused')
           break
         }
-        const frost = createParticle({ resource: chillResource, position: pawn.position, parent: pawn.entity })
-        if (frost) this.effects.set(-command.id, { object: frost, until: fighter.chillUntil })
+        this.effects.chill(command.id, pawn, fighter.chillUntil)
         if (!this.frame.pulls.has(fighter.id) && fighter.life.transit.kind === 'none') player.setVelocity(chilledMomentum(pawn.velocity))
         break
       }
@@ -716,23 +680,15 @@ export class Game {
         }
         break
       }
-      case 'saved': {
-        if (fighter.life.kind === 'alive' && fighter.membership.kind === 'seated') {
-          const effect = this.particle(rescueResource, fighter.life.position, fighter.membership.side)
-          if (effect) this.effects.set(-command.id, { object: effect, until: this.state.now + 0.8 })
-        }
+      case 'saved':
+        if (fighter.life.kind === 'alive' && fighter.membership.kind === 'seated') this.effects.rescue(command.id, fighter.life.position, fighter.membership.side, this.state.now)
         break
-      }
     }
   }
 
   private idle(id: AccountId): boolean {
     const hook = this.frame.players.find(p => p.id === id)?.body?.hook
     return hook !== undefined && !hookBusy(hook)
-  }
-
-  private particle(resource: string, position: Vec3, side: Side): WorldObject | undefined {
-    return createParticle({ resource, position: { ...position, z: position.z + 3 }, point: { index: 1, position: { x: globeRules.radius, y: globeRules.radius, z: globeRules.radius } }, color: side === 3 ? 0x8ddcffff : 0xffbb73ff, tintPoint: 2 })
   }
 
   private reconcile(fighter: Fighter): void {
