@@ -26,7 +26,6 @@ describe('catalog', () => {
   test('ids are unique, native loot names a game entry, every role can drop', () => {
     expect(new Set(catalog.map((loot) => loot.id)).size).toBe(catalog.length)
     for (const loot of catalog) {
-      expect(loot.charges).toBeGreaterThan(0)
       expect(loot.hint.length).toBeGreaterThan(0)
       expect(loot.native !== undefined).toBe(
         loot.kind === 'ability' || loot.kind === 'item' || loot.kind === 'buff',
@@ -183,7 +182,7 @@ describe('inventory', () => {
       slot: 0,
       stacked: true,
     })
-    expect(inventory.held('item')[0]?.charges).toBe(named('warp').charges * 2)
+    expect(inventory.held('item')[0]?.charges).toBe(2)
     expect(inventory.add(named('anchor'))?.replaced?.id).toBe('leap')
   })
 
@@ -203,8 +202,7 @@ describe('inventory', () => {
     expect(inventory.spend('ability', 0)).toBe(0)
     expect(inventory.spend('ability', 0)).toBeUndefined()
     expect(inventory.find('ability_familiar_ability02')).toEqual(where)
-    expect(inventory.ready().has('pillow')).toBe(false)
-    expect(catalog.every((loot) => loot.charges === 1)).toBe(true)
+    expect(inventory.held('ability')[0]?.charges).toBe(0)
   })
 
   test('a new drop takes an empty slot, then the oldest spent one, then the oldest', () => {
@@ -236,7 +234,7 @@ describe('inventory', () => {
       slot: 0,
       stacked: true,
     })
-    expect(inventory.ready().has('warp')).toBe(true)
+    expect(inventory.held('item')[0]?.charges).toBe(1)
   })
 
   test('drop removes what matches and reports it', () => {

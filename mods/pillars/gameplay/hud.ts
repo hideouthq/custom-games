@@ -51,7 +51,7 @@ export interface HudView {
   readonly rows: readonly HudRow[]
 }
 
-export const roleLooks: Readonly<Record<Role, { name: string; tone: Tone }>> = {
+const roleLooks: Readonly<Record<Role, { name: string; tone: Tone }>> = {
   ammo: { name: 'Ammo', tone: 'muted' },
   stamina: { name: 'Stamina', tone: 'success' },
   mobility: { name: 'Mobility', tone: 'sapphire' },

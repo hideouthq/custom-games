@@ -7,9 +7,6 @@ export const arena = {
   topZ: 0,
   centreRadius: 236,
   centreZ: 79,
-  wallLength: 110,
-  wallThickness: 14,
-  wallHeight: 46,
   standOffset: 70,
 } as const
 

@@ -133,9 +133,6 @@ describe('seating', () => {
       topZ: layout.topZ,
       centreRadius: layout.centreRadius,
       centreZ: layout.centreZ,
-      wallLength: layout.wallLength,
-      wallThickness: layout.wallThickness,
-      wallHeight: layout.wallHeight,
       standOffset: layout.standOffset,
     }).toEqual({ ...arena })
   })
@@ -156,7 +153,7 @@ describe('seating', () => {
       const top = pillarTop(index)
       const stand = pillarStand(index)
       const aside = Math.hypot(stand.x - top.x, stand.y - top.y)
-      expect(aside).toBeGreaterThan(arena.wallThickness / 2 + 30)
+      expect(aside).toBeGreaterThan(layout.wallThickness / 2 + 30)
       expect(aside).toBeLessThan(arena.topSize / 2 - 30)
       const along = (stand.x * top.x + stand.y * top.y) / arena.ringRadius
       expect(Math.abs(along - arena.ringRadius)).toBeLessThan(1)

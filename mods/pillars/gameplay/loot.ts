@@ -24,7 +24,6 @@ export interface Loot {
   readonly role: Role
   readonly kind: Kind
   readonly native?: string
-  readonly charges: number
   readonly hint: string
   readonly share?: number
   readonly modifier?: string
@@ -40,7 +39,6 @@ export const catalog: readonly Loot[] = [
     label: 'Ammo Crate',
     role: 'ammo',
     kind: 'ammo',
-    charges: 1,
     hint: 'More rounds for your gun.',
   },
   {
@@ -48,7 +46,6 @@ export const catalog: readonly Loot[] = [
     label: 'Stamina Pip',
     role: 'stamina',
     kind: 'stamina',
-    charges: 1,
     hint: 'One more stamina for a dash or an air jump.',
   },
   {
@@ -57,7 +54,6 @@ export const catalog: readonly Loot[] = [
     role: 'mobility',
     kind: 'item',
     native: 'upgrade_warp_stone',
-    charges: 1,
     hint: 'Blink 11 m the way you face.',
   },
   {
@@ -66,7 +62,6 @@ export const catalog: readonly Loot[] = [
     role: 'mobility',
     kind: 'item',
     native: 'upgrade_rocket_booster',
-    charges: 1,
     hint: 'Launch high and far through the air.',
   },
   {
@@ -75,7 +70,6 @@ export const catalog: readonly Loot[] = [
     role: 'mobility',
     kind: 'item',
     native: 'upgrade_fleetfoot_boots',
-    charges: 1,
     hint: 'Run much faster for a few seconds.',
   },
   {
@@ -84,7 +78,6 @@ export const catalog: readonly Loot[] = [
     role: 'mobility',
     kind: 'ability',
     native: 'citadel_ability_lash',
-    charges: 1,
     share: 1,
     hint: 'Pull yourself to where you aim, up to 30 m.',
   },
@@ -94,7 +87,6 @@ export const catalog: readonly Loot[] = [
     role: 'mobility',
     kind: 'ability',
     native: 'ability_bounce_pad',
-    charges: 1,
     // The pad lasts 22 s.
     linger: 23,
     hint: 'Drop a pad that springs anyone who lands on it high into the air.',
@@ -105,7 +97,6 @@ export const catalog: readonly Loot[] = [
     role: 'mobility',
     kind: 'ability',
     native: 'ability_icepath',
-    charges: 1,
     // The path lasts 8 s.
     linger: 9,
     hint: 'Glide along an ice bridge you build through the air.',
@@ -116,7 +107,6 @@ export const catalog: readonly Loot[] = [
     role: 'force',
     kind: 'ability',
     native: 'ability_familiar_ability02',
-    charges: 1,
     hint: 'Throw a pillow that knocks a player back.',
   },
   {
@@ -125,7 +115,6 @@ export const catalog: readonly Loot[] = [
     role: 'force',
     kind: 'ability',
     native: 'viscous_telepunch',
-    charges: 1,
     hint: 'Punch a player up and away from range.',
   },
   {
@@ -134,7 +123,6 @@ export const catalog: readonly Loot[] = [
     role: 'force',
     kind: 'ability',
     native: 'citadel_ability_chrono_swap',
-    charges: 1,
     hint: 'Trade places with the player you aim at.',
   },
   {
@@ -143,7 +131,6 @@ export const catalog: readonly Loot[] = [
     role: 'force',
     kind: 'ability',
     native: 'citadel_ability_hook',
-    charges: 1,
     hint: 'Hook the player you aim at and drag them to you.',
   },
   {
@@ -152,7 +139,6 @@ export const catalog: readonly Loot[] = [
     role: 'force',
     kind: 'item',
     native: 'upgrade_target_stun',
-    charges: 1,
     hint: 'Stun a player after a short delay.',
   },
   {
@@ -161,7 +147,6 @@ export const catalog: readonly Loot[] = [
     role: 'force',
     kind: 'item',
     native: 'upgrade_containment',
-    charges: 1,
     hint: 'Lock a player out of movement abilities.',
   },
   {
@@ -170,7 +155,6 @@ export const catalog: readonly Loot[] = [
     role: 'defence',
     kind: 'item',
     native: 'upgrade_metal_skin',
-    charges: 1,
     hint: 'Bullets cannot hurt you for 5 s.',
   },
   {
@@ -179,7 +163,6 @@ export const catalog: readonly Loot[] = [
     role: 'defence',
     kind: 'item',
     native: 'upgrade_self_bubble',
-    charges: 1,
     hint: 'Nothing can touch you for 4 s.',
   },
   {
@@ -188,7 +171,6 @@ export const catalog: readonly Loot[] = [
     role: 'defence',
     kind: 'item',
     native: 'upgrade_unstoppable',
-    charges: 1,
     hint: 'Stuns and slows cannot stop you for 5 s.',
   },
   {
@@ -197,7 +179,6 @@ export const catalog: readonly Loot[] = [
     role: 'defence',
     kind: 'item',
     native: 'upgrade_cloaking_device_active',
-    charges: 1,
     // Invisibility lasts until a hit or 13 s.
     linger: 13,
     hint: 'Turn invisible until you take a hit.',
@@ -207,7 +188,6 @@ export const catalog: readonly Loot[] = [
     label: 'Medkit',
     role: 'defence',
     kind: 'heal',
-    charges: 1,
     hint: 'Restores 250 health.',
   },
   {
@@ -216,7 +196,6 @@ export const catalog: readonly Loot[] = [
     role: 'legendary',
     kind: 'ability',
     native: 'citadel_ability_hornet_leap',
-    charges: 1,
     hint: 'Take off and fly for a few seconds.',
   },
   {
@@ -225,7 +204,6 @@ export const catalog: readonly Loot[] = [
     role: 'legendary',
     kind: 'ability',
     native: 'ability_gravity_lasso',
-    charges: 1,
     hint: 'Lasso the player you aim at and drag them through the air.',
   },
   {
@@ -234,7 +212,6 @@ export const catalog: readonly Loot[] = [
     role: 'legendary',
     kind: 'item',
     native: 'upgrade_magic_carpet',
-    charges: 1,
     // The ride lasts 12 s.
     linger: 14,
     hint: 'Ride a flying carpet for a few seconds.',
@@ -245,7 +222,6 @@ export const catalog: readonly Loot[] = [
     role: 'legendary',
     kind: 'item',
     native: 'upgrade_shrink_ray',
-    charges: 1,
     linger: 11,
     hint: 'Shrink a player for 10 s: small, fast and hard to hit.',
   },
@@ -258,7 +234,6 @@ export const catalog: readonly Loot[] = [
     kind: 'buff',
     native: 'upgrade_icarus_wings',
     modifier: 'modifier_icarus_wings',
-    charges: 1,
     lasts: 20,
     hint: 'Low gravity for 20 s: jump higher, fall slower.',
   },
@@ -267,7 +242,6 @@ export const catalog: readonly Loot[] = [
     label: 'Infinite Rounds',
     role: 'legendary',
     kind: 'infinite',
-    charges: 1,
     hint: 'Your gun does not run dry for 8 s.',
   },
 ]
@@ -288,7 +262,7 @@ export const weights: Readonly<Record<Role, number>> = {
   legendary: 8,
 }
 
-export const abilityShare = 3
+const abilityShare = 3
 
 export const ammoEvery = 8
 export const moveEvery = 4
@@ -428,7 +402,7 @@ export class Inventory {
     const same = slots.findIndex((held) => held?.loot.id === loot.id)
     if (same >= 0) {
       const held = slots[same] as Held
-      held.charges += loot.charges
+      held.charges++
       held.order = this.picked
       return { kind, slot: same, stacked: true }
     }
@@ -441,7 +415,7 @@ export class Inventory {
       slot = oldest(slots, () => true)
     }
     const replaced = slots[slot]?.loot
-    slots[slot] = { loot, charges: loot.charges, order: this.picked }
+    slots[slot] = { loot, charges: 1, order: this.picked }
     return { kind, slot, replaced, stacked: false }
   }
 
@@ -485,14 +459,6 @@ export class Inventory {
 
   held(kind: 'ability' | 'item'): readonly (Held | undefined)[] {
     return this.slots(kind)
-  }
-
-  ready(): Set<string> {
-    return new Set(
-      [...this.abilities, ...this.items].flatMap((held) =>
-        held !== undefined && held.charges > 0 ? [held.loot.id] : [],
-      ),
-    )
   }
 }
 
