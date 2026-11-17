@@ -177,7 +177,7 @@ interface Member {
   struck: Melee | undefined
   gun: number
   gunOf: number
-  effects: { state: string; until: number }[]
+  endlessUntil: number
   drawn: string
   card: HudDrop | undefined
   cardUntil: number
@@ -466,7 +466,7 @@ export class Game {
       struck: undefined,
       gun: 0,
       gunOf: 0,
-      effects: [],
+      endlessUntil: 0,
       drawn: '',
       card: undefined,
       cardUntil: 0,
@@ -554,7 +554,9 @@ export class Game {
     }
     this.lookAtEffects()
     for (const member of this.members.values()) {
-      this.expire(member)
+      if (this.now >= member.endlessUntil) {
+        this.endEndless(member)
+      }
       this.ready(member)
       this.lobby(member)
       this.bury(member)
@@ -662,9 +664,7 @@ export class Game {
       return
     }
     let clip = this.clip(member)
-    const endless = member.effects.some(
-      (effect) => effect.state === endlessClip,
-    )
+    const endless = this.now < member.endlessUntil
     if (!endless && clip > member.lastClip) {
       // A reload fills the magazine whatever the reserve holds.
       const loaded = clip - member.lastClip
@@ -1399,10 +1399,7 @@ export class Game {
     this.givePips(member, rules.startStamina)
     member.gun = 0
     this.emptySlots(member)
-    for (const effect of member.effects) {
-      holdModifierState(member.entity, effect.state, false)
-    }
-    member.effects = []
+    this.endEndless(member)
     member.reserve = 0
     this.setClip(member, member.hero.clip)
     member.step = 'ready'
@@ -1445,10 +1442,7 @@ export class Game {
       member.graveAt = 0
       member.player.clearItems()
       member.inventory = new Inventory()
-      for (const effect of member.effects) {
-        holdModifierState(member.entity, effect.state, false)
-      }
-      member.effects = []
+      this.endEndless(member)
     }
     if (this.now >= member.graveAt) {
       member.graveAt = this.now + graveSeconds
@@ -1509,14 +1503,12 @@ export class Game {
     return name
   }
 
-  private expire(member: Member): void {
-    for (let index = member.effects.length - 1; index >= 0; index--) {
-      const effect = member.effects[index]
-      if (effect !== undefined && this.now >= effect.until) {
-        member.effects.splice(index, 1)
-        holdModifierState(member.entity, effect.state, false)
-      }
+  private endEndless(member: Member): void {
+    if (member.endlessUntil === 0) {
+      return
     }
+    member.endlessUntil = 0
+    holdModifierState(member.entity, endlessClip, false)
   }
 
   private grant(member: Member, loot: Loot): void {
@@ -1526,10 +1518,7 @@ export class Game {
       member.player.heal(combat.medkitHealth)
     } else if (loot.kind === 'infinite') {
       holdModifierState(member.entity, endlessClip)
-      member.effects.push({
-        state: endlessClip,
-        until: this.now + combat.infiniteSeconds,
-      })
+      member.endlessUntil = this.now + combat.infiniteSeconds
     } else if (loot.kind === 'buff') {
       member.player.giveModifier(
         `${loot.native}/${loot.modifier}`,

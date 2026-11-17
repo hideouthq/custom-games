@@ -6,6 +6,7 @@ import {
   AbilitiesResponse,
   AbilityOptions,
   GiveItemRequest,
+  HoldModifierStateRequest,
   ModifiersResponse,
   ReplaceAbilityRequest,
 } from '../.tools/modlock/src/wasm/abilities/abilities.pb'
@@ -24,7 +25,7 @@ import {
   SetStaminaRequest,
 } from '../.tools/modlock/src/wasm/players/players.pb'
 import { Call, Reply } from '../.tools/modlock/src/wasm/wasm.pb'
-import { arena, rules } from '../gameplay/config'
+import { arena, combat, rules } from '../gameplay/config'
 import { crateRounds, pool, type PoolHero } from '../gameplay/heroes'
 import { Game } from '../gameplay/game'
 import { Inventory } from '../gameplay/inventory'
@@ -628,6 +629,28 @@ describe('reloads', () => {
     run(game, clock + 0.1)
     expect(gun(0, clip)).toBe(crateRounds(viscous()))
     expect(gun(0, gate)).toBeGreaterThan(clock + 600)
+  })
+})
+
+describe('Infinite Rounds', () => {
+  function released(from: number): number {
+    return sent('HoldModifierState', HoldModifierStateRequest, from).filter(
+      (hold) => hold.active === false,
+    ).length
+  }
+
+  test('a second one keeps the clip endless for its own full time', () => {
+    const game = dev()
+    live(game, 2)
+    const player = Player.of(0)
+    const before = calls.length
+    game.dev(player, 'give infinite')
+    run(game, clock + 3)
+    game.dev(player, 'give infinite')
+    run(game, clock + combat.infiniteSeconds - 0.1)
+    expect(released(before)).toBe(0)
+    run(game, clock + 0.2)
+    expect(released(before)).toBe(1)
   })
 })
 
