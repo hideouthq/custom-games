@@ -1,7 +1,8 @@
 import { Buttons, log, readField, type Player } from 'modlock'
 import { distance, type Vec3 } from '../arena.ts'
 import { canAct, hookBusy, type AccountId, type Fighter } from '../model.ts'
-import { hookAbility, type Game } from '../native.ts'
+import { hookAbility } from '../catalog.ts'
+import type { Game } from '../native.ts'
 
 const unitsPerMeter = 39.37007874
 const sourcePosition = { x: 704, y: 16 * unitsPerMeter, z: 104 }

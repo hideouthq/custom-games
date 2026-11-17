@@ -15,7 +15,7 @@ import { hookContacts, hookDamageShare, type Landed } from './contact.ts'
 import { drawHud, resetHud } from './hud.tsx'
 import type { HudAction, Side } from './hud-model.ts'
 import { inputGate, type InputGate } from './input.ts'
-import { catalog, productIds, shrinkSeconds, type HookRank, type ProductId } from './catalog.ts'
+import { catalog, hookAbility, productIds, shrinkSeconds, type HookRank, type ProductId } from './catalog.ts'
 import { pianoMark, pianoRules } from './piano.ts'
 import { inSights, knockdownRules } from './sight.ts'
 import { NativeProgress, exactWallet, hookRank } from './native-progress.ts'
@@ -27,7 +27,6 @@ import {
 } from './model.ts'
 import { present } from './presentation.ts'
 
-export const hookAbility = 'citadel_ability_hook'
 const bebop = heroNamed('bebop')
 const movementKeys = Buttons.jump | Buttons.dash | Buttons.crouch
 const nativeItemKeys = (1n << 37n) | (1n << 38n) | (1n << 39n) | (1n << 40n)

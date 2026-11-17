@@ -6,6 +6,7 @@ export type Defense = 'etherealShift' | 'rescueBeam'
 export type ProductId = Setup | Utility | Defense
 export type Group = 'setup' | 'utility' | 'defense'
 export type HookRank = 0 | 1 | 2 | 3
+export const hookAbility = 'citadel_ability_hook'
 
 export interface Stat { readonly value: string; readonly label: string }
 

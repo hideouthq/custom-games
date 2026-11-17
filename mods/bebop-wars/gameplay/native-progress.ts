@@ -1,8 +1,7 @@
 import type { Ability, Pawn, Player } from 'modlock'
-import { earnedAbilityPoints, isHookRank, spentAbilityPoints, startingSouls, warmupBudget, type HookRank } from './catalog.ts'
+import { earnedAbilityPoints, hookAbility, isHookRank, spentAbilityPoints, startingSouls, warmupBudget, type HookRank } from './catalog.ts'
 import { accountId, type AccountId, type Fighter, type State } from './model.ts'
 
-const hookName = 'citadel_ability_hook'
 const masks: Readonly<Record<HookRank, number>> = { 0: 1, 1: 3, 2: 7, 3: 15 }
 type NativePawn = Pick<Pawn, 'entity' | 'hero' | 'health' | 'souls' | 'abilityPoints' | 'abilityUnlocks'>
 type NativeAbility = Pick<Ability, 'name' | 'slot' | 'entity' | 'upgrades' | 'charges' | 'cooldownStart' | 'cooldownEnd' | 'rechargeEnd'>
@@ -82,7 +81,7 @@ export class NativeProgress {
 
   credit(player: NativePlayer, fighter: Participant, state: Match, amount: number): 'paid' | 'deferred' | 'failed' {
     const record = this.records.get(fighter.id), pawn = player.pawn()
-    const hook = player.abilities().find(ability => ability.name === hookName)
+    const hook = player.abilities().find(ability => ability.name === hookAbility)
     if (fighter.presence.kind !== 'connected' || record?.kind !== 'ready' || record.round !== state.round || !pawn || !hook || record.saved.generation !== fighter.presence.generation || record.saved.entity !== pawn.entity || record.saved.hookEntity !== hook.entity) return 'deferred'
     if (!Number.isSafeInteger(amount) || amount <= 0 || !exactWallet(player, pawn.souls + amount)) return 'failed'
     const after = player.pawn()
@@ -96,7 +95,7 @@ export class NativeProgress {
     this.connected.add(fighter.id)
     this.reset(fighter.id, state.round)
     let record = this.records.get(fighter.id)
-    let hook = abilities.find(ability => ability.name === hookName)
+    let hook = abilities.find(ability => ability.name === hookAbility)
     if (!record || !pawn?.hero || !hook) {
       this.disconnected(fighter.id)
       return false
@@ -108,7 +107,7 @@ export class NativeProgress {
       this.records.set(fighter.id, record)
       pawn = player.pawn()
       abilities = player.abilities()
-      hook = abilities.find(ability => ability.name === hookName)
+      hook = abilities.find(ability => ability.name === hookAbility)
       if (!pawn?.hero || !hook) return false
     }
     if (record.kind === 'baseline') {
@@ -124,11 +123,11 @@ export class NativeProgress {
       const rank = affordableRank(saved.rank, earnedAbilityPoints(fighter.kills))
       const cooldownEnd = saved.cooldownEnd > state.now ? saved.cooldownEnd : 0
       const rechargeEnd = saved.rechargeEnd > state.now ? saved.rechargeEnd : 0
-      if (!player.setAbility({ ability: hookName, upgrades: masks[rank], charges: saved.charges, cooldownEnd, rechargeEnd })) return false
+      if (!player.setAbility({ ability: hookAbility, upgrades: masks[rank], charges: saved.charges, cooldownEnd, rechargeEnd })) return false
       if (pawn.souls !== saved.souls && !exactWallet(player, saved.souls)) return false
       pawn = player.pawn()
       abilities = player.abilities()
-      hook = abilities.find(ability => ability.name === hookName)
+      hook = abilities.find(ability => ability.name === hookAbility)
       if (!pawn || !hook || pawn.souls !== saved.souls || hook.upgrades !== masks[rank] || hook.charges !== saved.charges || Math.abs(hook.cooldownEnd - cooldownEnd) > 0.05 || Math.abs(hook.rechargeEnd - rechargeEnd) > 0.05) return false
       record = { kind: 'ready', round: state.round, saved: sample(fighter.id, state.round, generation, pawn, hook, rank) }
       this.records.set(fighter.id, record)
@@ -146,11 +145,11 @@ export class NativeProgress {
     this.records.set(fighter.id, { kind: 'sync', round: state.round, saved: { ...saved, cooldownEnd: cooldown?.end ?? saved.cooldownEnd }, cooldown })
     let changed = false
     if (hook.upgrades !== masks[rank] || (cooldown !== null && Math.abs(hook.cooldownEnd - cooldown.end) > 0.05)) {
-      if (!player.setAbility({ ability: hookName, upgrades: masks[rank], cooldownEnd: cooldown?.end })) return false
+      if (!player.setAbility({ ability: hookAbility, upgrades: masks[rank], cooldownEnd: cooldown?.end })) return false
       changed = true
     }
     for (const ability of abilities) {
-      if (ability.name !== hookName && ability.slot >= 0 && ability.slot < 4 && ability.upgrades > 1) {
+      if (ability.name !== hookAbility && ability.slot >= 0 && ability.slot < 4 && ability.upgrades > 1) {
         if (!player.setAbility({ ability: ability.name, upgrades: ability.upgrades & 1 })) return false
         changed = true
       }
@@ -167,8 +166,8 @@ export class NativeProgress {
     }
     const after = changed ? player.pawn() : pawn
     const finalAbilities = changed ? player.abilities() : abilities
-    const finalHook = finalAbilities.find(ability => ability.name === hookName)
-    if (!after || !finalHook || after.abilityPoints !== points || after.abilityUnlocks !== 0 || finalHook.upgrades !== masks[rank] || (cooldown !== null && Math.abs(finalHook.cooldownEnd - cooldown.end) > 0.05) || (budget !== undefined && after.souls !== budget) || finalAbilities.some(ability => ability.name !== hookName && ability.slot >= 0 && ability.slot < 4 && ability.upgrades > 1)) return false
+    const finalHook = finalAbilities.find(ability => ability.name === hookAbility)
+    if (!after || !finalHook || after.abilityPoints !== points || after.abilityUnlocks !== 0 || finalHook.upgrades !== masks[rank] || (cooldown !== null && Math.abs(finalHook.cooldownEnd - cooldown.end) > 0.05) || (budget !== undefined && after.souls !== budget) || finalAbilities.some(ability => ability.name !== hookAbility && ability.slot >= 0 && ability.slot < 4 && ability.upgrades > 1)) return false
     this.records.set(fighter.id, { kind: 'ready', round: state.round, saved: sample(fighter.id, state.round, generation, after, finalHook, rank) })
     return true
   }

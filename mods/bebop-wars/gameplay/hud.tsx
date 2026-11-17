@@ -1,5 +1,5 @@
 import { hide, hideHud, itemId, sheet, show, theme, type Player, type Style } from 'modlock'
-import { catalog } from './catalog.ts'
+import { catalog, hookAbility } from './catalog.ts'
 import type { HudAction, HudView, RosterView, Side } from './hud-model.ts'
 
 const { tones, plate, pillEdge } = theme
@@ -34,7 +34,7 @@ export function HudSurface({ view, send, overtimeNotice = false }: { view: HudVi
   const shopping = view.menu === 'loadout' && view.phase !== 'overtime'
   return <panel key="winter-overlay" style={{ width: '100%', height: '100%' }}>
     <layout key="shop-bridge" src="loadout_bridge.xml" data={{ menu: shopping ? 'loadout' : 'closed', canShop: view.canShop, native: view.native, shop: { ...view.shop, products: view.shop.products.map(product => ({ ...product, nativeId: itemId(catalog[product.id].nativeItem) })) } }} style={{ width: 0, height: 0 }} />
-    <layout key="native-hook" src="native_hook.xml" data={{ ...view.native, hookId: itemId('citadel_ability_hook') }} style={{ width: 0, height: 0 }} />
+    <layout key="native-hook" src="native_hook.xml" data={{ ...view.native, hookId: itemId(hookAbility) }} style={{ width: 0, height: 0 }} />
     {!shopping ? <Scoreboard key="scoreboard" view={view} /> : null}
     {!shopping ? <panel key="feed" style={{ horizontalAlign: 'right', margin: [180, 24, 0, 0], flow: 'down' }}>{view.feed.slice(-4).map(entry => <label key={String(entry.id)} style={{ ...body, color: entry.side === 3 ? colour.sapphire : entry.side === 2 ? colour.amber : colour.text, margin: [0, 0, 6, 0] }}>{entry.text}</label>)}</panel> : null}
     <Notice key="notice" view={view} shopping={shopping} overtimeNotice={overtimeNotice} />

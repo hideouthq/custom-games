@@ -1,8 +1,7 @@
 import type { Ability, Player } from 'modlock'
-import { catalog, groups, productIds, type ProductId } from './catalog.ts'
+import { catalog, groups, hookAbility, productIds, type ProductId } from './catalog.ts'
 import { deadlineOf, type Progression } from './model.ts'
 
-const hookName = 'citadel_ability_hook'
 type OwnedAbility = Pick<Ability, 'name' | 'slot' | 'upgrades' | 'cooldownEnd' | 'imbues'>
 type EquipmentPlayer = Pick<Player, 'clearItems' | 'giveItem' | 'setAbility'> & { abilities(): readonly OwnedAbility[] }
 interface Cooldowns { readonly setupUntil: number; readonly utilityUntil: number; readonly defenseUntil: number; readonly now: number }
@@ -41,10 +40,10 @@ function deadline(product: ProductId, cooldowns: Cooldowns): number {
   return until > cooldowns.now ? until : 0
 }
 
-function hookImbued(item: OwnedAbility): boolean { return item.imbues.length === 1 && item.imbues[0] === hookName }
+function hookImbued(item: OwnedAbility): boolean { return item.imbues.length === 1 && item.imbues[0] === hookAbility }
 
 export function reconcileEquipment(player: EquipmentPlayer, desired: readonly ProductId[], cooldowns: Cooldowns, abilities: readonly OwnedAbility[] = player.abilities()): boolean {
-  const hook = abilities.find(ability => ability.name === hookName)
+  const hook = abilities.find(ability => ability.name === hookAbility)
   if (desired.includes('echo') && (!hook || hook.slot < 0 || hook.slot > 3)) return false
   if (!matches(abilities, desired)) {
     if (!player.clearItems()) return false
