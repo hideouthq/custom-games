@@ -71,7 +71,14 @@ import {
  */
 const teams = [2, 3] as const
 
-const reloadOff = 'MODIFIER_STATE_RELOAD_DISABLED'
+/**
+ * A gun cannot start a reload before this time, in the server or in its
+ * player's own prediction. A held modifier state only refused the refill at
+ * the end, after the player's game had shown the reload and a full magazine.
+ */
+const reloadGate = 'm_flReloadAvailableTime'
+
+const gateSeconds = 3600
 
 const endlessClip = 'MODIFIER_STATE_INFINITE_CLIP'
 
@@ -166,7 +173,6 @@ interface Member {
   pips: number
   reserve: number
   lastClip: number
-  reloadBlocked: boolean | undefined
   grounded: boolean
   points: number
   unlocks: number
@@ -422,7 +428,7 @@ export class Game {
         )
         .join(' ')
       log(
-        `dev state: phase ${this.round.phase}, team ${member.onTeam}, health ${Math.round(member.health)} of ${Math.round(member.maxHealth)}, stamina ${member.stamina.toFixed(2)} of ${member.maxStamina} (given ${member.pips.toFixed(2)}), clip ${this.clip(member)}, reserve ${member.reserve}, reload ${member.reloadBlocked ? 'blocked' : 'free'}, items ${member.inventory
+        `dev state: phase ${this.round.phase}, team ${member.onTeam}, health ${Math.round(member.health)} of ${Math.round(member.maxHealth)}, stamina ${member.stamina.toFixed(2)} of ${member.maxStamina} (given ${member.pips.toFixed(2)}), clip ${this.clip(member)}, reserve ${member.reserve}, reload ${this.reloadHeld(member) ? 'blocked' : 'free'}, items ${member.inventory
           .held('item')
           .map((held) =>
             held === undefined ? '-' : `${held.loot.id}:${held.charges}`,
@@ -491,7 +497,6 @@ export class Game {
       pips: 0,
       reserve: 0,
       lastClip: 0,
-      reloadBlocked: undefined,
       grounded: true,
       points: 0,
       unlocks: 0,
@@ -720,10 +725,24 @@ export class Game {
     }
     member.lastClip = clip
     const blocked = member.reserve <= 0 || clip >= member.hero.clip
-    if (blocked !== member.reloadBlocked) {
-      holdModifierState(member.entity, reloadOff, blocked)
-      member.reloadBlocked = blocked
+    const gun = this.gunOf(member)
+    // The game moves the gate itself as a magazine runs dry.
+    if (gun !== 0 && blocked !== this.reloadHeld(member)) {
+      writeField(
+        gun,
+        gunClass,
+        reloadGate,
+        'float32',
+        blocked ? this.now + gateSeconds : this.now,
+      )
     }
+  }
+
+  private reloadHeld(member: Member): boolean {
+    const gun = this.gunOf(member)
+    const at =
+      gun === 0 ? undefined : readField(gun, gunClass, reloadGate, 'float32')
+    return typeof at === 'number' && at > this.now + gateSeconds / 2
   }
 
   private draw(member: Member): void {
@@ -1053,10 +1072,7 @@ export class Game {
         member.alive = false
         continue
       }
-      if (pawn.entity !== member.entity) {
-        member.entity = pawn.entity
-        member.reloadBlocked = undefined
-      }
+      member.entity = pawn.entity
       if (pawn.hero !== member.hero.id) {
         const actual = pool.find((hero) => hero.id === pawn.hero)
         if (actual !== undefined) {

@@ -3,13 +3,22 @@ import { type Connection, Player } from 'modlock'
 
 import { bind } from '../.tools/modlock/js/src/host'
 import {
+  AbilitiesResponse,
   AbilityOptions,
   GiveItemRequest,
   ModifiersResponse,
   ReplaceAbilityRequest,
 } from '../.tools/modlock/src/wasm/abilities/abilities.pb'
 import { KillOptions } from '../.tools/modlock/src/wasm/combat/combat.pb'
-import { EntityRequest } from '../.tools/modlock/src/wasm/entities/entities.pb'
+import {
+  EntityClassResponse,
+  EntityRequest,
+} from '../.tools/modlock/src/wasm/entities/entities.pb'
+import {
+  FieldResponse,
+  ReadFieldRequest,
+  WriteFieldRequest,
+} from '../.tools/modlock/src/wasm/fields/fields.pb'
 import { TeleportRequest } from '../.tools/modlock/src/wasm/movement/movement.pb'
 import {
   type Pawn,
@@ -18,6 +27,7 @@ import {
 } from '../.tools/modlock/src/wasm/players/players.pb'
 import { Call, Reply } from '../.tools/modlock/src/wasm/wasm.pb'
 import { arena, rules } from '../gameplay/config'
+import { crateRounds } from '../gameplay/heroes'
 import { Game } from '../gameplay/game'
 import { Inventory, lingerSeconds } from '../gameplay/loot'
 import type { Round } from '../gameplay/round'
@@ -27,6 +37,7 @@ const step = 0.05
 
 const pawns = new Map<number, Pawn>()
 const held = new Map<number, { ability: number; made: number }[]>()
+const fields = new Map<string, number>()
 const calls: { method: string; request: Uint8Array }[] = []
 let clock = 0
 
@@ -34,6 +45,7 @@ beforeEach(() => {
   for (let slot = 0; slot < 6; slot++) Player.release(slot)
   pawns.clear()
   held.clear()
+  fields.clear()
   calls.length = 0
   clock = 0
   bind((bytes) => {
@@ -62,6 +74,32 @@ beforeEach(() => {
     } else if (method === 'Kill') {
       const pawn = pawns.get(PlayerRequest.fromBinary(request).player ?? 0)
       if (pawn !== undefined) pawn.health = 0
+    } else if (method === 'Abilities') {
+      const slot = PlayerRequest.fromBinary(request).player ?? 0
+      response = AbilitiesResponse.toBinary({
+        abilities: [{ name: 'citadel_weapon_lash', entity: gunOf(slot) }],
+      })
+    } else if (method === 'EntityClass') {
+      const entity = EntityRequest.fromBinary(request).entity ?? 0
+      if (entity >= 300) {
+        response = EntityClassResponse.toBinary({
+          name: { className: 'CCitadel_Ability_PrimaryWeapon' },
+        })
+      }
+    } else if (method === 'ReadField') {
+      const read = ReadFieldRequest.fromBinary(request)
+      const value = fields.get(`${read.entity}.${read.field}`)
+      if (value !== undefined) {
+        response = FieldResponse.toBinary({
+          value: { value: { case: 'number', value } },
+        })
+      }
+    } else if (method === 'WriteField') {
+      const write = WriteFieldRequest.fromBinary(request)
+      const value = write.value?.value
+      if (value?.case === 'number') {
+        fields.set(`${write.entity}.${write.field}`, value.value)
+      }
     } else if (method === 'Modifiers') {
       const entity = EntityRequest.fromBinary(request).entity ?? 0
       response = ModifiersResponse.toBinary({
@@ -89,6 +127,14 @@ function sent<T>(
 
 function entityOf(slot: number): number {
   return 100 + slot
+}
+
+function gunOf(slot: number): number {
+  return 300 + slot
+}
+
+function gun(slot: number, field: string): number | undefined {
+  return fields.get(`${gunOf(slot)}.${field}`)
 }
 
 function join(
@@ -517,5 +563,40 @@ describe('scores', () => {
 
     join(game, 4, 2n, 1)
     expect(game['members'].get(4)?.id).toBe(winner)
+  })
+})
+
+describe('reloads', () => {
+  const clip = 'm_iClip'
+  const gate = 'm_flReloadAvailableTime'
+
+  test('a gun fired dry cannot start a reload until an Ammo Crate', () => {
+    const game = dev()
+    live(game, 2)
+    const player = Player.of(0)
+    fields.set(`${gunOf(0)}.${clip}`, 0)
+    fields.set(`${gunOf(0)}.${gate}`, clock + 0.25)
+    run(game, clock + 0.1)
+    expect(gun(0, gate)).toBeGreaterThan(clock + 600)
+
+    game.dev(player, 'give ammo')
+    run(game, clock + 0.1)
+    expect(gun(0, gate)).toBeLessThanOrEqual(clock)
+  })
+
+  test('a reload takes from the reserve no more rounds than it holds', () => {
+    const game = dev()
+    const player = Player.of(0)
+    live(game, 2)
+    fields.set(`${gunOf(0)}.${clip}`, 0)
+    run(game, clock + 0.1)
+    game.dev(player, 'give ammo')
+    run(game, clock + 0.1)
+    fields.set(`${gunOf(0)}.${clip}`, 29)
+    run(game, clock + 0.1)
+    const hero = game['members'].get(0)?.hero
+    if (hero === undefined) throw new Error('no hero')
+    expect(gun(0, clip)).toBe(crateRounds(hero))
+    expect(gun(0, gate)).toBeGreaterThan(clock + 600)
   })
 })
