@@ -84,8 +84,7 @@ def release_problems() -> list[str]:
             problems.append(f"{mode}: release.json names it, but there is no {manifest_path.relative_to(REPO)}")
             continue
         manifest = json.loads(manifest_path.read_text())
-        if not make_feed.MODE_ID.fullmatch(mode):
-            problems.append(f"{mode}: a feed id is lower-case letters, digits, '.', '_' or '-', at most 64")
+        problems += make_feed.id_problems(mode, mode)
         if manifest.get("slug") != mode:
             problems.append(f"{mode}: mod.json's slug is {manifest.get('slug')!r}, and a feed id must be its mode's slug")
         if not make_feed.FILE_NAME_PART.fullmatch(str(manifest.get("version", ""))):

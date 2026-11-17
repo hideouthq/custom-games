@@ -303,12 +303,16 @@ def upstream_problems(where, entry, modlock, source_dir, schemes):
     return problems
 
 
+def id_problems(where, value):
+    if isinstance(value, str) and MODE_ID.fullmatch(value):
+        return []
+    return [f"{where}: id {value!r} must be lower-case letters, digits, '.', '_' or '-', at most 64"]
+
+
 def mode_problems(where, mode, source_dir):
     if not isinstance(mode, dict):
         return [f"{where}: is not an object"]
-    problems = unknown_fields(where, mode, MODE_FIELDS)
-    if not (isinstance(mode.get("id"), str) and MODE_ID.fullmatch(mode["id"])):
-        problems.append(f"{where}: id {mode.get('id')!r} must be lower-case letters, digits, '.', '_' or '-', at most 64")
+    problems = unknown_fields(where, mode, MODE_FIELDS) + id_problems(where, mode.get("id"))
     if not text_field(mode, "dir"):
         problems.append(f"{where}: needs a dir")
     if problems:
@@ -333,9 +337,7 @@ def art_problems(where, folder, listing):
 def upcoming_problems(where, entry, source_dir):
     if not isinstance(entry, dict):
         return [f"{where}: is not an object"]
-    problems = unknown_fields(where, entry, UPCOMING_FIELDS)
-    if not (isinstance(entry.get("id"), str) and MODE_ID.fullmatch(entry["id"])):
-        problems.append(f"{where}: id {entry.get('id')!r} must be lower-case letters, digits, '.', '_' or '-', at most 64")
+    problems = unknown_fields(where, entry, UPCOMING_FIELDS) + id_problems(where, entry.get("id"))
     if not text_field(entry, "listing"):
         problems.append(f"{where}: needs a listing file")
     if problems:
