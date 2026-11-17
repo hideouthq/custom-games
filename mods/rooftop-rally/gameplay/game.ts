@@ -588,109 +588,13 @@ export class Game {
         }
       }
     } else if (state.kind === 'spectating') {
-      if (this.round.lobby) {
+      if (this.round.lobby)
         this.spawn(
           seat,
           [...this.seats.values()].indexOf(seat),
           this.seats.size,
         )
-      } else {
-        const previous = state.camera
-        const observed =
-          previous.kind === 'attached'
-            ? readField(
-                previous.camera,
-                'CPlayer_ObserverServices',
-                'm_hObserverTarget',
-                'handle',
-              )
-            : undefined
-        const livingTarget =
-          typeof observed === 'number' &&
-          [...this.round.living].some((id) => {
-            const target = this.seats.get(id)
-            return (
-              target?.state.kind === 'playing' &&
-              target.state.entity === observed &&
-              (target.connection.player.pawn()?.health ?? 0) > 0
-            )
-          })
-        if (
-          previous.kind === 'attached' &&
-          livingTarget &&
-          typeof observed === 'number'
-        )
-          previous.target = observed
-        if (
-          now < state.retryAt &&
-          (previous.kind === 'pending' ||
-            observed === undefined ||
-            livingTarget)
-        )
-          return
-        state.retryAt = now + 1
-        if (!pawn || pawn.hero !== yamatoId) {
-          state.camera = { kind: 'pending' }
-          if (!seat.connection.bot)
-            this.rallyLog({
-              kind: 'spectator-select',
-              player: playerId(seat.connection),
-              selected: player.selectHero(hero, 2) ?? null,
-            })
-          return
-        }
-        if (pawn.health > 0) {
-          state.camera = { kind: 'pending' }
-          killEntity({ victim: pawn.entity })
-          disableRespawn(pawn)
-          return
-        }
-        if (
-          readField(
-            pawn.entity,
-            'CCitadelPlayerPawn',
-            'm_flRespawnTime',
-            'float32',
-          ) !== 0
-        )
-          disableRespawn(pawn)
-        if (seat.connection.bot) return
-        const camera = nativeObserver(pawn)
-        if (
-          camera === undefined ||
-          (state.camera.kind === 'attached' &&
-            state.camera.hero === pawn.entity &&
-            state.camera.camera === camera &&
-            (observed === undefined || livingTarget))
-        )
-          return
-        state.camera = { kind: 'pending' }
-        const targets = [...this.round.living]
-          .filter((id) => id !== playerId(seat.connection))
-          .map((id) => this.seats.get(id)?.connection.player.pawn())
-          .filter((p): p is Pawn => !!p && p.hero === yamatoId && p.health > 0)
-        const target =
-          (previous.kind === 'attached' &&
-            targets.find((p) => p.entity !== previous.target)) ||
-          targets[0]
-        if (!target) return
-        const attached = player.watch(target.entity)
-        if (attached)
-          state.camera = {
-            kind: 'attached',
-            hero: pawn.entity,
-            camera,
-            target: target.entity,
-          }
-        this.rallyLog({
-          kind: 'spectator-watch',
-          player: playerId(seat.connection),
-          hero: pawn.entity,
-          camera,
-          target: target.entity,
-          attached,
-        })
-      }
+      else this.maintainSpectator(seat, state, pawn, now)
     } else if (this.round.lobby) {
       if (
         !pawn ||
@@ -706,6 +610,108 @@ export class Game {
     ) {
       player.kill()
     }
+  }
+
+  private maintainSpectator(
+    seat: Seat,
+    state: Extract<SeatState, { kind: 'spectating' }>,
+    pawn: Pawn | undefined,
+    now: number,
+  ): void {
+    const player = seat.connection.player
+    const previous = state.camera
+    const observed =
+      previous.kind === 'attached'
+        ? readField(
+            previous.camera,
+            'CPlayer_ObserverServices',
+            'm_hObserverTarget',
+            'handle',
+          )
+        : undefined
+    const livingTarget =
+      typeof observed === 'number' &&
+      [...this.round.living].some((id) => {
+        const target = this.seats.get(id)
+        return (
+          target?.state.kind === 'playing' &&
+          target.state.entity === observed &&
+          (target.connection.player.pawn()?.health ?? 0) > 0
+        )
+      })
+    if (
+      previous.kind === 'attached' &&
+      livingTarget &&
+      typeof observed === 'number'
+    )
+      previous.target = observed
+    if (
+      now < state.retryAt &&
+      (previous.kind === 'pending' || observed === undefined || livingTarget)
+    )
+      return
+    state.retryAt = now + 1
+    if (!pawn || pawn.hero !== yamatoId) {
+      state.camera = { kind: 'pending' }
+      if (!seat.connection.bot)
+        this.rallyLog({
+          kind: 'spectator-select',
+          player: playerId(seat.connection),
+          selected: player.selectHero(hero, 2) ?? null,
+        })
+      return
+    }
+    if (pawn.health > 0) {
+      state.camera = { kind: 'pending' }
+      killEntity({ victim: pawn.entity })
+      disableRespawn(pawn)
+      return
+    }
+    if (
+      readField(
+        pawn.entity,
+        'CCitadelPlayerPawn',
+        'm_flRespawnTime',
+        'float32',
+      ) !== 0
+    )
+      disableRespawn(pawn)
+    if (seat.connection.bot) return
+    const camera = nativeObserver(pawn)
+    if (
+      camera === undefined ||
+      (state.camera.kind === 'attached' &&
+        state.camera.hero === pawn.entity &&
+        state.camera.camera === camera &&
+        (observed === undefined || livingTarget))
+    )
+      return
+    state.camera = { kind: 'pending' }
+    const targets = [...this.round.living]
+      .filter((id) => id !== playerId(seat.connection))
+      .map((id) => this.seats.get(id)?.connection.player.pawn())
+      .filter((p): p is Pawn => !!p && p.hero === yamatoId && p.health > 0)
+    const target =
+      (previous.kind === 'attached' &&
+        targets.find((p) => p.entity !== previous.target)) ||
+      targets[0]
+    if (!target) return
+    const attached = player.watch(target.entity)
+    if (attached)
+      state.camera = {
+        kind: 'attached',
+        hero: pawn.entity,
+        camera,
+        target: target.entity,
+      }
+    this.rallyLog({
+      kind: 'spectator-watch',
+      player: playerId(seat.connection),
+      hero: pawn.entity,
+      camera,
+      target: target.entity,
+      attached,
+    })
   }
 
   private body(seat: Seat, pawn: Pawn | undefined): Body | undefined {
