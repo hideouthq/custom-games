@@ -116,6 +116,10 @@ export function freshProgression(): Progression {
   return { owned: [], setup: null, utility: null, defense: null, purchase: null, feedback: { text: '', until: 0 } }
 }
 
+function freshRound(now: number): Pick<Fighter, 'setupUntil' | 'utilityUntil' | 'defenseUntil' | 'chillUntil' | 'kills' | 'saves' | 'menu' | 'income' | 'threat'> {
+  return { setupUntil: now, utilityUntil: now, defenseUntil: now, chillUntil: 0, kills: 0, saves: 0, menu: 'closed', income: { passiveTicks: 0, teamKills: 0, pending: 0, paidSaves: [] }, threat: null }
+}
+
 export function equip(progression: Progression, product: ProductId): void {
   const group = catalog[product].group
   if (group === 'setup') progression.setup = product as Setup
@@ -342,9 +346,7 @@ function sync(state: State, frame: Frame, commands: Command[]): void {
         presence: { kind: 'connected', slot: observed.slot, generation: observed.generation },
         membership: state.phase.kind === 'warmup' || playing(state) ? freeSeat(state) : { kind: 'watching' },
         serial: 0, life: { kind: 'waiting', notBefore: state.now }, ready: observed.bot && state.config.probe,
-        progression: freshProgression(), roundSide: null,
-        income: { passiveTicks: 0, teamKills: 0, pending: 0, paidSaves: [] }, threat: null,
-        setupUntil: 0, utilityUntil: 0, defenseUntil: 0, chillUntil: 0, kills: 0, saves: 0, menu: 'closed', notice: { text: '', until: 0 }, nextSeatAttempt: 0,
+        progression: freshProgression(), roundSide: null, notice: { text: '', until: 0 }, nextSeatAttempt: 0, ...freshRound(0),
       }
       state.fighters.set(fighter.id, fighter)
       commands.push({ kind: 'reset', actor: { id: fighter.id, generation: observed.generation, life: 0 }, round: state.round })
@@ -684,9 +686,8 @@ function advance(state: State, frame: Frame, commands: Command[]): void {
     state.pianos = []
     state.knockdowns = []
     for (const p of seated) {
+      Object.assign(p, freshRound(state.now))
       p.roundSide = p.membership.kind === 'seated' ? p.membership.side : null
-      p.setupUntil = state.now; p.utilityUntil = state.now; p.defenseUntil = state.now; p.chillUntil = 0; p.kills = 0; p.saves = 0; p.menu = 'closed'
-      p.income = { passiveTicks: 0, teamKills: 0, pending: 0, paidSaves: [] }; p.threat = null
       if (p.life.kind === 'alive' && p.membership.kind === 'seated') {
         const ref = actor(p), position = spawn(p.membership.side, p.membership.seat, state.config.teamSize)
         p.life.transit = { kind: 'none' }; p.life.bank = p.membership.side; p.life.position = position; p.life.safe = position
@@ -722,10 +723,8 @@ function advance(state: State, frame: Frame, commands: Command[]): void {
     state.score = { 2: 0, 3: 0 }
     state.liveSeconds = 0
     for (const p of state.fighters.values()) {
-      p.ready = false; p.menu = 'closed'; p.roundSide = null; p.progression = freshProgression()
-      p.setupUntil = state.now; p.utilityUntil = state.now; p.defenseUntil = state.now; p.chillUntil = 0
-      p.kills = 0; p.saves = 0
-      p.income = { passiveTicks: 0, teamKills: 0, pending: 0, paidSaves: [] }; p.threat = null
+      Object.assign(p, freshRound(state.now))
+      p.ready = false; p.roundSide = null; p.progression = freshProgression()
       const ref = actor(p)
       if (ref) commands.push({ kind: 'reset', actor: ref, round: state.round })
       p.life = { kind: 'waiting', notBefore: state.now }

@@ -219,6 +219,34 @@ test('new match clears progression and emits one native reset per player', () =>
   assert.equal(result.commands.filter(c => c.kind === 'reset').length, 2)
   assert.equal(step(result.state, frame(11, players)).commands.some(c => c.kind === 'reset'), false)
 })
+test('the countdown and the next warmup both start each fighter on a clean round', () => {
+  const players = [player(blue, 0, 3), player(amber, 1, 2)]
+  const dirty = (state: State) => {
+    for (const each of state.fighters.values()) {
+      Object.assign(each, { setupUntil: 50, utilityUntil: 50, defenseUntil: 50, chillUntil: 40, kills: 3, saves: 2, menu: 'loadout' })
+      each.income = { passiveTicks: 4, teamKills: 1, pending: 25, paidSaves: [1] }
+      each.threat = { caster: ref(state, amber), cast: 1, resolved: false }
+    }
+  }
+  const clean = (state: State, now: number) => {
+    for (const each of state.fighters.values()) {
+      assert.deepEqual([each.setupUntil, each.utilityUntil, each.defenseUntil, each.chillUntil, each.kills, each.saves, each.menu], [now, now, now, 0, 0, 0, 'closed'])
+      assert.deepEqual(each.income, { passiveTicks: 0, teamKills: 0, pending: 0, paidSaves: [] })
+      assert.equal(each.threat, null)
+    }
+  }
+  let state = step(initial(configuration(['teams=1v1'])), frame(1, players)).state
+  dirty(state)
+  state = step(state, frame(2, players), players.map(p => ({ actor: ref(state, p.id), kind: 'hud', action: { kind: 'ready' } }))).state
+  assert.equal(state.phase.kind, 'countdown')
+  clean(state, 2)
+  state.phase = { kind: 'results', until: 10, winner: 3, reason: 'Kill victory' }
+  dirty(state)
+  state = step(state, frame(10, players)).state
+  assert.equal(state.phase.kind, 'warmup')
+  clean(state, 10)
+  for (const each of state.fighters.values()) assert.deepEqual([each.ready, each.roundSide, each.progression.owned], [false, null, []])
+})
 test('time limit uses completed enemy deaths in the current frame', () => {
   const { state, b, a } = boot()
   state.phase = { kind: 'live', until: 10 }
