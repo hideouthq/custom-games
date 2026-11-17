@@ -103,6 +103,13 @@ const swapClass = 'CCitadel_Ability_ChronoSwap'
 
 const gunClass = 'CCitadel_Ability_PrimaryWeapon'
 
+/**
+ * ESlot_Weapon_Primary: the slot the game binds each hero's gun to. Viscous
+ * and Yamato carry a second weapon of the same class, and Billy's and
+ * Silver's guns are classes of their own.
+ */
+const gunSlot = 21
+
 /** A teleport any lower can leave a hero half inside a pillar's top. */
 const standHeight = 24
 
@@ -1028,10 +1035,9 @@ export class Game {
       )
       return
     }
-    const hitClass = this.classOf(hit.ability)
-    if (!hitClass.startsWith(gunClass)) {
+    if (hit.ability !== this.gunOf(attacker)) {
       log(
-        `hit ${attacker.name} -> ${victim.name}: ${hitClass || 'unknown'}, ${Math.round(hit.healthLost)} damage`,
+        `hit ${attacker.name} -> ${victim.name}: ${this.classOf(hit.ability) || 'unknown'}, ${Math.round(hit.healthLost)} damage`,
       )
     }
   }
@@ -1725,19 +1731,11 @@ export class Game {
   }
 
   private gunOf(member: Member): number {
-    if (member.gunOf === member.entity && member.gun !== 0) {
-      return member.gun
-    }
-    member.gun = 0
-    member.gunOf = member.entity
-    for (const ability of member.player.abilities()) {
-      if (
-        member.gun === 0 &&
-        !ability.name.endsWith('_alt') &&
-        entityClass(ability.entity)?.className.startsWith(gunClass)
-      ) {
-        member.gun = ability.entity
-      }
+    if (member.gunOf !== member.entity || member.gun === 0) {
+      member.gunOf = member.entity
+      member.gun =
+        member.player.abilities().find((ability) => ability.slot === gunSlot)
+          ?.entity ?? 0
     }
     return member.gun
   }

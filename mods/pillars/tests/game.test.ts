@@ -10,10 +10,7 @@ import {
   ReplaceAbilityRequest,
 } from '../.tools/modlock/src/wasm/abilities/abilities.pb'
 import { KillOptions } from '../.tools/modlock/src/wasm/combat/combat.pb'
-import {
-  EntityClassResponse,
-  EntityRequest,
-} from '../.tools/modlock/src/wasm/entities/entities.pb'
+import { EntityRequest } from '../.tools/modlock/src/wasm/entities/entities.pb'
 import {
   FieldResponse,
   ReadFieldRequest,
@@ -77,15 +74,15 @@ beforeEach(() => {
     } else if (method === 'Abilities') {
       const slot = PlayerRequest.fromBinary(request).player ?? 0
       response = AbilitiesResponse.toBinary({
-        abilities: [{ name: 'citadel_weapon_lash', entity: gunOf(slot) }],
+        abilities: [
+          {
+            name: 'citadel_weapon_viscous_set_2',
+            slot: 20,
+            entity: 500 + slot,
+          },
+          { name: 'citadel_weapon_viscous_set', slot: 21, entity: gunOf(slot) },
+        ],
       })
-    } else if (method === 'EntityClass') {
-      const entity = EntityRequest.fromBinary(request).entity ?? 0
-      if (entity >= 300) {
-        response = EntityClassResponse.toBinary({
-          name: { className: 'CCitadel_Ability_PrimaryWeapon' },
-        })
-      }
     } else if (method === 'ReadField') {
       const read = ReadFieldRequest.fromBinary(request)
       const value = fields.get(`${read.entity}.${read.field}`)
@@ -582,6 +579,16 @@ describe('reloads', () => {
     game.dev(player, 'give ammo')
     run(game, clock + 0.1)
     expect(gun(0, gate)).toBeLessThanOrEqual(clock)
+  })
+
+  test('the gun is the weapon in the primary slot, not a second weapon', () => {
+    const game = dev()
+    live(game, 2)
+    fields.set(`${gunOf(0)}.${clip}`, 0)
+    fields.set(`500.${clip}`, 0)
+    run(game, clock + 0.1)
+    expect(gun(0, gate)).toBeGreaterThan(clock + 600)
+    expect(fields.get(`500.${gate}`)).toBeUndefined()
   })
 
   test('a reload takes from the reserve no more rounds than it holds', () => {
