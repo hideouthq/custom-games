@@ -25,7 +25,7 @@ import {
 } from '../.tools/modlock/src/wasm/players/players.pb'
 import { Call, Reply } from '../.tools/modlock/src/wasm/wasm.pb'
 import { arena, rules } from '../gameplay/config'
-import { crateRounds } from '../gameplay/heroes'
+import { crateRounds, pool, type PoolHero } from '../gameplay/heroes'
 import { Game } from '../gameplay/game'
 import { Inventory } from '../gameplay/inventory'
 import { lingerSeconds } from '../gameplay/loot'
@@ -129,6 +129,12 @@ function sent<T>(
     .map((call) => type.fromBinary(call.request))
 }
 
+function viscous(): PoolHero {
+  const hero = pool.find((each) => each.name === 'hero_viscous')
+  if (hero === undefined) throw new Error('no Viscous in the pool')
+  return hero
+}
+
 function entityOf(slot: number): number {
   return 100 + slot
 }
@@ -150,7 +156,7 @@ function join(
   const stand = pillarStand(slot)
   pawns.set(slot, {
     entity: entityOf(slot),
-    hero: 6,
+    hero: viscous().id,
     team: 2,
     health: 800,
     maxHealth: 800,
@@ -213,6 +219,13 @@ function live(game: Game, count: number): Round {
 function empty(game: Game, slot: number): void {
   const member = game['members'].get(slot)
   if (member !== undefined) member.inventory = new Inventory()
+}
+
+function shown(from = 0): string[] {
+  return calls
+    .slice(from)
+    .filter((call) => call.method === 'Ui')
+    .map((call) => new TextDecoder().decode(call.request))
 }
 
 function cooldowns(ability: string, from = 0): (number | undefined)[] {
@@ -439,7 +452,7 @@ describe('spent items', () => {
 describe('shove credit', () => {
   test('goes to whoever shoved the one who fell, else to the latest shove', () => {
     const game = dev()
-    const round = live(game, 3)
+    live(game, 3)
     for (const slot of [0, 2]) empty(game, slot)
     game.dev(Player.of(0), 'give hook')
     game.dev(Player.of(2), 'give pillow')
@@ -455,7 +468,11 @@ describe('shove credit', () => {
         attacker: entityOf(0),
       }),
     ])
-    expect(round.isLiving(game['members'].get(1)?.id ?? -1)).toBe(false)
+    expect(
+      shown(before).some((text) =>
+        text.includes('Person 0 eliminated Person 1.'),
+      ),
+    ).toBe(true)
     const next = calls.length
     const second = pawns.get(0)
     if (second?.position) second.position = { ...second.position, z: -2000 }
@@ -511,6 +528,10 @@ describe('spawns', () => {
   test('stand a hero who falls between rounds back on their pillar', () => {
     const game = dev()
     const round = live(game, 2)
+    const seated = sent('Teleport', TeleportRequest)
+      .filter((teleport) => teleport.player === 1)
+      .at(-1)?.position
+    expect(seated).toBeDefined()
     const loser = pawns.get(0)
     if (loser?.position) loser.position = { ...loser.position, z: -2000 }
     run(game, clock + 0.1)
@@ -519,11 +540,8 @@ describe('spawns', () => {
     if (winner?.position) winner.position = { ...winner.position, z: -400 }
     const before = calls.length
     run(game, clock + 0.1)
-    const stand = pillarStand(game['members'].get(1)?.seat ?? -1)
     expect(sent('Teleport', TeleportRequest, before)).toContainEqual(
-      expect.objectContaining({
-        position: { x: stand.x, y: stand.y, z: stand.z + 24 },
-      }),
+      expect.objectContaining({ player: 1, position: seated }),
     )
   })
 
@@ -608,9 +626,7 @@ describe('reloads', () => {
     run(game, clock + 0.1)
     fields.set(`${gunOf(0)}.${clip}`, 29)
     run(game, clock + 0.1)
-    const hero = game['members'].get(0)?.hero
-    if (hero === undefined) throw new Error('no hero')
-    expect(gun(0, clip)).toBe(crateRounds(hero))
+    expect(gun(0, clip)).toBe(crateRounds(viscous()))
     expect(gun(0, gate)).toBeGreaterThan(clock + 600)
   })
 })
@@ -635,10 +651,7 @@ describe('centre Legendary', () => {
     live(game, 2)
     const before = calls.length
     run(game, clock + rules.centreSeconds + 0.1)
-    return calls
-      .slice(before)
-      .filter((call) => call.method === 'Ui')
-      .map((call) => new TextDecoder().decode(call.request))
+    return shown(before)
   }
 
   test('the HUD sends players to break the crate', () => {
