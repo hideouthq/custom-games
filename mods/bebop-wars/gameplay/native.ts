@@ -8,7 +8,7 @@ import {
 } from 'modlock'
 import { apply, arena as arenaSettings } from 'modlock/console'
 import { activationStatus, type NativeActivation } from './activation.ts'
-import { arena, distance, type Vec3 } from './arena.ts'
+import { distance, type Vec3 } from './arena.ts'
 import { advanceGlobe, burstContains, chilledMomentum, globeAim, globeRules, type Launch } from './globe.ts'
 import { decodeCheckpoint, encodeCheckpoint } from './checkpoint.ts'
 import { hookContacts, hookDamageShare, type Landed } from './contact.ts'
