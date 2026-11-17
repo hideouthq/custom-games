@@ -688,7 +688,9 @@ export class Game {
         )
       }
       member.pips = Math.max(0, member.stamina)
-    } else if (member.stamina > member.pips + staminaSlack) {
+    } else if (!member.bot) {
+      // A player's own game regenerates stamina from stock data between
+      // updates; anchoring it every frame keeps that drift under a pixel.
       member.player.setStamina(member.pips)
     }
   }

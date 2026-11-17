@@ -21,6 +21,7 @@ import {
   type Pawn,
   PawnResponse,
   PlayerRequest,
+  SetStaminaRequest,
 } from '../.tools/modlock/src/wasm/players/players.pb'
 import { Call, Reply } from '../.tools/modlock/src/wasm/wasm.pb'
 import { arena, rules } from '../gameplay/config'
@@ -605,5 +606,19 @@ describe('reloads', () => {
     if (hero === undefined) throw new Error('no hero')
     expect(gun(0, clip)).toBe(crateRounds(hero))
     expect(gun(0, gate)).toBeGreaterThan(clock + 600)
+  })
+})
+
+describe('stamina', () => {
+  test("is anchored every frame, so a player's own game cannot show it regenerating", () => {
+    const game = dev()
+    live(game, 2)
+    const before = calls.length
+    const frames = 10
+    run(game, clock + frames * step)
+    const anchored = sent('SetStamina', SetStaminaRequest, before).filter(
+      (request) => (request.player ?? 0) === 0,
+    )
+    expect(anchored.length).toBe(frames)
   })
 })

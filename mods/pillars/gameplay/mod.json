@@ -11,7 +11,8 @@
       "entry": "hero_atlas",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
@@ -19,7 +20,8 @@
       "entry": "hero_punkgoat",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
@@ -27,7 +29,8 @@
       "entry": "hero_werewolf",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
@@ -35,7 +38,8 @@
       "entry": "hero_viscous",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
@@ -43,7 +47,8 @@
       "entry": "hero_tengu",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
@@ -51,7 +56,8 @@
       "entry": "hero_hornet",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
@@ -59,7 +65,8 @@
       "entry": "hero_lash",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
@@ -67,7 +74,8 @@
       "entry": "hero_yamato",
       "fields": {
         "CitadelHeroData_t.m_mapStartingStats[EStatsType.EBaseHealthRegen]": 0,
-        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EMaxHealth]": 800,
+        "CitadelHeroData_t.m_mapStartingStats[EStatsType.EStaminaRegenPerSecond]": 0
       }
     },
     {
