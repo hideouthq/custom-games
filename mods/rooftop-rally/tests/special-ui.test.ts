@@ -2,101 +2,7 @@ import { expect, test } from 'bun:test'
 import { readFileSync } from 'node:fs'
 import { createContext, runInContext } from 'node:vm'
 import { specialIds, specials } from '../gameplay/special'
-
-class Panel {
-  children: Panel[] = []
-  classes = new Set<string>()
-  events = new Map<string, () => void>()
-  private shown = true
-  // As Panorama does: an inline visibility sets visible, and clearing it
-  // leaves visible as it was, since these panels have no CSS of their own.
-  readonly style = new Proxy<Record<string, string | null>>(
-    {},
-    {
-      set: (style, name: string, value: string | null) => {
-        if (name === 'visibility' && value !== null)
-          this.shown = value !== 'collapse'
-        style[name] = value
-        return true
-      },
-    },
-  )
-  get visible(): boolean {
-    return this.shown
-  }
-  set visible(value: boolean) {
-    this.style.visibility = value ? 'visible' : 'collapse'
-  }
-  text = ''
-  image = ''
-  valid = true
-  made = false
-  hittest = true
-  hittestchildren = true
-  attributes = new Map<string, string>()
-  constructor(
-    public paneltype: string,
-    public id: string,
-    private parent: Panel | null = null,
-  ) {
-    parent?.children.push(this)
-  }
-  GetParent(): Panel | null {
-    return this.parent
-  }
-  IsValid(): boolean {
-    return this.valid
-  }
-  GetChildCount(): number {
-    return this.children.length
-  }
-  GetChild(i: number): Panel | undefined {
-    return this.children[i]
-  }
-  AddClass(name: string): void {
-    this.classes.add(name)
-  }
-  SetHasClass(name: string, value: boolean): void {
-    value ? this.classes.add(name) : this.classes.delete(name)
-  }
-  SetImage(value: string): void {
-    this.image = value
-  }
-  MoveChildBefore(child: Panel, before: Panel): void {
-    this.children.splice(this.children.indexOf(child), 1)
-    this.children.splice(this.children.indexOf(before), 0, child)
-  }
-  SetPanelEvent(name: string, action: () => void): void {
-    this.events.set(name, action)
-  }
-  GetAttributeString(name: string, fallback: string): string {
-    return this.attributes.get(name) ?? fallback
-  }
-  SetAttributeString(name: string, value: string): void {
-    this.attributes.set(name, value)
-  }
-  MoveChildAfter(child: Panel, after: Panel): void {
-    this.children.splice(this.children.indexOf(child), 1)
-    this.children.splice(this.children.indexOf(after) + 1, 0, child)
-  }
-  DeleteAsync(): void {
-    this.valid = false
-  }
-  FindChildTraverse(id: string): Panel | undefined {
-    for (const child of this.children) {
-      if (child.id === id) return child
-      const nested = child.FindChildTraverse(id)
-      if (nested) return nested
-    }
-    return undefined
-  }
-  FindChildrenWithClassTraverse(name: string): Panel[] {
-    return this.children.flatMap((child) => [
-      ...(child.classes.has(name) ? [child] : []),
-      ...child.FindChildrenWithClassTraverse(name),
-    ])
-  }
-}
+import { Panel } from './panorama'
 
 const read = (path: string) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
@@ -140,13 +46,13 @@ function state(panel: Panel): State {
 }
 
 function ui(nativeAbilityReady = true, sendChoices = true) {
-  const screen = new Panel('Panel', 'root')
-  const hud = new Panel('CitadelHud', 'Hud', screen)
-  for (const id of rallyIds) new Panel('Panel', id, hud)
+  const screen = new Panel('root')
+  const hud = new Panel('Hud', screen, 'CitadelHud')
+  for (const id of rallyIds) new Panel(id, hud)
   hud.FindChildTraverse('minimap_persp')!.style.visibility = 'visible'
   hud.FindChildTraverse('CitadelHudHeroShop')!.style.opacity = '0.9'
   hud.FindChildTraverse('gameplay_hud_dead')!.visible = false
-  const root = new Panel('Panel', 'RallyHud', screen)
+  const root = new Panel('RallyHud', screen)
   for (const id of [
     'RoundLabel',
     'RoundDetail',
@@ -155,24 +61,24 @@ function ui(nativeAbilityReady = true, sendChoices = true) {
     'SpecialName',
     'SpecialStatus',
   ])
-    new Panel('Panel', id, root)
+    new Panel(id, root)
   const slot = new Panel(
-    'CitadelAbilityIcon',
     'slot_signature_3',
     root.FindChildTraverse('RallyAbility'),
+    'CitadelAbilityIcon',
   )
   const loadAbility = () => {
-    const button = new Panel('Panel', 'button_container', slot)
-    new Panel('Panel', '', button).AddClass('ability_bg')
-    const images = new Panel('Panel', '', button)
+    const button = new Panel('button_container', slot)
+    new Panel('', button).AddClass('ability_bg')
+    const images = new Panel('', button)
     images.AddClass('image_container')
-    new Panel('Label', '', images).AddClass('ability_name')
-    new Panel('Image', 'ability_image', images).AddClass('ability_image')
-    new Panel('Panel', 'cooldown_mask', images)
-    const key = new Panel('Panel', '', button)
+    new Panel('', images, 'Label').AddClass('ability_name')
+    new Panel('ability_image', images, 'Image').AddClass('ability_image')
+    new Panel('cooldown_mask', images)
+    const key = new Panel('', button)
     key.AddClass('ability_key_container')
-    new Panel('CitadelBinding', 'ability_binding_component', key)
-    new Panel('Label', '', button).AddClass('cooldown_timer')
+    new Panel('ability_binding_component', key, 'CitadelBinding')
+    new Panel('', button, 'Label').AddClass('cooldown_timer')
   }
   if (nativeAbilityReady) loadAbility()
   const dispatched: unknown[][] = []
@@ -184,7 +90,7 @@ function ui(nativeAbilityReady = true, sendChoices = true) {
       GetContextPanel: () => root,
       Msg: () => {},
       CreatePanel: (type: string, parent: Panel, id: string) =>
-        Object.assign(new Panel(type, id, parent), { made: true }),
+        Object.assign(new Panel(id, parent, type), { made: true }),
       DispatchEvent: (...args: unknown[]) => dispatched.push(args),
       RegisterForUnhandledEvent: (
         name: string,
@@ -288,21 +194,21 @@ test('picker shows three full cards with descriptions and stats before hover, an
 test('custom hover replaces donor stats in a native tooltip and restores the pooled panel on unload', () => {
   const view = ui()
   const tooltip = new Panel(
-    'CitadelTooltipAbilityDetails',
     'tooltip',
     view.screen,
+    'CitadelTooltipAbilityDetails',
   )
   tooltip.AddClass('TooltipVisible')
   const details = new Panel(
     'AbilityDetailsPanel',
-    'AbilityDetailsPanel',
     tooltip,
+    'AbilityDetailsPanel',
   )
-  const name = new Panel('Label', '', details)
+  const name = new Panel('', details, 'Label')
   name.AddClass('AbilityName')
-  const tiers = new Panel('Panel', 'AbilityUpgradeList', tooltip)
-  const sections = new Panel('Panel', 'SectionsContainer', details)
-  const donorStats = new Panel('Panel', 'NativeHealingSlash', sections)
+  const tiers = new Panel('AbilityUpgradeList', tooltip)
+  const sections = new Panel('SectionsContainer', details)
+  const donorStats = new Panel('NativeHealingSlash', sections)
   view.update({ ...view.special, choice: 'timeFreeze' })
   view.slot.events.get('onmouseover')!()
   view.flush()
@@ -448,21 +354,21 @@ function directWrites(old: State, panel: Panel): string[] {
 test('the rally hides native HUD panels only through Modlock.native and unloading hands each panel back', () => {
   const view = ui()
   const tooltip = new Panel(
-    'CitadelTooltipAbilityDetails',
     'tooltip',
     view.screen,
+    'CitadelTooltipAbilityDetails',
   )
   tooltip.AddClass('TooltipVisible')
   const details = new Panel(
     'AbilityDetailsPanel',
-    'AbilityDetailsPanel',
     tooltip,
+    'AbilityDetailsPanel',
   )
-  const name = new Panel('Label', '', details)
+  const name = new Panel('', details, 'Label')
   name.AddClass('AbilityName')
   name.text = '{s:ability_name}'
-  const sections = new Panel('Panel', 'SectionsContainer', details)
-  new Panel('Panel', 'NativeHealingSlash', sections)
+  const sections = new Panel('SectionsContainer', details)
+  new Panel('NativeHealingSlash', sections)
   const tooltipBefore = state(tooltip)
   view.update({ ...view.special, choice: 'blink' })
   view.slot.events.get('onmouseover')!()

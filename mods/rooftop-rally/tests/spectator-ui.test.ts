@@ -1,78 +1,7 @@
 import { expect, test } from 'bun:test'
 import { readFileSync } from 'node:fs'
 import { createContext, runInContext } from 'node:vm'
-
-class Panel {
-  children: Panel[] = []
-  classes = new Set<string>()
-  attributes = new Map<string, string>()
-  private shown = true
-  // As Panorama does: an inline visibility sets visible, and setting visible
-  // writes the inline visibility.
-  readonly style = new Proxy<{
-    visibility: string | null
-    opacity: string | null
-  }>(
-    { visibility: 'visible', opacity: '0.75' },
-    {
-      set: (style, name: 'visibility' | 'opacity', value: string | null) => {
-        if (name === 'visibility' && value !== null)
-          this.shown = value !== 'collapse'
-        style[name] = value
-        return true
-      },
-    },
-  )
-  get visible(): boolean {
-    return this.shown
-  }
-  set visible(value: boolean) {
-    this.style.visibility = value ? 'visible' : 'collapse'
-  }
-  valid = true
-  text = ''
-
-  constructor(
-    public id: string,
-    private parent: Panel | null = null,
-  ) {
-    parent?.children.push(this)
-  }
-
-  GetParent(): Panel | null {
-    return this.parent
-  }
-
-  IsValid(): boolean {
-    return this.valid
-  }
-
-  DeleteAsync(): void {
-    this.valid = false
-  }
-
-  GetAttributeString(name: string, fallback: string): string {
-    return this.attributes.get(name) ?? fallback
-  }
-
-  SetAttributeString(name: string, value: string): void {
-    this.attributes.set(name, value)
-  }
-
-  FindChildTraverse(id: string): Panel | undefined {
-    for (const child of this.children) {
-      if (!child.valid) continue
-      if (child.id === id) return child
-      const nested = child.FindChildTraverse(id)
-      if (nested) return nested
-    }
-    return undefined
-  }
-
-  SetHasClass(name: string, value: boolean): void {
-    value ? this.classes.add(name) : this.classes.delete(name)
-  }
-}
+import { Panel } from './panorama'
 
 const read = (path: string) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
@@ -85,6 +14,12 @@ function setNativeVisibility(panel: Panel, visible: boolean): void {
   panel.visible = visible
   panel.style.visibility = visible ? 'visible' : 'collapse'
   panel.style.opacity = visible ? '0.75' : '0'
+}
+
+function nativePanel(id: string, parent: Panel): Panel {
+  const panel = new Panel(id, parent)
+  setNativeVisibility(panel, true)
+  return panel
 }
 
 function expectVisibility(panel: Panel, visible: boolean): void {
@@ -100,10 +35,10 @@ function ui() {
   const root = new Panel('RallyHud', top)
   new Panel('RoundLabel', root)
   new Panel('RoundDetail', root)
-  const controls = [new Panel('spectate_bar', top)]
+  const controls = [nativePanel('spectate_bar', top)]
   for (const panel of controls) setNativeVisibility(panel, false)
-  const health = new Panel('health_and_abilities_container', top)
-  const respawn = new Panel('gameplay_hud_dead', top)
+  const health = nativePanel('health_and_abilities_container', top)
+  const respawn = nativePanel('gameplay_hud_dead', top)
   const scheduled = new Map<number, () => void>()
   let scheduleId = 0
   const listeners: ((sound: string) => void)[] = []
@@ -176,8 +111,8 @@ test('replacement native spectator panels retain their own visibility while repl
   const view = ui()
   view.update({ spectating: true })
   for (const panel of [...view.controls, view.health]) panel.valid = false
-  const controls = view.controls.map((panel) => new Panel(panel.id, view.top))
-  const health = new Panel(view.health.id, view.top)
+  const controls = view.controls.map((panel) => nativePanel(panel.id, view.top))
+  const health = nativePanel(view.health.id, view.top)
   for (const visible of [true, false, true]) {
     for (const panel of controls) setNativeVisibility(panel, visible)
     view.sweep()

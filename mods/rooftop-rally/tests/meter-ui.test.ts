@@ -1,38 +1,7 @@
 import { expect, test } from 'bun:test'
 import { readFileSync } from 'node:fs'
 import { runInNewContext } from 'node:vm'
-
-class Panel {
-  children: Panel[] = []
-  classes = new Set<string>()
-  text = ''
-  constructor(
-    public id: string,
-    parent?: Panel,
-  ) {
-    parent?.children.push(this)
-  }
-  IsValid(): boolean {
-    return true
-  }
-  SetHasClass(name: string, value: boolean): void {
-    value ? this.classes.add(name) : this.classes.delete(name)
-  }
-  GetChildCount(): number {
-    return this.children.length
-  }
-  GetChild(index: number): Panel | undefined {
-    return this.children[index]
-  }
-  FindChildTraverse(id: string): Panel | undefined {
-    for (const child of this.children) {
-      if (child.id === id) return child
-      const nested = child.FindChildTraverse(id)
-      if (nested) return nested
-    }
-    return undefined
-  }
-}
+import { Panel } from './panorama'
 
 function meter() {
   const root = new Panel('RallyHud')
