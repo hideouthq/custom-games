@@ -1761,10 +1761,8 @@ export class Game {
       case 'final':
         this.announce(
           'FINAL STAND',
-          `Everyone to the centre. Top of the deck is ${Math.round(arena.centreRadius / 19.685)} m wide.`,
+          `Everyone to the centre. Top of the deck is ${Math.round((2 * arena.centreRadius) / unitsPerMetre)} m wide.`,
         )
-        break
-      default:
         break
     }
   }
