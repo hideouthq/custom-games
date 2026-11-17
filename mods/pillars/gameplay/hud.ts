@@ -10,7 +10,7 @@ import {
 } from 'modlock'
 
 import type { Role } from './loot'
-import type { Phase } from './round'
+import { inPlay, type Phase } from './round'
 
 const { tones, shades, plate, types } = theme
 
@@ -120,10 +120,6 @@ function phaseTone(phase: Phase): Tone {
   return phase === 'final' ? 'danger' : phase === 'overtime' ? 'amber' : 'gold'
 }
 
-function playing(phase: Phase): boolean {
-  return phase === 'live' || phase === 'overtime' || phase === 'final'
-}
-
 function heading(view: HudView): string {
   switch (view.phase) {
     case 'waiting':
@@ -140,7 +136,7 @@ function heading(view: HudView): string {
 }
 
 function underline(view: HudView): { text: string; tone: Tone } | undefined {
-  if (playing(view.phase) && view.standing !== 'in') {
+  if (inPlay(view.phase) && view.standing !== 'in') {
     return {
       text:
         view.watched === undefined
@@ -155,7 +151,7 @@ function underline(view: HudView): { text: string; tone: Tone } | undefined {
   if (view.phase === 'overtime') {
     return { text: 'Faster drops. The void is rising.', tone: 'amber' }
   }
-  if (playing(view.phase) && view.centre) {
+  if (inPlay(view.phase) && view.centre) {
     return {
       text: 'Legendary crate on the centre deck: heavy melee it',
       tone: 'gold',
@@ -206,7 +202,7 @@ function dropTimer(view: HudView): UiElement {
 
 function bar(view: HudView): UiElement {
   let inside: Child
-  if (playing(view.phase)) {
+  if (inPlay(view.phase)) {
     inside =
       view.standing === 'in'
         ? [counter(view), divider(), dropTimer(view)]
@@ -256,7 +252,7 @@ function topBar(view: HudView): UiElement {
       {
         horizontalAlign: 'center',
         letterSpacing: 2,
-        color: playing(view.phase) ? tones[phaseTone(view.phase)] : tones.text,
+        color: inPlay(view.phase) ? tones[phaseTone(view.phase)] : tones.text,
       },
       false,
     ),
@@ -584,7 +580,7 @@ export function hud(view: HudView): UiElement {
   if (view.drop !== undefined && view.standing === 'in' && !between) {
     parts.push(dropCard(view.drop))
   }
-  if (playing(view.phase) && view.standing === 'in') {
+  if (inPlay(view.phase) && view.standing === 'in') {
     parts.push(reserveTag(view.reserve))
   }
   return panel({ width: '100%', height: '100%' }, parts, 'pillars')

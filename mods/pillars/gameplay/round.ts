@@ -33,6 +33,10 @@ export type Phase =
   | 'intermission'
   | 'matchEnd'
 
+export function inPlay(phase: Phase): boolean {
+  return phase === 'live' || phase === 'overtime' || phase === 'final'
+}
+
 export interface View {
   readonly id: PlayerId
   readonly alive: boolean
@@ -88,11 +92,7 @@ export class Round {
   }
 
   get playing(): boolean {
-    return (
-      this.phase === 'live' ||
-      this.phase === 'overtime' ||
-      this.phase === 'final'
-    )
+    return inPlay(this.phase)
   }
 
   inRound(id: PlayerId): boolean {
