@@ -58,6 +58,10 @@ interface PendingCast { readonly product: ProductId; readonly ability: number; r
 interface PendingSprint { readonly attempt: NativeActivation; readonly failure: Failure; readonly player: Player; readonly button: bigint }
 type TraceIgnore = [number] | [number, number]
 
+function failed(command: Pick<Failure, 'actor' | 'previousDeadline' | 'attemptedAt'>, tool: Failure['tool']): Failure {
+  return { kind: 'failed', tool, actor: command.actor, previousDeadline: command.previousDeadline, attemptedAt: command.attemptedAt }
+}
+
 function identity(connection: Connection): AccountId {
   return accountId(connection.bot ? `bot:${connection.player.slot}:${connection.generation}` : `steam:${connection.steamId}`)
 }
@@ -452,10 +456,7 @@ export class Game {
       const status = activationStatus(pending.attempt, { actor: current?.generation === observed?.generation ? current : undefined, entity: body?.entity, alive: body?.alive ?? false, executed }, this.frame.now)
       if (status === 'pending') continue
       this.cancelSprint(id)
-      if (status === 'timedOut') {
-        pending.player.setAbility({ ability: sprintDonor, cooldownEnd: pending.failure.previousDeadline })
-        this.failures.push(pending.failure)
-      }
+      if (status === 'timedOut') this.refund(pending.player, pending.failure)
     }
   }
 
@@ -475,8 +476,7 @@ export class Game {
       else {
         // An aimed item that found no hero stays selected, and its key is what puts it away again.
         if (item.aimed) pending.player.press(pending.button)
-        pending.player.setAbility({ ability: item.nativeItem, cooldownEnd: pending.failure.previousDeadline })
-        this.failures.push(pending.failure)
+        this.refund(pending.player, pending.failure)
       }
       this.changed.add(id)
     }
@@ -644,46 +644,40 @@ export class Game {
         if (fighter.life.kind === 'alive' && player.giveModifier(shrinkModifier, shrinkSeconds)) {
           player.setAbility({ ability: catalog.shrinkRay.nativeItem, cooldownEnd: fighter.utilityUntil })
           player.sound('Mods.Shrink.Ray.Cast')
-        } else {
-          player.setAbility({ ability: catalog.shrinkRay.nativeItem, cooldownEnd: command.previousDeadline })
-          this.failures.push({ kind: 'failed', tool: 'shrinkRay', actor: command.actor, previousDeadline: command.previousDeadline, attemptedAt: command.attemptedAt })
-        }
+        } else this.refund(player, failed(command, 'shrinkRay'))
         break
       }
       case 'sprint': {
         const donor = this.snapshots.get(fighter.id)?.abilities.find(ability => ability.name === sprintDonor)
-        const failure: Failure = { kind: 'failed', tool: 'sprint', actor: command.actor, previousDeadline: command.previousDeadline, attemptedAt: command.attemptedAt }
+        const failure = failed(command, 'sprint')
         const button = donor && nativeItemButton(donor.slot)
-        if (!donor || button === undefined || fighter.life.kind !== 'alive' || !player.refreshAbility(sprintDonor) || !player.press(button)) {
-          player.setAbility({ ability: sprintDonor, cooldownEnd: command.previousDeadline })
-          this.failures.push(failure)
-        } else this.sprintPending.set(fighter.id, { player, button, failure, attempt: { actor: command.actor, entity: fighter.life.entity, ability: donor.entity, requestedAt: this.state.now } })
+        if (!donor || button === undefined || fighter.life.kind !== 'alive' || !player.refreshAbility(sprintDonor) || !player.press(button)) this.refund(player, failure)
+        else this.sprintPending.set(fighter.id, { player, button, failure, attempt: { actor: command.actor, entity: fighter.life.entity, ability: donor.entity, requestedAt: this.state.now } })
         break
       }
       case 'cast': {
         const item = catalog[command.product]
         const donor = this.snapshots.get(fighter.id)?.abilities.find(ability => ability.name === item.nativeItem)
-        const failure: Failure = { kind: 'failed', tool: command.product, actor: command.actor, previousDeadline: command.previousDeadline, attemptedAt: command.attemptedAt }
+        const failure = failed(command, command.product)
         const button = donor && nativeItemButton(donor.slot)
-        if (!donor || button === undefined || fighter.life.kind !== 'alive' || fighter.presence.kind !== 'connected' || !player.refreshAbility(item.nativeItem) || !player.press(button)) {
-          player.setAbility({ ability: item.nativeItem, cooldownEnd: command.previousDeadline })
-          this.failures.push(failure)
-        } else this.castPending.set(fighter.id, { product: command.product, ability: donor.entity, player, button, failure, generation: fighter.presence.generation, requestedAt: this.state.now, confirmed: false })
+        if (!donor || button === undefined || fighter.life.kind !== 'alive' || fighter.presence.kind !== 'connected' || !player.refreshAbility(item.nativeItem) || !player.press(button)) this.refund(player, failure)
+        else this.castPending.set(fighter.id, { product: command.product, ability: donor.entity, player, button, failure, generation: fighter.presence.generation, requestedAt: this.state.now, confirmed: false })
         break
       }
       case 'echo': {
-        const item = catalog.echo.nativeItem
-        const successful = this.idle(fighter.id) && player.setAbility({ ability: item, cooldownEnd: fighter.utilityUntil }) && player.refreshAbility(hookAbility)
-        if (!successful) {
-          player.setAbility({ ability: item, cooldownEnd: command.previousDeadline })
-          this.failures.push({ kind: 'failed', tool: command.kind, actor: command.actor, previousDeadline: command.previousDeadline, attemptedAt: command.attemptedAt })
-        }
+        const successful = this.idle(fighter.id) && player.setAbility({ ability: catalog.echo.nativeItem, cooldownEnd: fighter.utilityUntil }) && player.refreshAbility(hookAbility)
+        if (!successful) this.refund(player, failed(command, 'echo'))
         break
       }
       case 'saved':
         if (fighter.life.kind === 'alive' && fighter.membership.kind === 'seated') this.effects.rescue(command.id, fighter.life.position, fighter.membership.side, this.state.now)
         break
     }
+  }
+
+  private refund(player: Player, failure: Failure): void {
+    player.setAbility({ ability: catalog[failure.tool].nativeItem, cooldownEnd: failure.previousDeadline })
+    this.failures.push(failure)
   }
 
   private idle(id: AccountId): boolean {
