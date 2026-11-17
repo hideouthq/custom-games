@@ -33,6 +33,7 @@ export function startGame(args: readonly string[]): Game {
     command(name, player => { player.chat('Buy equipment from the Bebop Wars shop cards.') })
   }
   command('sellitem', player => { player.chat('Equipment lasts this match and cannot be sold. Use the shop to switch owned utilities.') })
+  command('selecthero', player => { player.chat('Bebop Wars is played as Bebop.') })
   command('ready', player => request(player, { kind: 'ready' }))
   command('loadout', (player, args) => request(player, { kind: args === 'close' ? 'close' : 'shop' }))
   return game
