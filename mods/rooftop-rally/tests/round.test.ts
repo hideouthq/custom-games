@@ -1,13 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { rules } from '../gameplay/config'
 import { Block } from '../gameplay/block'
-import {
-  contact,
-  dot,
-  length,
-  normalized,
-  subtract,
-} from '../gameplay/geometry'
+import { contact, dot, length, normalized } from '../gameplay/geometry'
 import { Round, type Participant, type PlayerId } from '../gameplay/round'
 
 function fighter(id: PlayerId, x: number, y = 0): Participant {
