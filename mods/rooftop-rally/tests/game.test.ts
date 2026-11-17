@@ -313,6 +313,18 @@ test('a new world forgets expired objects and penalties, then starts a fresh rou
   expect(calls.some((c) => c.method === 'RemoveObject')).toBe(false)
 })
 
+test('a new world forgets a charged glow instead of removing the old world object', () => {
+  const { game, human } = serving()
+  game.round.phase = { kind: 'reset', until: 100 }
+  game.requestSpecial(human.player)
+  game.frame(10)
+  expect(calls.filter((c) => c.method === 'CreateParticle')).toHaveLength(1)
+  game.world()
+  calls.length = 0
+  game.frame(0)
+  expect(calls.some((c) => c.method === 'RemoveObject')).toBe(false)
+})
+
 test('practice bot departure allows replacement and never blocks for a human reusing its slot', () => {
   const game = new Game()
   join(game, 0)

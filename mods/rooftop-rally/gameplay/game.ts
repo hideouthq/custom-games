@@ -198,6 +198,7 @@ export class Game {
       if (seat.connection.bot) seat.special.choose('powerSlash')
       else freeCursor(seat.connection.player, true)
       seat.penalty = undefined
+      seat.charge = undefined
     }
   }
 
