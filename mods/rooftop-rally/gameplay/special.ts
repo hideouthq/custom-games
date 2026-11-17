@@ -1,8 +1,10 @@
+import { metres } from './config'
+
 export const specialIds = ['powerSlash', 'blink', 'timeFreeze'] as const
 export type SpecialId = (typeof specialIds)[number]
 export const specialCarrier = 'citadel_ability_healing_slash'
 export const powerSlashMultiplier = 1.5
-export const blinkDistance = 12 / 0.0254
+export const blinkDistance = metres(12)
 export const timeFreezeDuration = 0.6
 
 export const specials = {
