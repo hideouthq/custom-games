@@ -755,7 +755,12 @@ export class Game {
             ? 'out'
             : 'watching',
       watched: this.people.get(member.watching)?.name,
-      centre: playing && this.centre.open,
+      centre:
+        playing && this.centre.open
+          ? this.crate === undefined
+            ? 'deck'
+            : 'crate'
+          : undefined,
       drop: this.now < member.cardUntil ? member.card : undefined,
       reserve: member.reserve,
       rows,

@@ -45,7 +45,7 @@ export interface HudView {
   readonly dropFill: number
   readonly standing: 'in' | 'out' | 'watching'
   readonly watched?: string
-  readonly centre: boolean
+  readonly centre?: 'crate' | 'deck'
   readonly drop?: HudDrop
   readonly reserve: number
   readonly rows: readonly HudRow[]
@@ -151,9 +151,12 @@ function underline(view: HudView): { text: string; tone: Tone } | undefined {
   if (view.phase === 'overtime') {
     return { text: 'Faster drops. The void is rising.', tone: 'amber' }
   }
-  if (inPlay(view.phase) && view.centre) {
+  if (inPlay(view.phase) && view.centre !== undefined) {
     return {
-      text: 'Legendary crate on the centre deck: heavy melee it',
+      text:
+        view.centre === 'crate'
+          ? 'Legendary crate on the centre deck: heavy melee it'
+          : 'Legendary on the centre deck: stand on it',
       tone: 'gold',
     }
   }
@@ -626,7 +629,6 @@ const sampleBase: HudView = {
   seconds: 3,
   dropFill: 0.6,
   standing: 'in',
-  centre: false,
   reserve: 24,
   rows: sampleRows.map((row) => ({ ...row, gained: 0, winner: false })),
 }
@@ -655,7 +657,7 @@ export const samples: Readonly<Record<string, HudView>> = {
   },
   ability: {
     ...sampleBase,
-    centre: true,
+    centre: 'crate',
     drop: {
       serial: 2,
       label: 'Puddle Punch',

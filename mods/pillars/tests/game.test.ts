@@ -38,6 +38,7 @@ const pawns = new Map<number, Pawn>()
 const held = new Map<number, { ability: number; made: number }[]>()
 const fields = new Map<string, number>()
 const calls: { method: string; request: Uint8Array }[] = []
+const refused = new Set<string>()
 let clock = 0
 
 beforeEach(() => {
@@ -46,12 +47,16 @@ beforeEach(() => {
   held.clear()
   fields.clear()
   calls.length = 0
+  refused.clear()
   clock = 0
   bind((bytes) => {
     const call = Call.fromBinary(bytes)
     const method = call.method ?? ''
     const request = call.request ?? new Uint8Array()
     calls.push({ method, request })
+    if (refused.has(method)) {
+      return Reply.toBinary({ error: 'refused' })
+    }
     let response: Uint8Array = new Uint8Array()
     if (method === 'Pawn') {
       const slot = PlayerRequest.fromBinary(request).player ?? 0
@@ -621,5 +626,31 @@ describe('stamina', () => {
       (request) => (request.player ?? 0) === 0,
     )
     expect(anchored.length).toBe(frames)
+  })
+})
+
+describe('centre Legendary', () => {
+  function hudAfterCentre(): string[] {
+    const game = dev()
+    live(game, 2)
+    const before = calls.length
+    run(game, clock + rules.centreSeconds + 0.1)
+    return calls
+      .slice(before)
+      .filter((call) => call.method === 'Ui')
+      .map((call) => new TextDecoder().decode(call.request))
+  }
+
+  test('the HUD sends players to break the crate', () => {
+    const hud = hudAfterCentre()
+    expect(hud.some((text) => text.includes('heavy melee it'))).toBe(true)
+    expect(hud.some((text) => text.includes('stand on it'))).toBe(false)
+  })
+
+  test('the HUD names no crate when the game refuses one', () => {
+    refused.add('CreateEntity')
+    const hud = hudAfterCentre()
+    expect(hud.some((text) => text.includes('stand on it'))).toBe(true)
+    expect(hud.some((text) => text.includes('heavy melee it'))).toBe(false)
   })
 })
