@@ -226,10 +226,7 @@ export class Game {
       freeCursor(connection.player, !seat.special.choice)
     }
     connection.player.watchMovement(true)
-    if (
-      this.round.phase.kind === 'waiting' ||
-      this.round.phase.kind === 'countdown'
-    )
+    if (this.round.lobby)
       this.spawn(seat, this.seats.size - 1, Math.max(8, this.seats.size))
   }
 
@@ -288,12 +285,10 @@ export class Game {
 
   spawned(player: Player, pawn: Pawn): void {
     const seat = this.seatFor(player)
-    const phase = this.round.phase.kind
     if (
       !seat ||
       (seat.state.kind !== 'eliminated' && seat.state.kind !== 'spectating') ||
-      phase === 'waiting' ||
-      phase === 'countdown' ||
+      this.round.lobby ||
       pawn.hero !== yamatoId ||
       pawn.health <= 0
     )
@@ -481,16 +476,13 @@ export class Game {
   }
 
   private tryBlock(seat: Seat, pawn: Pawn | undefined): boolean {
-    const phase = this.round.phase
     if (
       seat.penalty ||
       seat.state.kind !== 'playing' ||
       !pawn ||
       pawn.health <= 0 ||
       pawn.entity !== seat.state.entity ||
-      (phase.kind !== 'serve' &&
-        phase.kind !== 'flight' &&
-        phase.kind !== 'frozen') ||
+      !this.round.ballInPlay ||
       !this.round.living.has(playerId(seat.connection)) ||
       !seat.block.press(this.time)
     )
@@ -615,10 +607,7 @@ export class Game {
         }
       }
     } else if (state.kind === 'spectating') {
-      if (
-        this.round.phase.kind === 'waiting' ||
-        this.round.phase.kind === 'countdown'
-      ) {
+      if (this.round.lobby) {
         this.spawn(
           seat,
           [...this.seats.values()].indexOf(seat),
@@ -729,10 +718,7 @@ export class Game {
             }),
         )
       }
-    } else if (
-      this.round.phase.kind === 'waiting' ||
-      this.round.phase.kind === 'countdown'
-    ) {
+    } else if (this.round.lobby) {
       if (
         !pawn ||
         pawn.hero !== yamatoId ||
@@ -855,9 +841,8 @@ export class Game {
   }
 
   private drawBall(): void {
-    const phase = this.round.phase
-    const ball = phase.kind === 'frozen' ? phase.flight : phase
-    if (ball.kind === 'serve' || ball.kind === 'flight') {
+    const ball = this.round.ballInPlay
+    if (ball) {
       if (!this.ball) {
         this.ball = createParticle({
           resource: ballEffect,
@@ -874,22 +859,16 @@ export class Game {
 
   private drawHud(now: number): void {
     const phase = this.round.phase
-    const lobby = phase.kind === 'waiting' || phase.kind === 'countdown'
-    const rallyLive =
-      phase.kind === 'serve' ||
-      phase.kind === 'flight' ||
-      phase.kind === 'frozen'
+    const ball = this.round.ballInPlay
     const contenders: Contender[] = [...this.seats].map(([id, seat]) => ({
       key: scoreKey(seat.connection),
       name: seat.connection.name,
-      alive: lobby || this.round.living.has(id),
+      alive: this.round.lobby || this.round.living.has(id),
     }))
-    const ball = phase.kind === 'frozen' ? phase.flight : phase
     for (const [id, seat] of this.seats) {
       if (seat.connection.bot) continue
       const player = seat.connection.player
-      const targeted =
-        (ball.kind === 'serve' || ball.kind === 'flight') && ball.target === id
+      const targeted = ball?.target === id
       const spectating =
         seat.state.kind === 'spectating' || seat.state.kind === 'eliminated'
       let title = `ROUND ${this.round.number} · ${this.round.living.size} REMAINING`,
@@ -963,7 +942,7 @@ export class Game {
               full: phase.kind === 'intermission',
             }
           : undefined,
-        rally: { count: this.round.rally, live: rallyLive },
+        rally: { count: this.round.rally, live: ball !== undefined },
       })
     }
   }

@@ -73,6 +73,16 @@ export class Round {
 
   constructor(private readonly random: () => number = Math.random) {}
 
+  get lobby(): boolean {
+    return this.phase.kind === 'waiting' || this.phase.kind === 'countdown'
+  }
+
+  /** The served or flying ball, including one Time Freeze holds. */
+  get ballInPlay(): Extract<Phase, { kind: 'serve' | 'flight' }> | undefined {
+    const phase = this.phase.kind === 'frozen' ? this.phase.flight : this.phase
+    return phase.kind === 'serve' || phase.kind === 'flight' ? phase : undefined
+  }
+
   relocate(player: PlayerId, position: Vec3): void {
     this.previous.set(player, this.chest(position))
   }
