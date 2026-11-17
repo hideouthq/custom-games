@@ -124,6 +124,28 @@ function nativeObserver(pawn: Pawn): number | undefined {
   return undefined
 }
 
+function freshSeat(connection: Connection): Seat {
+  const special = new Special()
+  if (connection.bot) special.choose('powerSlash')
+  return {
+    connection,
+    state: { kind: 'spectating', retryAt: 0, camera: { kind: 'pending' } },
+    block: new Block(),
+    special,
+    pendingSpecial: false,
+    movement: undefined,
+    penalty: undefined,
+    charge: undefined,
+  }
+}
+
+function selectOrRespawn(seat: Seat, pawn: Pawn | undefined): void {
+  const player = seat.connection.player
+  if (!pawn || pawn.hero !== yamatoId) {
+    if (!seat.connection.bot) player.selectHero(hero, 2)
+  } else if (pawn.health <= 0) player.respawn()
+}
+
 function disableRespawn(pawn: Pawn): void {
   if (
     !writeField(
@@ -186,41 +208,16 @@ export class Game {
     this.choices.clear()
     this.scores.reset()
     for (const seat of this.seats.values()) {
-      seat.state = {
-        kind: 'spectating',
-        retryAt: 0,
-        camera: { kind: 'pending' },
-      }
-      seat.block = new Block()
-      seat.special = new Special()
-      seat.pendingSpecial = false
-      seat.movement = undefined
-      if (seat.connection.bot) seat.special.choose('powerSlash')
-      else freeCursor(seat.connection.player, true)
-      seat.penalty = undefined
-      seat.charge = undefined
+      Object.assign(seat, freshSeat(seat.connection))
+      if (!seat.connection.bot) freeCursor(seat.connection.player, true)
     }
   }
 
   join(connection: Connection): void {
-    const seat: Seat = {
-      connection,
-      block: new Block(),
-      special: new Special(),
-      pendingSpecial: false,
-      movement: undefined,
-      state: {
-        kind: 'spectating',
-        retryAt: 0,
-        camera: { kind: 'pending' },
-      },
-      penalty: undefined,
-      charge: undefined,
-    }
+    const seat = freshSeat(connection)
     this.seats.set(playerId(connection), seat)
-    const saved = this.choices.get(connection.steamId)
-    if (connection.bot) seat.special.choose('powerSlash')
-    else {
+    if (!connection.bot) {
+      const saved = this.choices.get(connection.steamId)
       if (saved) seat.special.choose(saved)
       cleanHud(connection.player)
       freeCursor(connection.player, !seat.special.choice)
@@ -297,16 +294,12 @@ export class Game {
     disableRespawn(pawn)
     if (seat.state.kind === 'spectating')
       seat.state.camera = { kind: 'pending' }
-    log(
-      'RALLY ' +
-        JSON.stringify({
-          time: this.time,
-          kind: 'spawn-held',
-          player: playerId(seat.connection),
-          state: seat.state.kind,
-          hero: pawn.entity,
-        }),
-    )
+    this.rallyLog({
+      kind: 'spawn-held',
+      player: playerId(seat.connection),
+      state: seat.state.kind,
+      hero: pawn.entity,
+    })
   }
 
   input(player: Player, pressed: bigint, released: bigint): void {
@@ -496,14 +489,7 @@ export class Game {
     })
     if (effect) this.flashes.push({ object: effect, until: this.time + 0.6 })
     seat.connection.player.sound('Yamato.CrimsonSlash.Cast')
-    log(
-      'RALLY ' +
-        JSON.stringify({
-          time: this.time,
-          kind: 'parry',
-          player: playerId(seat.connection),
-        }),
-    )
+    this.rallyLog({ kind: 'parry', player: playerId(seat.connection) })
     return true
   }
 
@@ -526,10 +512,7 @@ export class Game {
     }
     const player = seat.connection.player
     player.startingSouls(0)
-    const pawn = player.pawn()
-    if (!pawn || pawn.hero !== yamatoId) {
-      if (!seat.connection.bot) player.selectHero(hero, 2)
-    } else if (pawn.health <= 0) player.respawn()
+    selectOrRespawn(seat, player.pawn())
   }
 
   private maintainSeat(seat: Seat, pawn: Pawn | undefined, now: number): void {
@@ -586,9 +569,7 @@ export class Game {
           until: now + 0.15,
         }
       } else if (now >= state.retryAt) {
-        if (!pawn || pawn.hero !== yamatoId) {
-          if (!seat.connection.bot) player.selectHero(hero, 2)
-        } else player.respawn()
+        selectOrRespawn(seat, pawn)
         state.retryAt = now + 1
       }
     } else if (state.kind === 'settling') {
@@ -651,15 +632,11 @@ export class Game {
         if (!pawn || pawn.hero !== yamatoId) {
           state.camera = { kind: 'pending' }
           if (!seat.connection.bot)
-            log(
-              'RALLY ' +
-                JSON.stringify({
-                  time: now,
-                  kind: 'spectator-select',
-                  player: playerId(seat.connection),
-                  selected: player.selectHero(hero, 2) ?? null,
-                }),
-            )
+            this.rallyLog({
+              kind: 'spectator-select',
+              player: playerId(seat.connection),
+              selected: player.selectHero(hero, 2) ?? null,
+            })
           return
         }
         if (pawn.health > 0) {
@@ -705,18 +682,14 @@ export class Game {
             camera,
             target: target.entity,
           }
-        log(
-          'RALLY ' +
-            JSON.stringify({
-              time: now,
-              kind: 'spectator-watch',
-              player: playerId(seat.connection),
-              hero: pawn.entity,
-              camera,
-              target: target.entity,
-              attached,
-            }),
-        )
+        this.rallyLog({
+          kind: 'spectator-watch',
+          player: playerId(seat.connection),
+          hero: pawn.entity,
+          camera,
+          target: target.entity,
+          attached,
+        })
       }
     } else if (this.round.lobby) {
       if (
@@ -750,6 +723,10 @@ export class Game {
     }
   }
 
+  private rallyLog(fields: object): void {
+    log('RALLY ' + JSON.stringify({ time: this.time, ...fields }))
+  }
+
   private clearPenalty(seat: Seat): void {
     if (
       seat.penalty &&
@@ -764,10 +741,7 @@ export class Game {
   }
 
   private applyEvent(event: RoundEvent): void {
-    log(
-      'RALLY ' +
-        JSON.stringify({ time: this.time, round: this.round.number, ...event }),
-    )
+    this.rallyLog({ round: this.round.number, ...event })
     switch (event.kind) {
       case 'spawn':
         event.players.forEach((id, i) => {
