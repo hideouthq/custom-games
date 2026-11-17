@@ -12,7 +12,9 @@ import {
   roll,
   weights,
 } from '../gameplay/loot'
-import { random } from '../gameplay/seating'
+import manifest from '../gameplay/mod.json'
+import { arena } from '../gameplay/config'
+import { pillarTop, random } from '../gameplay/seating'
 
 function named(id: string): Loot {
   const loot = catalog.find((entry) => entry.id === id)
@@ -247,5 +249,32 @@ describe('inventory', () => {
     expect(gone.map((loot) => loot.id).sort()).toEqual(['grapple', 'warp'])
     expect(inventory.find('ability_familiar_ability02')).toBeDefined()
     expect(inventory.find('upgrade_warp_stone')).toBeUndefined()
+  })
+})
+
+describe('reach', () => {
+  test('every drop aimed at a player reaches from any pillar to any other', () => {
+    const tops = Array.from({ length: arena.pillars }, (_, index) =>
+      pillarTop(index),
+    )
+    const farthest =
+      Math.max(
+        ...tops.flatMap((from) =>
+          tops.map((to) => Math.hypot(to.x - from.x, to.y - from.y)),
+        ),
+      ) +
+      arena.topSize * Math.SQRT2
+    const aimed = catalog.filter(
+      (loot) => loot.role === 'force' || ['lasso', 'shrink'].includes(loot.id),
+    )
+    for (const loot of aimed) {
+      const range = manifest.definitions.find(
+        (definition) => definition.entry === loot.native,
+      )?.properties?.AbilityCastRange
+      expect({ id: loot.id, reaches: (range ?? 0) >= farthest }).toEqual({
+        id: loot.id,
+        reaches: true,
+      })
+    }
   })
 })

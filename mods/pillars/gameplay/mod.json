@@ -81,7 +81,8 @@
       "file": "FILE_ABILITIES",
       "entry": "upgrade_shrink_ray",
       "properties": {
-        "ShrinkDuration": 10
+        "ShrinkDuration": 10,
+        "AbilityCastRange": 3300
       },
       "fields": {
         "CitadelItemVData.m_iItemTier": 0
@@ -91,7 +92,8 @@
       "file": "FILE_ABILITIES",
       "entry": "upgrade_target_stun",
       "properties": {
-        "BonusHealth": 0
+        "BonusHealth": 0,
+        "AbilityCastRange": 3300
       },
       "fields": {
         "CitadelItemVData.m_iItemTier": 0
@@ -102,6 +104,9 @@
       "entry": "upgrade_containment",
       "fields": {
         "CitadelItemVData.m_iItemTier": 0
+      },
+      "properties": {
+        "AbilityCastRange": 3300
       }
     },
     {
@@ -163,7 +168,7 @@
       "file": "FILE_ABILITIES",
       "entry": "ability_gravity_lasso",
       "properties": {
-        "AbilityCastRange": 1400
+        "AbilityCastRange": 3300
       }
     },
     {
@@ -171,6 +176,34 @@
       "entry": "upgrade_cloaking_device_active",
       "fields": {
         "CitadelItemVData.m_iItemTier": 0
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "citadel_ability_chrono_swap",
+      "properties": {
+        "AbilityCastRange": 3300
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "citadel_ability_hook",
+      "properties": {
+        "AbilityCastRange": 3300
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "ability_familiar_ability02",
+      "properties": {
+        "AbilityCastRange": 3300
+      }
+    },
+    {
+      "file": "FILE_ABILITIES",
+      "entry": "viscous_telepunch",
+      "properties": {
+        "AbilityCastRange": 3300
       }
     }
   ]
