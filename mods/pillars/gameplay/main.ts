@@ -4,7 +4,6 @@ import {
   onDamage,
   onDamaged,
   onFrame,
-  onInput,
   onPlayerJoin,
   onPlayerLeave,
   onSpawn,
@@ -25,7 +24,6 @@ onAbilityCast((cast) => game.cast(cast))
 onDamage((hit) => game.damage(hit))
 onDamaged((hit) => game.damaged(hit))
 onFrame((frame) => game.frame(frame.timeSeconds, frame.movement))
-onInput((player, pressed) => game.input(player, pressed))
 command('pillars', (player, args) => game.dev(player, args))
 // The hero menu and the console both send this; heroes are dealt for the match.
 command('selecthero', (player) =>

@@ -1,7 +1,6 @@
 import {
   type AbilityCastEvent,
   addBot,
-  Buttons,
   type Connection,
   createEntity,
   createParticle,
@@ -26,7 +25,6 @@ import {
   removeEntity,
   show,
   toast,
-  watchInput,
   type WorldObject,
   writeField,
 } from 'modlock'
@@ -270,7 +268,6 @@ export class Game {
     for (const arg of args) {
       if (arg === 'dev') {
         this.devMode = true
-        watchInput(Buttons.jump)
       }
       if (arg.startsWith('bots=')) {
         this.wantBots = Math.max(
@@ -443,21 +440,6 @@ export class Game {
           .join(
             ' ',
           )}${member.itemsDue ? ' (due)' : ''}, pos ${Math.round(member.position.x)} ${Math.round(member.position.y)} ${Math.round(member.position.z)}, abilities ${held}`,
-      )
-    }
-  }
-
-  input(player: Player, pressed: bigint): void {
-    const member = this.members.get(player.slot)
-    if (
-      this.devMode &&
-      member !== undefined &&
-      !member.bot &&
-      (pressed & Buttons.jump) !== 0n &&
-      !member.grounded
-    ) {
-      log(
-        `dev air jump pressed by ${member.name}: stamina ${member.stamina.toFixed(2)}, z ${Math.round(member.position.z)}`,
       )
     }
   }
@@ -1123,16 +1105,6 @@ export class Game {
         continue
       }
       member.grounded = sample.grounded
-      if (this.devMode && !member.bot && sample.actions.length > 0) {
-        const moves = sample.actions.filter(
-          (action) => action !== 'abilityExecuted' && action !== 'landed',
-        )
-        if (moves.length > 0) {
-          log(
-            `dev move ${member.name}: ${moves.join(' ')}${sample.mantling ? ' (mantling)' : ''}, stamina ${member.stamina.toFixed(2)}`,
-          )
-        }
-      }
       const crate = this.crate
       for (const done of sample.interactions) {
         if (
