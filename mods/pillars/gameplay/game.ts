@@ -30,6 +30,7 @@ import {
 } from 'modlock'
 import { apply, arena as emptyMap } from 'modlock/console'
 
+import { Centre } from './centre'
 import { Credit, knock, type Melee, meleeDamage, meleeOf } from './combat'
 import { arena, combat, rules, unitsPerMetre } from './config'
 import { assignHero, donors, pool, type PoolHero, reserveAfter } from './heroes'
@@ -141,8 +142,6 @@ const crateModels = [
 
 const crateSpoils = ['citadel_pickup_gold', 'citadel_pickup_modifier']
 
-const spoilSeconds = 3
-
 type Step = 'idle' | 'revive' | 'reset' | 'place' | 'ready'
 
 interface Member {
@@ -183,7 +182,6 @@ interface Member {
   card: HudDrop | undefined
   cardUntil: number
   graveAt: number
-  onDeckSince: number
 }
 
 interface Crate {
@@ -213,9 +211,7 @@ export class Game {
   private shove: { by: PlayerId; at: number } | undefined
   private effectsAt = 0
   private devMode = false
-  private centreAt = -1
-  private sweepUntil = -1
-  private centreTold = false
+  private readonly centre = new Centre()
   private wantBots = 0
   private drops = 0
   private readonly before = new Map<PlayerId, number>()
@@ -474,7 +470,6 @@ export class Game {
       drawn: '',
       card: undefined,
       cardUntil: 0,
-      onDeckSince: -1,
       graveAt: 0,
     }
     this.members.set(player.slot, member)
@@ -530,6 +525,7 @@ export class Game {
     const member = this.members.get(connection.player.slot)
     if (member !== undefined) {
       this.people.delete(member.id)
+      this.centre.leave(member.id)
     }
     this.members.delete(connection.player.slot)
     this.pinned.delete(connection.player.slot)
@@ -567,7 +563,7 @@ export class Game {
       this.ammo(member)
       this.draw(member)
     }
-    this.centre()
+    this.offerCentre()
   }
 
   /**
@@ -759,35 +755,29 @@ export class Game {
             ? 'out'
             : 'watching',
       watched: this.people.get(member.watching)?.name,
-      centre: playing && this.centreTold,
+      centre: playing && this.centre.open,
       drop: this.now < member.cardUntil ? member.card : undefined,
       reserve: member.reserve,
       rows,
     }
   }
 
-  private centre(): void {
-    if (this.now < this.sweepUntil) {
+  private offerCentre(): void {
+    if (this.centre.sweeping(this.now)) {
       for (const spoil of crateSpoils) {
         removeEntities(spoil)
       }
     }
     if (!this.round.playing || this.round.phase === 'final') {
-      this.centreAt = -1
-      this.centreTold = false
+      this.centre.close()
       this.clearCrate()
       return
     }
-    if (this.centreAt < 0) {
-      this.centreAt = this.now + rules.centreSeconds
-      this.centreTold = false
+    const centre = this.centre.tick(this.now)
+    if (centre === 'waiting') {
       return
     }
-    if (this.now < this.centreAt) {
-      return
-    }
-    if (!this.centreTold) {
-      this.centreTold = true
+    if (centre === 'appears') {
       this.crate = this.placeCrate()
       this.tell(
         this.crate === undefined
@@ -810,33 +800,24 @@ export class Game {
       }
       return
     }
-    for (const member of this.members.values()) {
-      const there =
-        member.alive &&
-        this.round.isLiving(member.id) &&
-        Math.hypot(member.position.x, member.position.y) <=
-          arena.centreRadius &&
-        member.position.z >= arena.centreZ - 20
-      if (!there) {
-        member.onDeckSince = -1
-        continue
-      }
-      if (member.onDeckSince < 0) {
-        member.onDeckSince = this.now
-      }
-      if (this.now - member.onDeckSince < rules.centreHoldSeconds) {
-        continue
-      }
-      const prize = legendary(this.roll)
-      if (prize !== undefined) {
-        log(`centre legendary ${prize.id} to ${member.name}`)
-        this.tell(`${member.name} took ${prize.label} from the centre.`)
-        this.grant(member, prize)
-      }
-      member.onDeckSince = -1
-      this.centreAt = this.now + rules.centreSeconds
-      this.centreTold = false
-      return
+    const taker = this.centre.hold(
+      this.now,
+      [...this.members.values()].map((member) => ({
+        id: member.id,
+        onDeck:
+          member.alive &&
+          this.round.isLiving(member.id) &&
+          Math.hypot(member.position.x, member.position.y) <=
+            arena.centreRadius &&
+          member.position.z >= arena.centreZ - 20,
+      })),
+    )
+    const member = taker === undefined ? undefined : this.people.get(taker)
+    const prize = member === undefined ? undefined : legendary(this.roll)
+    if (member !== undefined && prize !== undefined) {
+      log(`centre legendary ${prize.id} to ${member.name}`)
+      this.tell(`${member.name} took ${prize.label} from the centre.`)
+      this.grant(member, prize)
     }
   }
 
@@ -902,14 +883,12 @@ export class Game {
       return
     }
     this.clearCrate()
-    this.sweepUntil = this.now + spoilSeconds
+    this.centre.broken(this.now)
     log(`centre crate ${crate.prize.id} to ${member.name}`)
     this.tell(`${member.name} broke the crate and took ${crate.prize.label}.`)
     if (member.alive && this.round.isLiving(member.id)) {
       this.grant(member, crate.prize)
     }
-    this.centreAt = this.now + rules.centreSeconds
-    this.centreTold = false
   }
 
   private clearCrate(): void {

@@ -50,7 +50,7 @@ interface Backstage {
     readonly scores: Map<number, Score>
     survivors(): number[]
   }
-  centreAt: number
+  readonly centre: { dueAt: number }
   grant(member: Member, loot: Loot): void
 }
 
@@ -383,8 +383,8 @@ class Stage {
         this.back.round.nextDrop = this.now + (numbers[0] ?? 0)
         return this.back.round.nextDrop
       case 'centre':
-        this.back.centreAt = this.now + (numbers[0] ?? 0)
-        return this.back.centreAt
+        this.back.centre.dueAt = this.now + (numbers[0] ?? 0)
+        return this.back.centre.dueAt
       case 'cam': {
         const member = this.who('me')
         if (!member) {
