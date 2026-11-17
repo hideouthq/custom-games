@@ -214,6 +214,14 @@ interface Crate {
   readonly marks: WorldObject[]
 }
 
+function standOn(player: Player, spot: Point, yaw: number): void {
+  player.teleport(
+    { ...spot, z: spot.z + standHeight },
+    { pitch: 0, yaw, roll: 0 },
+    { x: 0, y: 0, z: 0 },
+  )
+}
+
 export class Game {
   private readonly round: Round
   private readonly roll: () => number
@@ -294,6 +302,8 @@ export class Game {
     const [action = '', first = '', second = '', third = ''] = line
       .trim()
       .split(/\s+/)
+    const named = (each: Member) =>
+      each.name.toLowerCase() === `${first} ${second}`.trim().toLowerCase()
     log(`dev ${member.name}: ${line}`)
     if (action === 'hud') {
       const sample = samples[first]
@@ -310,11 +320,7 @@ export class Game {
     } else if (action === 'deck' || action === 'pillar') {
       const spot =
         action === 'deck' ? deckSpot(0, 1) : pillarTop(Number(first) || 0)
-      player.teleport(
-        { ...spot, z: spot.z + standHeight },
-        { pitch: 0, yaw: Number(second) || 0, roll: 0 },
-        { x: 0, y: 0, z: 0 },
-      )
+      standOn(player, spot, Number(second) || 0)
     } else if (action === 'look') {
       player.teleport(member.position, {
         pitch: Number(second) || 0,
@@ -341,9 +347,7 @@ export class Game {
       const other = [...this.members.values()].find(
         (each) =>
           each !== member &&
-          (each.name.toLowerCase() ===
-            `${first} ${second}`.trim().toLowerCase() ||
-            String(each.player.slot) === first),
+          (named(each) || String(each.player.slot) === first),
       )
       if (other !== undefined) {
         const dx = other.position.x - member.position.x
@@ -360,10 +364,7 @@ export class Game {
         )
       }
     } else if (action === 'team' || action === 'near') {
-      const other = [...this.members.values()].find(
-        (each) =>
-          each.name.toLowerCase() === `${first} ${second}`.trim().toLowerCase(),
-      )
+      const other = [...this.members.values()].find(named)
       if (other !== undefined && action === 'team') {
         log(
           `dev team ${other.name} ${third}: ${other.player.changeTeam(Number(third))}`,
@@ -377,20 +378,10 @@ export class Game {
             Math.hypot(spot.x - member.position.x, spot.y - member.position.y)
           if (gap(top) < gap(best)) nearest = index
         }
-        const spot = pillarStand((nearest + 1) % arena.pillars)
-        other.player.teleport(
-          { x: spot.x, y: spot.y, z: spot.z + standHeight },
-          { pitch: 0, yaw: 0, roll: 0 },
-          { x: 0, y: 0, z: 0 },
-        )
+        standOn(other.player, pillarStand((nearest + 1) % arena.pillars), 0)
       }
     } else if (action === 'mods') {
-      const other =
-        [...this.members.values()].find(
-          (each) =>
-            each.name.toLowerCase() ===
-            `${first} ${second}`.trim().toLowerCase(),
-        ) ?? member
+      const other = [...this.members.values()].find(named) ?? member
       log(
         `dev mods ${other.name}: ${modifiers(other.entity)
           .map(
@@ -1513,12 +1504,7 @@ export class Game {
   }
 
   private toPillar(member: Member): void {
-    const top = pillarStand(member.seat)
-    member.player.teleport(
-      { ...top, z: top.z + standHeight },
-      { pitch: 0, yaw: facingCentre(member.seat), roll: 0 },
-      { x: 0, y: 0, z: 0 },
-    )
+    standOn(member.player, pillarStand(member.seat), facingCentre(member.seat))
   }
 
   private keepOnPillar(member: Member): void {
@@ -1689,11 +1675,7 @@ export class Game {
   private toDeck(member: Member, index: number, count: number): void {
     const spot = deckSpot(index, count)
     const yaw = count <= 1 ? 0 : (Math.atan2(-spot.y, -spot.x) * 180) / Math.PI
-    member.player.teleport(
-      { ...spot, z: spot.z + standHeight },
-      { pitch: 0, yaw, roll: 0 },
-      { x: 0, y: 0, z: 0 },
-    )
+    standOn(member.player, spot, yaw)
     this.givePips(member, 0)
     const gone = member.inventory.drop((loot) => loot.role === 'mobility')
     if (gone.some((loot) => loot.kind === 'ability')) {
