@@ -1,0 +1,45 @@
+--- a/arena/rift.ts
++++ b/arena/rift.ts
+@@ -1,23 +1,17 @@
+-// Portal looks: the Unstable Rift ("koth" in the game files) at each portal, at 3x the game's size.
+-// Looks only: minions still go in by distance (PORTAL_REACH in minions.ts).
+-//
+-// The effects are our copies of the Rift's look pieces, compiled from the sources in tools/rift/src
+-// (tools/compile_rift.cmd) into content/particles/, which the build ships to every player as the mod's
+-// own addon. Each piece is played on its own, so the copies have no child effects.
+-// The game's own Rift objective is turned off: the map has no spot for it, so it showed in the middle.
++// Draw the portals with resources installed by Deadlock. Scoring uses PORTAL_REACH.
+
+ import { createParticle, entityPosition, fireInput, findEntities, log, serverCommand, type Vector, type WorldObject } from 'modlock'
+ import { RIFT_FORWARD, RIFT_HEIGHT } from '../config'
+ import { PORTALS } from './layout'
+
+ export const RIFT_PARTICLES = [
+-  'particles/{addon}/rift_portal_model.vpcf', // the upright portal shape
+-  'particles/{addon}/rift_outline.vpcf', // the glowing jagged edge
+-  'particles/{addon}/rift_outline_edge.vpcf',
+-  'particles/{addon}/rift_sparks.vpcf',
+-  'particles/{addon}/rift_dimension.vpcf', // the star field
+-  'particles/{addon}/rift_decal_edge.vpcf', // the glowing outline on the ground
+-  'particles/{addon}/rift_light.vpcf', // its light
++  'particles/generic/koth_aura_portal_model.vpcf', // the upright portal shape
++  'particles/generic/koth_aura_rift_outline.vpcf', // the glowing jagged edge
++  'particles/generic/koth_aura_rift_outline_edge.vpcf',
++  'particles/generic/koth_aura_rift_sparks.vpcf',
++  'particles/generic/koth_aura_rift_dimension.vpcf', // the star field
++  'particles/generic/koth_aura_rift_decal_edge.vpcf', // the glowing outline on the ground
++  'particles/generic/koth_aura_light.vpcf', // its light
+ ]
+ export const RIFT_MODELS = ['models/particle/koth_rift_model_fx.vmdl']
+
+--- a/config.ts
++++ b/config.ts
+@@ -75,7 +75,7 @@
+ export const PATRON_HEIGHT = 400
+ export const PATRON_FORWARD = 350
+ export const PATRON_SCALE = 1
+-export const RIFT_HEIGHT = 190 // units above the floor for the rift's middle: the 3x rift's bottom meets the floor
++export const RIFT_HEIGHT = 63 // centre the native-size rift over the floor
+
+ // ------------------------------------------------------------------ camps
+ // Every camp spawns when the match starts. A cleared camp drops its bridge buff (blue casting, red gun,

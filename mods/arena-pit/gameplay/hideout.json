@@ -1,0 +1,32 @@
+{
+  "name": "Shattered Arena",
+  "tagline": "Punch a rival into the pit. Escort your troopers through the portal. Run the enemy out of tickets.",
+  "summary": "Two teams share one arena and start with 500 tickets each. A ring-out costs five. Every ten enemy hero deaths send five Rift Troopers straight down the middle.",
+  "description": "Shattered Arena by CosmicCapt brings SMITE’s Corrupted Arena format to Deadlock. Heavy melee can empty a rival’s stamina and send them over the edge. A fresh wave of troopers marches every 30 seconds. Protect yours on the way to the enemy portal, or slip away to claim a camp buff. At five minutes, islands rise from the pits carrying Sinner’s Sacrifices. Land a heavy hit to earn a ticket back for your team. Once a team runs out of tickets, both sides can settle the score on a separate platform in an optional last-team-standing bonus round.",
+  "kind": "team arena",
+  "players": {"min": 2, "max": 12},
+  "creators": ["CosmicCapt"],
+  "released": "2026-11-18",
+  "curated": true,
+  "howToPlay": [
+    {"title": "Line up a ring-out", "body": "Bait a rival near a pit, then land a heavy melee facing the edge. A hero death costs their team five tickets."},
+    {"title": "Walk the wave in", "body": "Each friendly trooper that reaches the enemy portal takes one ticket. Every ten enemy hero deaths summon five Rift Troopers worth two tickets apiece."},
+    {"title": "Claw tickets back", "body": "At five minutes, jump onto a rising island and hit its Sinner’s Sacrifice with heavy melee. Get off before the island sinks."}
+  ],
+  "facts": [
+    {"label": "Teams", "value": "Up to 6v6"},
+    {"label": "Starting tickets", "value": "500 per team", "note": "The host can set 100 to 2,000"},
+    {"label": "Trooper waves", "value": "Every 30 seconds"},
+    {"label": "Bonus round", "value": "Last team standing", "note": "No respawns or ultimates"}
+  ],
+  "whatsNew": ["First Hideout release of CosmicCapt’s Shattered Arena 0.2.7."],
+  "art": {
+    "card": "art/card-background@2x.jpg",
+    "backdrop": "art/banner-background@2x.jpg",
+    "render": "art/abrams-render@2x.png",
+    "overlay": "art/warden-render@2x.png",
+    "tile": "art/abrams-thumb@2x.png",
+    "explainer": "art/how-to-play-map@2x.png",
+    "screenshots": ["art/arena-shot-ringout.jpg", "art/arena-shot-rift-wave.jpg", "art/arena-shot-bonus-round.jpg"]
+  }
+}

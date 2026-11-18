@@ -238,6 +238,12 @@ def package_lists(folder):
         content += regular_files(folder, top)
     # Modlock mounts any content it finds in a mod, over the block that carries the renderer.
     host = sorted({*required, *(name for name in content if name.endswith(".bsp")), *regular_files(folder, DATA_FOLDER)})
+    notice = folder / "LICENSE"
+    refuse_links([notice])
+    if notice.is_file():
+        host = sorted({*host, "LICENSE"})
+        if content:
+            content.append("LICENSE")
     refuse_links(folder / name for name in [*host, *content])
     return host, sorted(content)
 

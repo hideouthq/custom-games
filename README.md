@@ -7,8 +7,9 @@ Deadlock custom game modes that Hideout hosts and joins, and the tools that publ
 | Bebop Wars (`mods/bebop-wars`) | Hook battles for 1v1, 2v2 and 3v3, with melee, rescues and native equipment |
 | Rooftop Rally (`mods/rooftop-rally`) | A Yamato free-for-all with an accelerating orb, custom blocks and a choice of Power Slash, Blink or Time Freeze |
 | Pillars (`mods/pillars`) | Last player standing on pillars over a void, with a random drop every few seconds and one life a round |
+| [Shattered Arena](mods/arena-pit) by CosmicCapt | Up to 6v6 on a pit arena with tickets, trooper escorts and an optional last-team-standing bonus round |
 
-Each mode holds its gameplay, authored map and assets, tests and build scripts. All three run on one [Modlock](https://github.com/hideouthq/modlock) runtime, pinned in `runtime.json`, because a game session runs one runtime. `feed/` builds and signs the feed Hideout reads.
+All four run on one [Modlock](https://github.com/hideouthq/modlock) runtime, pinned in `runtime.json`, because a game session runs one runtime. `feed/` builds and signs the feed Hideout reads.
 
 ## Set up
 
@@ -20,11 +21,11 @@ cd custom-games
 python3 scripts/runtime.py install
 ```
 
-`install` downloads the pinned Go, Zig and Bun into `.tools`, and clones the Modlock fork at the pinned commit into `.tools/modlock`. Each mode's asset SDK is a submodule at `mods/<mode>/tools/modlock-sdk`.
+`install` downloads the pinned Go, Zig and Bun into `.tools`, and clones the Modlock fork at the pinned commit into `.tools/modlock`. Each Hideout-authored mode’s asset SDK is a submodule at `mods/<mode>/tools/modlock-sdk`.
 
 ## Work on a mode
 
-`scripts/modes.py` runs the same commands for every mode. With no mode, `test`, `ready` and `build` take all three.
+`scripts/modes.py` runs the same commands for every mode. With no mode, `test`, `ready` and `build` take all modes.
 
 ```sh
 python3 scripts/modes.py test [MODE...]    # unit tests and typecheck
@@ -65,4 +66,4 @@ python3 scripts/runtime.py build
 
 ## License
 
-The modes and scripts are free software under the [GNU General Public License v3.0](LICENSE). The Modlock SDK submodules keep their own license.
+Hideout’s modes and scripts are free software under the [GNU General Public License v3.0](LICENSE). CosmicCapt’s Shattered Arena uses the [MIT license](mods/arena-pit/upstream/LICENSE). The Modlock SDK submodules keep their own license.

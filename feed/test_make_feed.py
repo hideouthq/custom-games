@@ -142,6 +142,15 @@ class FeedTests(Fixture):
         self.assertNotIn("client", feed["modes"][0])
         self.assertEqual(["maps/arena.vpk", "panorama/layout/rich-mode/panel.vxml_c"], self.zip_names(feed["modes"][1]["client"]))
 
+    def test_notices_travel_with_every_existing_package(self):
+        for mode in ("plain", "rich"):
+            write(self.dir / mode / "LICENSE", "Creator's notice")
+        plain, rich = self.published()["modes"]
+        self.assertNotIn("client", plain)
+        for artifact in (plain["rules"], rich["rules"], rich["client"]):
+            with zipfile.ZipFile(self.out / artifact["url"].rsplit("/", 1)[1]) as package:
+                self.assertEqual(b"Creator's notice", package.read("LICENSE"))
+
     def test_a_feed_needs_a_whole_renderer(self):
         (self.dir / "renderer/layout.js").unlink()
         self.assert_refused(self.publish(), "layout.js is missing")

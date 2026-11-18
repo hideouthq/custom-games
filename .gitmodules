@@ -7,3 +7,6 @@
 [submodule "pillars-sdk"]
 	path = mods/pillars/tools/modlock-sdk
 	url = https://github.com/paralin/modlock-sdk.git
+[submodule "mods/arena-pit/upstream"]
+	path = mods/arena-pit/upstream
+	url = https://github.com/CosmicCapt/Shattered-Arena.git
