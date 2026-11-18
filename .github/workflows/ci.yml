@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+    branches: ['**']
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.14'
+      # test_package_map.py needs the Modlock runtime's checkout and toolchains, which scripts/runtime.py installs.
+      - name: Python tests
+        run: |
+          failed=
+          for test in feed/test_*.py scripts/test_*.py mods/*/scripts/test_*.py; do
+            [ "$test" != scripts/test_package_map.py ] || continue
+            echo "::group::$test"
+            python3 -B "$test" || failed="$failed $test"
+            echo "::endgroup::"
+          done
+          [ -z "$failed" ] || { echo "Failed:$failed"; exit 1; }
