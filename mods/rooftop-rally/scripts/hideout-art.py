@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 from PIL import Image, ImageFilter
@@ -30,6 +31,10 @@ def main() -> None:
     tile = background.crop((1500, 0, 2140, 640)).resize(icon.size, Image.LANCZOS).filter(ImageFilter.GaussianBlur(2))
     tile.paste(icon, (0, 0), icon)
     tile.save(ART / "yamato-thumb@2x.png", optimize=True)
+
+    art = json.loads((ROOT / "gameplay/hideout.json").read_text())["art"]
+    assets = [ROOT / "gameplay" / art[key] for key in ("card", "backdrop", "render", "overlay", "tile")]
+    subprocess.run([ROOT.parents[1] / "scripts/grade-banner", ROOT, *assets], check=True)
 
 
 if __name__ == "__main__":

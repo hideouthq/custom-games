@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Apply the mode's color grade to the freshly exported listing art.
+set -eu
+project=$1
+case "$(basename "$project")" in
+    bebop-wars)     gamma=(0.84 0.93 1.04); contrast=4.7 ;;
+    rooftop-rally)  gamma=(1.04 0.95 0.99); contrast=4.9 ;;
+    pillars)        gamma=(0.98 0.89 1.01); contrast=5.4 ;;
+    *) exit 1 ;;
+esac
+
+work=$(mktemp -d)
+trap 'rm -rf -- "$work"' EXIT
+magick hald:8 -channel R -gamma "${gamma[0]}" -channel G -gamma "${gamma[1]}" \
+    -channel B -gamma "${gamma[2]}" +channel -sigmoidal-contrast "${contrast}x53%" \
+    -modulate 100,117,100 "$work/grade.png"
+shift
+for asset in "$@"; do
+    magick "$asset" "$work/grade.png" -channel RGB -hald-clut +channel -quality 96 "$work/${asset##*/}"
+    mv -- "$work/${asset##*/}" "$asset"
+done

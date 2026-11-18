@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 from PIL import Image, ImageFilter
@@ -56,6 +57,10 @@ def main() -> None:
 
     preview(background, render, overlay, 0, 0).crop((0, 0, 2256, 640)).save(BANNER / "banner-preview@2x.png", optimize=True)
     preview(background, render, overlay, 80, 40).save(BANNER / "banner-preview-expanded@2x.png", optimize=True)
+
+    art = json.loads((ROOT / "gameplay/hideout.json").read_text())["art"]
+    assets = [ROOT / "gameplay" / art[key] for key in ("card", "backdrop", "render", "overlay", "tile")]
+    subprocess.run([ROOT.parents[1] / "scripts/grade-banner", ROOT, *assets], check=True)
 
 
 if __name__ == "__main__":
