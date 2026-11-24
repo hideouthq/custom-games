@@ -125,7 +125,9 @@ def download(url: str, target: Path, digest: str) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
     partial = target.with_name(target.name + ".part")
     try:
-        urllib.request.urlretrieve(url, partial)
+        request = urllib.request.Request(url, headers={"User-Agent": "hideout-publish"})
+        with urllib.request.urlopen(request, timeout=120) as response, partial.open("wb") as out:
+            shutil.copyfileobj(response, out)
     except urllib.error.HTTPError as error:
         error.close()
         partial.unlink(missing_ok=True)
