@@ -80,7 +80,6 @@ class Fixture(unittest.TestCase):
         write(mode / "maps/arena.vpk", "map")
         write(mode / "hideout.json", json.dumps({**json.loads((LISTINGS / "valid/minimal.json").read_text()), "art": {"card": "art/card.png"}}))
         write(mode / "art/card.png", "card pixels")
-        write(self.dir / "upcoming/dodgeball.json", (LISTINGS / "upcoming/dodgeball.json").read_text())
         runtime = f"{self.base}/runtime/v1"
         release = {
             "modlock": "v1",
@@ -88,7 +87,6 @@ class Fixture(unittest.TestCase):
                     "windows": {"url": f"{runtime}/modlock-windows-amd64.exe", "file": "runtime/modlock-windows-amd64.exe"}},
             "host": {"url": f"{runtime}/modlock-host-windows-x64.zip", "file": "runtime/modlock-host-windows-x64.zip"},
             "modes": [{"id": "arena", "dir": "modes/arena"}],
-            "upcoming": [{"id": "dodgeball", "listing": "upcoming/dodgeball.json"}],
         }
         return write(self.dir / "release.json", json.dumps(release))
 
@@ -155,11 +153,10 @@ class DryRunTests(Fixture):
         _, printed, _ = self.run_tool()
         self.assertIn("runtime v1: was v0", printed)
         self.assertIn("arena 1.0.0: new", printed)
-        self.assertIn("upcoming dodgeball: new", printed)
 
     def test_the_runtime_is_unchanged_only_when_its_files_are(self):
         live = {"runtime": {"modlock": "v1", "cli": {"linux": {"sha256": "a"}}, "host": {"sha256": "b"}, "platform": {}, "renderer": {}}}
-        feed = {"runtime": {**live["runtime"], "host": {"sha256": "c"}}, "modes": [], "upcoming": []}
+        feed = {"runtime": {**live["runtime"], "host": {"sha256": "c"}}, "modes": []}
         self.assertEqual("runtime v1: its files changed under the same version", publish.describe(live, feed)[0])
 
     def test_a_live_feed_whose_signature_fails_stops_everything(self):

@@ -16,7 +16,7 @@ MODS = {
 COMMUNITY_MODE = "arena-pit"
 COMMUNITY_LINK = f"mods/{COMMUNITY_MODE}/upstream"
 ROOT_FILES = {"README.md", "LICENSE", ".gitignore", ".gitattributes", ".gitmodules", "runtime.json", "release.json"}
-ROOT_DIRS = {"feed", "mods", "scripts", "upcoming", ".github"}
+ROOT_DIRS = {"feed", "mods", "scripts", ".github"}
 PRIVATE_DIRS = {
     ".tools", ".local", ".private", ".cache", "node_modules", "__pycache__",
     ".pytest_cache", ".mypy_cache", ".ruff_cache", ".playwright-cli",

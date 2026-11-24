@@ -41,7 +41,7 @@ python3 scripts/modes.py play MODE         # a session of the built mode
 
 ## Publish
 
-`release.json` names the modes and upcoming modes the feed carries. The upcoming listings are in `upcoming/`.
+`release.json` names the modes the feed carries.
 
 ```sh
 python3 scripts/modes.py publish

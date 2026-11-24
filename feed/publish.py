@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Publishes the custom games feed from a release: what is live decides the rest, and the bucket gets it in a safe order.
 
-A release names the Modlock runtime's files, each mode's build folder and the upcoming listings. The tool reads the
+A release names the Modlock runtime's files and each mode's build folder. The tool reads the
 live feed and checks its signature, takes the next sequence from it, builds the platform mod and takes the renderer
 with the release's own Linux CLI, and writes the feed with make_feed.py, which applies every rule Hideout's parser does.
 It prints what differs from the live feed and which files would be uploaded, in order.
@@ -40,7 +40,7 @@ BUCKET = "hideout-customgames"
 WRANGLER_LIMIT = 300 * 1024 ** 2
 # The edge keeps the feed and its signature for up to 60 s each.
 EDGE_WAIT = 180
-RELEASE_FIELDS = {"modlock", "cli", "host", "modes", "upcoming"}
+RELEASE_FIELDS = {"modlock", "cli", "host", "modes"}
 
 spec = importlib.util.spec_from_file_location("make_feed", HERE / "make_feed.py")
 make_feed = importlib.util.module_from_spec(spec)
@@ -136,8 +136,7 @@ def artifacts(feed):
 
 
 def art_urls(feed):
-    listings = [mode["listing"] for mode in feed["modes"]] + [entry["listing"] for entry in feed.get("upcoming", [])]
-    return sorted({url for listing in listings for url in make_feed.art_paths(listing.get("art", {}))})
+    return sorted({url for mode in feed["modes"] for url in make_feed.art_paths(mode["listing"].get("art", {}))})
 
 
 def check_served(feed):
@@ -173,7 +172,6 @@ def absolute(release, folder):
         "cli": {os: {**entry, "file": at(entry["file"])} for os, entry in release["cli"].items()},
         "host": {**release["host"], "file": at(release["host"]["file"])},
         "modes": [{**mode, "dir": at(mode["dir"])} for mode in release["modes"]],
-        "upcoming": [{**entry, "listing": at(entry["listing"])} for entry in release.get("upcoming", [])],
     }
 
 
@@ -182,7 +180,7 @@ def read_release(path):
     if not isinstance(release, dict):
         raise Problem(f"{path} is not a JSON object")
     problems = make_feed.unknown_fields("release", release, RELEASE_FIELDS)
-    missing = sorted(RELEASE_FIELDS - {"upcoming"} - set(release))
+    missing = sorted(RELEASE_FIELDS - set(release))
     problems += [f"release: needs {field}" for field in missing]
     if not problems and not (isinstance(release["cli"], dict) and "linux" in release["cli"]):
         problems.append("release: cli needs linux, whose CLI builds the platform mod")
@@ -236,10 +234,6 @@ def describe(live, feed):
     for mode in feed["modes"]:
         lines.append(f"{mode['id']} {mode['version']}: {change(old_modes.get(mode['id']), mode, ('version', 'rules', 'client', 'listing'))}")
     lines += [f"{name}: removed" for name in old_modes if name not in {mode['id'] for mode in feed['modes']}]
-    old_upcoming = {entry["id"]: entry for entry in live.get("upcoming", [])}
-    for entry in feed["upcoming"]:
-        lines.append(f"upcoming {entry['id']}: {change(old_upcoming.get(entry['id']), entry, ('listing',))}")
-    lines += [f"upcoming {name}: removed" for name in old_upcoming if name not in {entry['id'] for entry in feed['upcoming']}]
     return lines
 
 
@@ -317,7 +311,7 @@ def publish(args):
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--release", help="the JSON file naming the runtime's files, the modes' build folders and the upcoming listings")
+    parser.add_argument("--release", help="the JSON file naming the runtime's files and the modes' build folders")
     parser.add_argument("--out", help="a new or empty folder for the feed and everything it publishes")
     parser.add_argument("--key", help="the feed's private key; without it the feed is signed with a throwaway key and nothing is uploaded")
     parser.add_argument("--upload", action="store_true", help="upload in order and read the live feed back; needs --key")

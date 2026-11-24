@@ -29,7 +29,7 @@ class Fixture(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         for name, value in (("REPO", self.root), ("MODS", self.root / "mods"), ("RELEASE", self.root / "release.json"),
-                            ("UPCOMING", self.root / "upcoming"), ("WORK", self.root / ".local/publish")):
+                            ("WORK", self.root / ".local/publish")):
             patcher = patch.object(modes, name, value)
             patcher.start()
             self.addCleanup(patcher.stop)
@@ -39,12 +39,11 @@ class Fixture(unittest.TestCase):
             patcher = patch.object(modes.runtime, name, value)
             patcher.start()
             self.addCleanup(patcher.stop)
-        write(self.root / "release.json", {"modes": ["arena"], "upcoming": ["dodgeball"]})
+        write(self.root / "release.json", {"modes": ["arena"]})
         self.project = self.root / "mods/arena/gameplay"
         write(self.project / "mod.json", {"slug": "arena", "version": "0.1.0"})
         write(self.project / "hideout.json", LISTING)
         write(self.project / "art/card.png", "card")
-        write(self.root / "upcoming/dodgeball.json", {key: LISTING[key] for key in ("name", "tagline", "description", "players", "creators")})
         self.hideout = self.root / "hideout"
         write(self.hideout / "tools/link/go.mod", "module hideout/tools/link\n\nreplace github.com/paralin/modlock => "
                                                   "github.com/hideouthq/modlock v0.1.74-0.20261112111808-130ef5a425cc\n")
@@ -66,19 +65,12 @@ class ReleaseTests(Fixture):
         (self.project / "art/card.png").unlink()
         self.assertIn("card.png is missing", " ".join(modes.release_problems()))
 
-    def test_an_upcoming_listing_may_leave_out_its_date_but_nothing_else(self):
-        write(self.root / "upcoming/dodgeball.json", {"name": "Dodgeball"})
-        self.assertIn("upcoming dodgeball: dodgeball.json tagline must be", " ".join(modes.release_problems()))
-
-    def test_ids_are_unique_and_every_upcoming_file_is_released(self):
-        write(self.root / "release.json", {"modes": ["arena"], "upcoming": ["arena"]})
-        write(self.root / "upcoming/arena.json", LISTING)
-        problems = modes.release_problems()
-        self.assertIn("release.json names arena twice", problems)
-        self.assertIn("upcoming/dodgeball.json is not in release.json", problems)
+    def test_ids_are_unique(self):
+        write(self.root / "release.json", {"modes": ["arena", "arena"]})
+        self.assertIn("release.json names arena twice", modes.release_problems())
 
     def test_a_mode_with_no_manifest_is_named(self):
-        write(self.root / "release.json", {"modes": ["arena", "pillars"], "upcoming": ["dodgeball"]})
+        write(self.root / "release.json", {"modes": ["arena", "pillars"]})
         self.assertEqual(["pillars: release.json names it, but there is no mods/pillars/gameplay/mod.json"], modes.release_problems())
 
 
@@ -169,7 +161,6 @@ class PublishTests(Fixture):
         self.assertEqual([{"id": "arena", "dir": str(folder)}], release["modes"])
         self.assertEqual(f"{modes.runtime.RELEASES}/130ef5a-hideout.1/modlock-linux-amd64", release["cli"]["linux"]["url"])
         self.assertEqual("0" * 64, release["host"]["sha256"])
-        self.assertEqual([{"id": "dodgeball", "listing": str(self.root / "upcoming/dodgeball.json")}], release["upcoming"])
         self.assertEqual(["--release", str(self.root / ".local/publish/release.json"), "--out", str(self.root / ".local/publish/out")],
                          published[0][2:])
 

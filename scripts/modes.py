@@ -27,7 +27,6 @@ import sys
 REPO = Path(__file__).resolve().parents[1]
 MODS = REPO / "mods"
 RELEASE = REPO / "release.json"
-UPCOMING = REPO / "upcoming"
 WORK = REPO / ".local/publish"
 FEED = REPO / "feed"
 sys.path[:0] = [str(REPO / "scripts"), str(FEED)]
@@ -65,18 +64,18 @@ def build(mode: str) -> None:
     listing_into_build(mode)
 
 
-def listing_problems(where: str, path: Path, upcoming: bool = False) -> list[str]:
+def listing_problems(where: str, path: Path) -> list[str]:
     try:
         listing = make_feed.read_json(path)
     except make_feed.Problem as error:
         return [f"{where}: {error}"]
-    problems = [f"{where}: {path.name} {problem}" for problem in make_feed.listing_problems(listing, upcoming=upcoming)]
+    problems = [f"{where}: {path.name} {problem}" for problem in make_feed.listing_problems(listing)]
     return problems or make_feed.art_problems(where, path.parent.resolve(), listing)
 
 
 def release_problems() -> list[str]:
     release = json.loads(RELEASE.read_text())
-    named = release["modes"] + release["upcoming"]
+    named = release["modes"]
     problems = [f"release.json names {name} twice" for name in sorted({name for name in named if named.count(name) > 1})]
     for mode in release["modes"]:
         manifest_path = MODS / mode / "gameplay/mod.json"
@@ -90,10 +89,6 @@ def release_problems() -> list[str]:
         if not make_feed.FILE_NAME_PART.fullmatch(str(manifest.get("version", ""))):
             problems.append(f"{mode}: mod.json's version {manifest.get('version')!r} names files, so it holds only letters, digits, '.', '_', '+' and '-'")
         problems += listing_problems(mode, MODS / mode / "gameplay/hideout.json")
-    for name in release["upcoming"]:
-        path = UPCOMING / f"{name}.json"
-        problems += listing_problems(f"upcoming {name}", path, upcoming=True) if path.is_file() else [f"upcoming {name}: no {path.relative_to(REPO)}"]
-    problems += [f"upcoming/{path.name} is not in release.json" for path in sorted(UPCOMING.glob("*.json")) if path.stem not in release["upcoming"]]
     return problems
 
 
@@ -151,7 +146,6 @@ def release_document(release: dict, folders: dict[str, Path]) -> dict:
         "cli": {"linux": entry(runtime.LINUX_CLI), "windows": entry(runtime.WINDOWS_CLI)},
         "host": entry(runtime.HOST_ZIP),
         "modes": [{"id": mode, "dir": str(folders[mode])} for mode in release["modes"]],
-        "upcoming": [{"id": name, "listing": str(UPCOMING / f"{name}.json")} for name in release["upcoming"]],
     }
 
 
@@ -176,7 +170,7 @@ def publish(args) -> int:
         given[mode] = Path(folder).resolve()
     runtime.runtime_files()
     building = [mode for mode in release["modes"] if mode not in given]
-    paths = [RELEASE, runtime.PIN_PATH, UPCOMING, *(MODS / mode for mode in building)]
+    paths = [RELEASE, runtime.PIN_PATH, *(MODS / mode for mode in building)]
     uncommitted = subprocess.check_output(["git", "status", "--porcelain", "--", *map(str, paths)], cwd=REPO, text=True).splitlines()
     if uncommitted:
         raise RuntimeError("Commit these first, so what is published is a commit:\n" + "\n".join(uncommitted))

@@ -2,8 +2,7 @@
 """Turns a source file and built Modlock mods into the files a custom games feed publishes.
 
 Writes OUT/customgames.json (the feed Hideout reads), OUT/customgames.json.sig, one zip per package and OUT/art. Each
-mode's listing is the hideout.json in its build folder, the same file Hideout reads when its author hosts the folder. An
-upcoming mode is only a listing file, announced with no package until it ships. The
+mode's listing is the hideout.json in its build folder, the same file Hideout reads when its author hosts the folder. The
 feed has its own Ed25519 key, never the release key. --generate-test-key writes a key for a local test feed and prints its public half.
 """
 import argparse
@@ -38,10 +37,9 @@ HEX_COLOR = re.compile(r"#[0-9A-Fa-f]{6}")
 PLACEHOLDER = re.compile(r"\{([a-z0-9_-]{1,16})\}")
 ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 
-SOURCE_FIELDS = {"modlock", "cli", "host", "platform", "renderer", "modes", "upcoming"}
+SOURCE_FIELDS = {"modlock", "cli", "host", "platform", "renderer", "modes"}
 UPSTREAM_FIELDS = {"url", "file", "sha256"}
 MODE_FIELDS = {"id", "dir"}
-UPCOMING_FIELDS = {"id", "listing"}
 LISTING = "hideout.json"
 ART_FIELDS = ("card", "backdrop", "render", "overlay", "tile", "explainer")
 
@@ -145,9 +143,8 @@ def fact(value):
     return isinstance(value, dict) and text(value.get("label"), 24) and text(value.get("value"), 48) and (value.get("note") is None or text(value["note"], 48))
 
 
-def listing_problems(listing, upcoming=False):
-    """The rules Hideout's parseListing holds a listing to, or parseUpcomingListing's with upcoming, which lets the
-    release date go unsaid."""
+def listing_problems(listing):
+    """The rules Hideout's parseListing holds a listing to."""
     if not isinstance(listing, dict):
         return ["is not a JSON object"]
     art = listing.get("art", {})
@@ -157,7 +154,7 @@ def listing_problems(listing, upcoming=False):
         ("description", text(listing.get("description"), 2000, lines=True), "text of 1 to 2000 characters with no control characters"),
         ("players", span(listing.get("players"), MAX_PLAYERS), f"a min and a max with 1 <= min <= max <= {MAX_PLAYERS}"),
         ("creators", every(listing.get("creators"), 8, lambda c: text(c, 48)) and listing["creators"], "1 to 8 names of at most 48 characters"),
-        ("released", is_date(listing.get("released")) or (upcoming and listing.get("released") is None), "a date, YYYY-MM-DD"),
+        ("released", is_date(listing.get("released")), "a date, YYYY-MM-DD"),
         ("kind", listing.get("kind") is None or isinstance(listing["kind"], str), "text"),
         ("minutes", listing.get("minutes") is None or span(listing["minutes"], 600), "a min and a max with 1 <= min <= max <= 600"),
         ("curated", isinstance(listing.get("curated", False), bool), "true or false"),
@@ -352,20 +349,6 @@ def art_problems(where, folder, listing):
             if not ((folder / path).is_file() and (folder / path).resolve().is_relative_to(folder))]
 
 
-def upcoming_problems(where, entry, source_dir):
-    if not isinstance(entry, dict):
-        return [f"{where}: is not an object"]
-    problems = unknown_fields(where, entry, UPCOMING_FIELDS) + id_problems(where, entry.get("id"))
-    if not text_field(entry, "listing"):
-        problems.append(f"{where}: needs a listing file")
-    if problems:
-        return problems
-    path = resolve(source_dir, entry["listing"])
-    listing = read_json(path)
-    problems = [f"{where}: {path.name} {problem}" for problem in listing_problems(listing, upcoming=True)]
-    return problems or art_problems(where, path.parent, listing)
-
-
 def source_problems(source, source_dir, schemes):
     if not isinstance(source, dict):
         return ["the source file is not a JSON object"]
@@ -398,12 +381,7 @@ def source_problems(source, source_dir, schemes):
         return problems + ["source: modes is not a list"]
     for index, mode in enumerate(modes):
         problems += mode_problems(f"mode {mode.get('id', index) if isinstance(mode, dict) else index}", mode, source_dir)
-    upcoming = source.get("upcoming", [])
-    if not isinstance(upcoming, list):
-        return problems + ["source: upcoming is not a list"]
-    for index, entry in enumerate(upcoming):
-        problems += upcoming_problems(f"upcoming {entry.get('id', index) if isinstance(entry, dict) else index}", entry, source_dir)
-    ids = [mode.get("id") for mode in [*modes, *upcoming] if isinstance(mode, dict)]
+    ids = [mode.get("id") for mode in modes if isinstance(mode, dict)]
     problems += [f"mode {name}: listed twice" for name in sorted({i for i in ids if isinstance(i, str) and ids.count(i) > 1})]
     return problems
 
@@ -456,7 +434,6 @@ def build_feed(source, source_dir, sequence, out, base):
             "renderer": package(resolve(source_dir, source["renderer"]), list(RENDERER_FILES), f"renderer-{source['modlock']}", out, base),
         },
         "modes": [build_mode(mode, source_dir, out, base) for mode in source["modes"]],
-        "upcoming": [{"id": entry["id"], "listing": published_listing(resolve(source_dir, entry["listing"]), out, base)} for entry in source.get("upcoming", [])],
     }
 
 

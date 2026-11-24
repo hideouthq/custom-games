@@ -64,8 +64,6 @@ class Fixture(unittest.TestCase):
         write(rich / "hideout.json", (LISTINGS / "valid/bebop-wars.json").read_text())
         for path in make_feed.art_paths(json.loads((LISTINGS / "valid/bebop-wars.json").read_text())["art"]):
             write(rich / path, f"{PurePosixPath(path).stem} pixels")
-        for case in sorted((LISTINGS / "upcoming").glob("*.json")):
-            write(self.dir / "upcoming" / case.name, case.read_text())
         write(rich / "maps/arena.vpk", "map")
         write(rich / "maps/unrelated.vpk", "not named by the manifest")
         write(rich / "panorama/layout/rich-mode/panel.vxml_c", "panel")
@@ -82,11 +80,6 @@ class Fixture(unittest.TestCase):
             "modes": [
                 {"id": "plain-mode", "dir": "plain"},
                 {"id": "rich-mode", "dir": "rich"},
-            ],
-            "upcoming": [
-                {"id": "heaven-or-else", "listing": "upcoming/heaven-or-else.json"},
-                {"id": "dodgeball", "listing": "upcoming/dodgeball.json"},
-                {"id": "hero-roulette", "listing": "upcoming/hero-roulette.json"},
             ],
         }
 
@@ -212,17 +205,6 @@ class ListingTests(Fixture):
         for case in cases:
             self.assertNotEqual([], make_feed.listing_problems(json.loads(case.read_text())), case.name)
 
-    def test_an_upcoming_listing_may_leave_out_only_its_release_date(self):
-        cases = sorted((LISTINGS / "upcoming").glob("*.json"))
-        self.assertEqual(3, len(cases))
-        for case in cases:
-            listing = json.loads(case.read_text())
-            self.assertEqual([], make_feed.listing_problems(listing, upcoming=True), case.name)
-            self.assertEqual(["released must be a date, YYYY-MM-DD"], make_feed.listing_problems(listing), case.name)
-        for case in sorted((LISTINGS / "invalid").glob("*.json")):
-            if case.name != "no-released.json":
-                self.assertNotEqual([], make_feed.listing_problems(json.loads(case.read_text()), upcoming=True), case.name)
-
     def test_the_listing_is_the_build_folders_own_with_art_served_beside_the_packages(self):
         feed = self.published()
         self.assertEqual(json.loads((LISTINGS / "valid/minimal.json").read_text()), feed["modes"][0]["listing"])
@@ -233,34 +215,6 @@ class ListingTests(Fixture):
         self.assertEqual("card-background@2x pixels", (self.out / unquote(card.removeprefix(f"{BASE}/"))).read_text())
         self.assertEqual(3, len(listing["art"]["screenshots"]))
         self.assertTrue(all(url.startswith(f"{BASE}/art/") for url in [*listing["art"]["screenshots"], listing["art"]["explainer"], listing["art"]["overlay"]]))
-
-    def test_upcoming_modes_are_listings_with_no_version_or_package(self):
-        feed = self.published()
-        self.assertEqual(["heaven-or-else", "dodgeball", "hero-roulette"], [entry["id"] for entry in feed["upcoming"]])
-        for entry in feed["upcoming"]:
-            self.assertEqual({"id", "listing"}, set(entry))
-        self.assertEqual(json.loads((LISTINGS / "upcoming/dodgeball.json").read_text()), feed["upcoming"][1]["listing"])
-        self.assertEqual(["plain-mode", "rich-mode"], [mode["id"] for mode in feed["modes"]])
-
-    def test_an_upcoming_listings_art_is_served_like_a_modes(self):
-        listing = json.loads((self.dir / "upcoming/dodgeball.json").read_text())
-        write(self.dir / "upcoming/art/card.png", "dodgeball card")
-        write(self.dir / "upcoming/dodgeball.json", json.dumps({**listing, "art": {"card": "art/card.png"}}))
-        card = self.published()["upcoming"][1]["listing"]["art"]["card"]
-        self.assertEqual("dodgeball card", (self.out / card.removeprefix(f"{BASE}/")).read_text())
-
-    def test_an_upcoming_listing_that_breaks_a_rule_is_refused_with_it(self):
-        write(self.dir / "upcoming/dodgeball.json", (LISTINGS / "invalid/players-over-64.json").read_text())
-        self.assert_refused(self.publish(), "upcoming dodgeball: dodgeball.json players must be a min and a max")
-
-    def test_an_upcoming_mode_cannot_share_an_id_with_a_mode(self):
-        self.source["upcoming"][0]["id"] = "rich-mode"
-        self.assert_refused(self.publish(), "mode rich-mode: listed twice")
-
-    def test_an_upcoming_listings_art_must_be_beside_it(self):
-        listing = json.loads((self.dir / "upcoming/dodgeball.json").read_text())
-        write(self.dir / "upcoming/dodgeball.json", json.dumps({**listing, "art": {"card": "art/missing.png"}}))
-        self.assert_refused(self.publish(), "missing.png is missing")
 
     def test_the_listing_and_art_stay_out_of_the_packages(self):
         feed = self.published()
