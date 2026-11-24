@@ -5,7 +5,9 @@ import {
   onDamaged,
   onFrame,
   onPlayerJoin,
+  onPlayerAway,
   onPlayerLeave,
+  onPlayerReturn,
   onSpawn,
   onStart,
   onWorld,
@@ -18,6 +20,8 @@ export const game = new Game()
 onStart((args) => game.start(args))
 onWorld(() => game.world())
 onPlayerJoin(({ connection }) => game.join(connection))
+onPlayerAway(({ connection }) => game.presence(connection))
+onPlayerReturn(({ connection }) => game.presence(connection))
 onPlayerLeave(({ connection }) => game.leave(connection))
 onSpawn((player) => game.spawned(player))
 onAbilityCast((cast) => game.cast(cast))

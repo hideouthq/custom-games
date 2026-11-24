@@ -149,6 +149,7 @@ interface Member {
   readonly player: Player
   readonly name: string
   readonly bot: boolean
+  away: boolean
   hero: PoolHero
   readonly joinedAt: number
   asked: boolean
@@ -438,6 +439,7 @@ export class Game {
       player,
       name: connection.name,
       bot: connection.bot,
+      away: false,
       hero,
       joinedAt: this.now,
       asked: connection.bot,
@@ -531,6 +533,15 @@ export class Game {
     this.pinned.delete(connection.player.slot)
   }
 
+  /**
+   * An away player forfeits the round in play and waits out the rest as a
+   * leaver would, but keeps their seat and points for their return.
+   */
+  presence(connection: Connection): void {
+    const member = this.members.get(connection.player.slot)
+    if (member !== undefined) member.away = connection.away
+  }
+
   frame(now: number, movement: readonly MovementSample[]): void {
     this.now = now
     this.seatBots()
@@ -543,7 +554,9 @@ export class Game {
       this.joinedAt = now + 2
     }
 
-    const people = [...this.members.values()].some((member) => !member.bot)
+    const people = [...this.members.values()].some(
+      (member) => !member.bot && !member.away,
+    )
     const views =
       this.round.phase === 'waiting' && (this.settling() || !people)
         ? []
@@ -1219,6 +1232,8 @@ export class Game {
         continue
       }
       if (!this.round.isLiving(member.id)) {
+        // A returning client whose hero lies dead drops the connection.
+        if (member.away) continue
         log(`removing ${member.name}: alive but not in the round`)
         member.player.kill()
         member.alive = false
@@ -1244,7 +1259,7 @@ export class Game {
   private views(): View[] {
     const views: View[] = []
     for (const member of this.members.values()) {
-      if (member.entity !== 0) {
+      if (member.entity !== 0 && !member.away) {
         views.push({
           id: member.id,
           alive: member.alive,

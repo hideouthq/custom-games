@@ -174,9 +174,23 @@ function join(
     ready: true,
     generation,
     roles: [],
+    away: false,
   }
   game.join(connection)
   return connection
+}
+
+function connectionOf(slot: number): Connection {
+  return {
+    player: Player.of(slot),
+    steamId: BigInt(slot + 1),
+    name: `Person ${slot}`,
+    bot: false,
+    ready: true,
+    generation: 1,
+    roles: [],
+    away: false,
+  }
 }
 
 function run(game: Game, until: number): void {
@@ -577,6 +591,7 @@ describe('scores', () => {
       ready: true,
       generation: 1,
       roles: [],
+      away: false,
     })
     Player.release(1)
     join(game, 1, 50n, 2)
@@ -586,6 +601,29 @@ describe('scores', () => {
 
     join(game, 4, 2n, 1)
     expect(game['members'].get(4)?.id).toBe(winner)
+  })
+})
+
+describe('away players', () => {
+  test('forfeit the round but keep their standing hero and their seat for the next round', () => {
+    const game = dev()
+    const round = live(game, 2)
+    const stayer = game['members'].get(1)?.id ?? -1
+    const before = calls.length
+    game.presence({ ...connectionOf(0), away: true })
+    run(game, clock + 0.1)
+    expect(round.phase).toBe('intermission')
+    expect(round.standings().find((s) => s.id === stayer)?.wins).toBe(1)
+    expect(sent('Kill', PlayerRequest, before)).toEqual([])
+    expect(sent('KillEntity', KillOptions, before)).toEqual([])
+    expect(pawns.get(0)?.health).toBe(800)
+
+    run(game, clock + rules.intermissionSeconds + 1)
+    expect(round.phase).toBe('waiting')
+
+    game.presence(connectionOf(0))
+    while (round.phase !== 'live' && clock < 120) run(game, clock + step)
+    expect(round.isLiving(game['members'].get(0)?.id ?? -1)).toBe(true)
   })
 })
 
