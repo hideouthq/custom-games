@@ -4,6 +4,7 @@
   "summary": "Everyone plays Yamato. Block the orb when it comes for you and aim it at someone else. It gets faster with every return.",
   "description": "A free-for-all on a rooftop above the city, with Archmother and the Hidden King looking on. A Celeste orb chases one player at a time, and only that player can send it back. Block with left click or your parry key, and your aim picks the next target. Weapons and Yamato's own abilities are off. A hit knocks you out until the next round, and so does falling off the roof. Before the first round, pick one special for the match: Power Slash makes your next return 50% faster, Blink teleports you up to 12 m, and Time Freeze stops the orb for 0.6 seconds while it's coming for you.",
   "kind": "free-for-all",
+  "goal": "Last one standing",
   "players": {
     "min": 2,
     "max": 8

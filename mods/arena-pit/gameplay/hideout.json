@@ -4,6 +4,8 @@
   "summary": "Two teams share one arena and start with 500 tickets each. A ring-out costs five. Every ten enemy hero deaths send five Rift Troopers straight down the middle.",
   "description": "Shattered Arena by CosmicCapt brings SMITE’s Corrupted Arena format to Deadlock. Heavy melee can empty a rival’s stamina and send them over the edge. A fresh wave of troopers marches every 30 seconds. Protect yours on the way to the enemy portal, or slip away to claim a camp buff. At five minutes, islands rise from the pits carrying Sinner’s Sacrifices. Land a heavy hit to earn a ticket back for your team. Once a team runs out of tickets, both sides can settle the score on a separate platform in an optional last-team-standing bonus round.",
   "kind": "teams",
+  "minutes": {"min": 15, "max": 25},
+  "goal": "Run the enemy out of tickets",
   "players": {"min": 2, "max": 12},
   "creators": ["CosmicCapt"],
   "released": "2026-11-18",

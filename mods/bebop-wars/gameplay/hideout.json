@@ -4,6 +4,11 @@
   "summary": "Hook an enemy across the canal, then finish them with a second Hook or melee. Hook pulled teammates home. First to 25 kills wins.",
   "description": "A winter hook arena for 1v1, 2v2 and 3v3. First to 25 kills wins. After eight minutes the higher score wins, and a tie goes to sudden death. A Hook hit takes 55% of the target's maximum health and drags them onto your bank, so two hits normally kill. A pulled enemy who survives fights on there with Hook, melee and parry, and their teammates can hook them home. A rescue pays 25 Souls. Everyone starts with Hook and 300 Souls. The shop sells eight items in three sections, setup, utility and defense, and you equip one from each. Your kills unlock Hook upgrades at 3, 5 and 10: longer range, a shorter cooldown, then Rebound. Death keeps your purchases and returns you to your shop after four seconds.",
   "kind": "teams",
+  "minutes": {
+    "min": 8,
+    "max": 10
+  },
+  "goal": "First to 25 kills",
   "players": {
     "min": 2,
     "max": 6

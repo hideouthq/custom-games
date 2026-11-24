@@ -4,6 +4,11 @@
   "summary": "Everyone gets a random drop every 7 seconds: ammo, stamina, an ability or an item. Shove your rivals into the void before they shove you.",
   "description": "A free-for-all on ten stone pillars around a higher centre deck, with nothing below but haze. Each player gets a different hero: Abrams, Billy, Silver, Viscous, Ivy, Vindicta, Lash or Yamato. You start with no abilities and no items, one stamina and one magazine, and you can't reload. Everything else comes from drops. Every 7 seconds everyone gets one at random: an Ammo Crate, a Stamina Pip, an ability such as Pillow Toss, Puddle Punch, Paradoxical Swap or Grapple, or an item such as Warp Stone, Majestic Leap or Ethereal Shift. Each drop is one use. Melee knocks back harder the less health its target has. You have one life a round: fall 25 m or run out of health and you watch until one player is left. Every 45 seconds a Legendary waits on the centre deck for the first player to stand there for a second. After 6 minutes drops come every 4 seconds, hits knock harder and the void rises. At 8 minutes the survivors are moved to the centre deck for the Final Stand. A match is five rounds on points: 3 for winning a round, 1 for each knockout, and 1 for finishing in the last three when four or more play.",
   "kind": "free-for-all",
+  "minutes": {
+    "min": 10,
+    "max": 20
+  },
+  "goal": "Most points after five rounds",
   "players": {
     "min": 2,
     "max": 8
