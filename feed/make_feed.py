@@ -35,6 +35,7 @@ TOKEN = re.compile(r"[a-z0-9_-]{1,16}")
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 CONTROL = re.compile("[\x00-\x1f\x7f-\x9f]")
 HEX_COLOR = re.compile(r"#[0-9A-Fa-f]{6}")
+PLACEHOLDER = re.compile(r"\{([a-z0-9_-]{1,16})\}")
 ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 
 SOURCE_FIELDS = {"modlock", "cli", "host", "platform", "renderer", "modes", "upcoming"}
@@ -173,16 +174,17 @@ def listing_problems(listing, upcoming=False):
         ("summary", listing.get("summary") is None or text(listing["summary"], 200), "text of 1 to 200 characters with no control characters"),
         ("legend", every(listing.get("legend", []), 6, legend_entry), "at most 6 entries, each a label of at most 48 characters and a color #RRGGBB"),
         ("facts", every(listing.get("facts", []), 4, fact), "at most 4 facts, each a label of at most 24 characters, a value of at most 48 and a note of at most 48 or none"),
+        ("goal", listing.get("goal") is None or text(listing["goal"], 48), "text of 1 to 48 characters with no control characters"),
     )
     problems = [f"{field} must be {rule}" for field, ok, rule in rules if not ok]
-    if problems or not listing.get("settings"):
+    if problems:
         return problems
-    for index, setting in enumerate(listing["settings"]):
+    for index, setting in enumerate(listing.get("settings", [])):
         if problem := setting_problem(setting, listing["players"]):
             problems.append(f"setting {setting.get('key', index) if isinstance(setting, dict) else index}: {problem}")
     if problems:
         return problems
-    read = [setting for setting in listing["settings"] if setting.get("options") is not None]
+    read = [setting for setting in listing.get("settings", []) if setting.get("options") is not None]
     keys = [setting["key"] for setting in read]
     if len(read) > 4:
         problems.append("settings: at most 4 with options")
@@ -190,7 +192,17 @@ def listing_problems(listing, upcoming=False):
         problems.append("settings: each key once")
     if sum(any(option.get("players") is not None for option in setting["options"]) for setting in read) > 1:
         problems.append("settings: only one may set players")
-    return problems
+    return problems + goal_problems(listing.get("goal"), set(keys))
+
+
+def goal_problems(goal, keys):
+    """A goal may name a setting as {key}, which Hideout fills with the picked option's label."""
+    if goal is None:
+        return []
+    rest = PLACEHOLDER.sub("", goal)
+    if "{" in rest or "}" in rest:
+        return ["goal may hold { and } only around a setting's key"]
+    return [f"goal names {{{key}}}, which is no setting with options" for key in sorted(set(PLACEHOLDER.findall(goal)) - keys)]
 
 
 def read_json(path):
