@@ -1301,6 +1301,29 @@ test("a leaver's living Yamato is killed once nobody holds it, while connected a
   expect(pawns.get(0)?.health).toBe(100)
 })
 
+test('an away player is out of the rally with no knockout, and their hero waits for their return', () => {
+  const { game, human } = serving()
+  game.frame(10)
+  game.presence({ ...human, away: true })
+  calls.length = 0
+  game.frame(11)
+  expect(game.round.phase).toMatchObject({
+    kind: 'intermission',
+    winner: '1:1',
+  })
+  expect(hud(1).scores?.rows[0]).toMatchObject({
+    name: 'Human 1',
+    wins: 1,
+    knockouts: 0,
+  })
+  expect(killed()).toEqual([])
+  expect(pawns.get(0)?.health).toBe(100)
+
+  game.presence(human)
+  for (const now of [12, 13]) game.frame(now)
+  expect(killed()).toEqual([10])
+})
+
 test('a new world restarts the stray sweep with its clock', () => {
   const { game } = serving()
   game.frame(500)

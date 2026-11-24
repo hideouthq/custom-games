@@ -238,6 +238,15 @@ export class Game {
     if (key === playerId(connection)) this.scores.forget(key)
   }
 
+  /**
+   * An away player is out of the rally in play, as a leaver is, and does not
+   * count towards the next one, but keeps their seat for their return.
+   */
+  presence(connection: Connection): void {
+    const seat = this.seats.get(playerId(connection))
+    if (seat) seat.connection = connection
+  }
+
   frame(now: number, movement: readonly MovementSample[] = []): void {
     this.time = now
     this.strays.sweep(now)
@@ -251,6 +260,7 @@ export class Game {
     const specialRequests: { seat: Seat; pawn: Pawn | undefined }[] = []
     const samples = new Map(movement.map((sample) => [sample.player, sample]))
     for (const [id, seat] of this.seats) {
+      if (seat.connection.away) continue
       const pawn = seat.connection.player.pawn()
       this.maintainSeat(seat, pawn, now)
       this.showCharge(seat, pawn)
@@ -768,7 +778,9 @@ export class Game {
         this.clearPenalty(seat)
         this.cancelSpecial(seat)
         const pawn = seat.connection.player.pawn()
-        if (pawn) {
+        // A returning client whose hero lies dead drops the connection, so an
+        // away player's hero is killed once they are back and spectating.
+        if (pawn && !seat.connection.away) {
           if (pawn.health > 0) killEntity({ victim: pawn.entity })
           disableRespawn(pawn)
         }

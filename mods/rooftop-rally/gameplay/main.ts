@@ -2,8 +2,10 @@ import {
   onInput,
   onDamage,
   onFrame,
+  onPlayerAway,
   onPlayerJoin,
   onPlayerLeave,
+  onPlayerReturn,
   onSpawn,
   onStart,
   onWorld,
@@ -23,6 +25,8 @@ onWorld(() => {
   practice.reset()
 })
 onPlayerJoin(({ connection }) => game.join(connection))
+onPlayerAway(({ connection }) => game.presence(connection))
+onPlayerReturn(({ connection }) => game.presence(connection))
 onPlayerLeave(({ connection }) => {
   practice.leave(connection)
   game.leave(connection)
