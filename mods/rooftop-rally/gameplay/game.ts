@@ -294,6 +294,7 @@ export class Game {
     const seat = this.seatFor(player)
     if (
       !seat ||
+      seat.connection.away ||
       (seat.state.kind !== 'eliminated' && seat.state.kind !== 'spectating') ||
       this.round.lobby ||
       pawn.hero !== yamatoId ||

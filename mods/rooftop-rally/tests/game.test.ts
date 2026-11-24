@@ -1319,6 +1319,10 @@ test('an away player is out of the rally with no knockout, and their hero waits 
   expect(killed()).toEqual([])
   expect(pawns.get(0)?.health).toBe(100)
 
+  game.spawned(human.player, human.player.pawn()!)
+  expect(killed()).toEqual([])
+  expect(pawns.get(0)?.health).toBe(100)
+
   game.presence(human)
   for (const now of [12, 13]) game.frame(now)
   expect(killed()).toEqual([10])
