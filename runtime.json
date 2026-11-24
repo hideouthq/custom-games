@@ -1,11 +1,11 @@
 {
   "upstream": "https://github.com/hideouthq/modlock.git",
-  "revision": "a563e65c7565baebec90b91d8319126d2f778c9b",
-  "version": "a563e65-hideout.1",
+  "revision": "4b12f17a02a492e67e1c478b12e54de1440e8032",
+  "version": "4b12f17-hideout.1",
   "files": {
-    "modlock-linux-amd64": "ca01a58931421c3eb9bc043e3d9a82daa8e1b62f0e8c231f7d23b529a2b497a6",
-    "modlock-windows-amd64.exe": "051380250cbcdfc3f41c8f7028a44509ffd443ec6e3ef004bddda15f2168a090",
-    "modlock-host-windows-x64.zip": "e184197aca136411e711cb8c50657366a8b7f25f98311b58771e797407a32d99"
+    "modlock-linux-amd64": "cc2ba963d17a88fb3b13518141d364f7eac3d0251a28dbc2024f54dd92a14de6",
+    "modlock-windows-amd64.exe": "b520882b5ea2ae46d06b7cb10b4fd338373631a2114a36062e172813b1dd81f1",
+    "modlock-host-windows-x64.zip": "9754496412d6ec82feec2f0960e1231be96750addb34c9e84d75e0d2be59db1a"
   },
   "toolchains": [
     {
