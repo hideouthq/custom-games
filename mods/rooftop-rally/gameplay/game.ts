@@ -862,7 +862,8 @@ export class Game {
       now,
       round: this.round.number,
       remaining: this.round.living.size,
-      seats: this.seats.size,
+      seats: [...this.seats.values()].filter((seat) => !seat.connection.away)
+        .length,
       winnerName: this.winnerName,
       resumeCueUntil: this.resumeCueUntil,
     }

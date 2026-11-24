@@ -1328,6 +1328,17 @@ test('an away player is out of the rally with no knockout, and their hero waits 
   expect(killed()).toEqual([10])
 })
 
+test('a lobby with one player present after everyone chose waits for a player', () => {
+  const game = new Game()
+  join(game, 0)
+  const away = join(game, 1)
+  game.round.phase = { kind: 'waiting' }
+  game.presence({ ...away, away: true })
+  game.frame(1)
+  expect(game.round.phase.kind).toBe('waiting')
+  expect(hud(0).notice).toMatchObject({ title: 'WAITING FOR PLAYERS' })
+})
+
 test('a new world restarts the stray sweep with its clock', () => {
   const { game } = serving()
   game.frame(500)
