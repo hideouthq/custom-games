@@ -35,10 +35,7 @@ import {
   EntityRequest,
   FindEntitiesRequest,
 } from '../.tools/modlock/src/wasm/entities/entities.pb'
-import {
-  HitOptions,
-  KillOptions,
-} from '../.tools/modlock/src/wasm/combat/combat.pb'
+import { KillOptions } from '../.tools/modlock/src/wasm/combat/combat.pb'
 import { Kind, UiRequest, type Node } from '../.tools/modlock/src/wasm/ui/ui.pb'
 
 import { Game, playerId } from '../gameplay/game'
@@ -199,6 +196,7 @@ function join(
     name: bot ? 'Practice Yamato' : `Human ${slot}`,
     steamId: bot ? 0n : BigInt(slot + 1),
     roles: [],
+    away: false,
   }
   pawns.set(slot, {
     entity: slot + 10 * generation,
@@ -1273,13 +1271,13 @@ function ownController(hero: number, controller: number): void {
   field(controller, 'CCitadelPlayerController', 'm_hHeroPawn', hero)
 }
 
-function damaged(): number[] {
+function killed(): number[] {
   return calls
-    .filter((call) => call.method === 'Damage')
-    .map((call) => HitOptions.fromBinary(call.request).victim ?? 0)
+    .filter((call) => call.method === 'KillEntity')
+    .map((call) => KillOptions.fromBinary(call.request).victim ?? 0)
 }
 
-test("a leaver's living Yamato is laid down once nobody holds it, while connected and spectating heroes are kept", () => {
+test("a leaver's living Yamato is killed once nobody holds it, while connected and spectating heroes are kept", () => {
   const { game, spectator, pawn } = spectatorGame()
   const leaver = game.seats.get('1:1')!.connection
   nativeCamera(pawn.entity, 82, 72)
@@ -1292,9 +1290,9 @@ test("a leaver's living Yamato is laid down once nobody holds it, while connecte
   for (const entity of [10, 11, pawn.entity]) heroEntities.add(entity)
   game.leave(leaver)
   for (const now of [0, 1, 2]) game.frame(now)
-  expect(damaged()).toEqual([])
+  expect(killed()).toEqual([])
   game.frame(3)
-  expect(damaged()).toEqual([11])
+  expect(killed()).toEqual([11])
   expect(fields.get('11:CCitadelPlayerPawn:m_flRespawnTime')?.value).toEqual({
     case: 'number',
     value: 1e9,
@@ -1310,7 +1308,7 @@ test('a new world restarts the stray sweep with its clock', () => {
   field(50, 'CBaseEntity', 'm_iHealth', 100)
   game.world()
   for (const now of [0, 1, 2, 3]) game.frame(now)
-  expect(damaged()).toEqual([50])
+  expect(killed()).toEqual([50])
 })
 
 test('a hero that spawns for an eliminated or spectating player is killed at once with its respawn held', () => {
