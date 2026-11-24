@@ -625,6 +625,20 @@ describe('away players', () => {
     while (round.phase !== 'live' && clock < 120) run(game, clock + step)
     expect(round.isLiving(game['members'].get(0)?.id ?? -1)).toBe(true)
   })
+
+  test('keep a hero that falls below the kill plane as they go away', () => {
+    const game = dev()
+    const round = live(game, 2)
+    const before = calls.length
+    const pawn = pawns.get(0)
+    if (pawn?.position) pawn.position = { ...pawn.position, z: -2000 }
+    game.presence({ ...connectionOf(0), away: true })
+    run(game, clock + 0.1)
+    expect(round.phase).toBe('intermission')
+    expect(sent('Kill', PlayerRequest, before)).toEqual([])
+    expect(sent('KillEntity', KillOptions, before)).toEqual([])
+    expect(pawns.get(0)?.health).toBe(800)
+  })
 })
 
 describe('reloads', () => {

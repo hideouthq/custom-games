@@ -1228,12 +1228,11 @@ export class Game {
     }
     const floor = this.round.killZ(this.now)
     for (const member of this.members.values()) {
-      if (!member.alive) {
+      // A returning client whose hero lies dead drops the connection.
+      if (!member.alive || member.away) {
         continue
       }
       if (!this.round.isLiving(member.id)) {
-        // A returning client whose hero lies dead drops the connection.
-        if (member.away) continue
         log(`removing ${member.name}: alive but not in the round`)
         member.player.kill()
         member.alive = false
