@@ -1,0 +1,15 @@
+{
+  "slug": "doorman-trainer",
+  "name": "Doorman Trainer",
+  "version": "0.1.2",
+  "language": "LANGUAGE_TYPESCRIPT",
+  "definitions": [
+    {
+      "file": "FILE_NPC_UNITS",
+      "entry": "npc_player_bot_brain",
+      "fields": {
+        "CCitadelPlayerBotNPCBrainVData.m_flDisengageFromEnemyToLaneDist": 100000
+      }
+    }
+  ]
+}

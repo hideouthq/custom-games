@@ -1,0 +1,70 @@
+{
+  "name": "Ability Draft",
+  "tagline": "Draft a hero, then draft their abilities from everyone else. Play a full match with the kit you built.",
+  "summary": "Twelve seats take turns picking from a board of 18 heroes and their abilities. Then the teams play a normal Deadlock match with their mixed kits.",
+  "description": "Ability Draft by sh3lk brings the classic draft format to Deadlock. Join a team in the lobby and let bots fill the empty seats. The draft board shows 18 heroes. Each seat picks a body and then one ability for each key, ten seconds a pick, so your ultimate might come from one hero and your first ability from another. Then both teams play a regular match on Midtown with the kits they built. The corrupted item shop from the Broker returns too: the lobby chooses when it opens, and it restocks every 15 minutes.",
+  "kind": "teams",
+  "minutes": {
+    "min": 30,
+    "max": 50
+  },
+  "goal": "Destroy the enemy Patron",
+  "players": {
+    "min": 1,
+    "max": 12
+  },
+  "creators": [
+    "sh3lk"
+  ],
+  "howToPlay": [
+    {
+      "title": "Pick a side",
+      "body": "Choose the Hidden King or the Archmother in the lobby. Bots take any seat nobody claims."
+    },
+    {
+      "title": "Draft your kit",
+      "body": "Take turns picking from the board: a hero to play and one ability for each key. Each pick has ten seconds."
+    },
+    {
+      "title": "Play the match",
+      "body": "Both teams play a normal match with the kits they drafted. Watch for the Broker's corrupted shop."
+    }
+  ],
+  "facts": [
+    {
+      "label": "Seats",
+      "value": "6v6",
+      "note": "Bots fill empty seats"
+    },
+    {
+      "label": "Draft board",
+      "value": "18 heroes"
+    },
+    {
+      "label": "Pick timer",
+      "value": "10 seconds"
+    },
+    {
+      "label": "Broker",
+      "value": "Opens at 15 or 30 min, or never"
+    }
+  ],
+  "whatsNew": [
+    "First Hideout release of sh3lk's Ability Draft 0.1.0."
+  ],
+  "released": "2026-11-26",
+  "curated": true,
+  "art": {
+    "card": "art/card-background@2x.jpg",
+    "backdrop": "art/banner-background@2x.jpg",
+    "render": "art/ad-render@2x.png",
+    "overlay": "art/ad-overlay@2x.png",
+    "tile": "art/ad-thumb@2x.png",
+    "explainer": "art/how-to-play-map@2x.png",
+    "screenshots": [
+      "art/ad-shot-draft.jpg",
+      "art/ad-shot-match.jpg",
+      "art/ad-shot-lobby.jpg"
+    ]
+  }
+}

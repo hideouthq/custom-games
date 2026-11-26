@@ -1,0 +1,69 @@
+{
+  "name": "Doorman Trainer",
+  "tagline": "Door, door, cart, gone. Drill Doorman's kidnap until it's automatic.",
+  "summary": "A solo trainer for Doorman's kidnap: place door 1 by your team, drop door 2 in the fight and cart an enemy through it. Bots walk, dodge and fight back.",
+  "description": "Doorman Trainer by BeeeFX teaches the kidnap one try at a time. Each try starts at a Guardian, a Walker or the Mid-Boss pit. Place door 1 and the fight begins. Drop door 2 between you and the enemies, then Luggage Cart someone through. If you miss, the trainer tells you why: no second door, the cart missed, or you dragged them past the door. Climb a ten-level ladder from a target standing still to a full teamfight, survive Endless waves against the clock, or hold the real Mid-Boss while the enemy team takes it. Practice lets you set your own enemies, allies, heroes and difficulty. Your build comes ready, Vortex Web included.",
+  "minutes": {
+    "min": 5,
+    "max": 30
+  },
+  "goal": "Kidnap the enemy through your doors",
+  "players": {
+    "min": 1,
+    "max": 1
+  },
+  "creators": [
+    "BeeeFX"
+  ],
+  "howToPlay": [
+    {
+      "title": "Door 1 by your team",
+      "body": "You start at a tower. Place your first door with Doorway; the fight starts the moment it is down."
+    },
+    {
+      "title": "Door 2, then the cart",
+      "body": "Drop the second door between you and the enemies, then Luggage Cart one of them back through it."
+    },
+    {
+      "title": "Read the result",
+      "body": "A kidnap counts as soon as they come out of your door. Tap Reload to retry the same setup or Jump for the next one. Type /dt for the menu."
+    }
+  ],
+  "facts": [
+    {
+      "label": "Ladder",
+      "value": "10 levels",
+      "note": "Stationary to Gauntlet"
+    },
+    {
+      "label": "Modes",
+      "value": "Ladder, Endless, Mid-Boss, Practice"
+    },
+    {
+      "label": "Spots",
+      "value": "Every Guardian, Walker and the pit"
+    },
+    {
+      "label": "Menu",
+      "value": "/dt in chat"
+    }
+  ],
+  "whatsNew": [
+    "First Hideout release of BeeeFX's Doorman Trainer 0.1.2."
+  ],
+  "released": "2026-11-26",
+  "curated": true,
+  "art": {
+    "card": "art/card-background@2x.jpg",
+    "backdrop": "art/banner-background@2x.jpg",
+    "render": "art/doorman-render@2x.png",
+    "overlay": "art/doorman-overlay@2x.png",
+    "tile": "art/doorman-thumb@2x.png",
+    "explainer": "art/how-to-play-map@2x.png",
+    "screenshots": [
+      "art/doorman-shot-cart.jpg",
+      "art/doorman-shot-midboss.jpg",
+      "art/doorman-shot-ladder.jpg"
+    ]
+  }
+}

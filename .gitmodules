@@ -10,3 +10,15 @@
 [submodule "mods/arena-pit/upstream"]
 	path = mods/arena-pit/upstream
 	url = https://github.com/CosmicCapt/Shattered-Arena.git
+[submodule "mods/deadlock-td/upstream"]
+	path = mods/deadlock-td/upstream
+	url = https://github.com/Atharv24/deadlock-tower-defense.git
+[submodule "mods/parry-trainer/upstream"]
+	path = mods/parry-trainer/upstream
+	url = https://github.com/mapleroyal/parry-trainer.git
+[submodule "mods/doorman-trainer/upstream"]
+	path = mods/doorman-trainer/upstream
+	url = https://github.com/BeeeFX/DoormanTrainer.git
+[submodule "mods/ability-draft/upstream"]
+	path = mods/ability-draft/upstream
+	url = https://github.com/sh3lk/ability-draft.git

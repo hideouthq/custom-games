@@ -1,0 +1,206 @@
+{
+  "slug": "parry-trainer",
+  "name": "Parry Trainer",
+  "version": "0.4.4",
+  "language": "LANGUAGE_TYPESCRIPT",
+  "map": "hl_parry_trainer",
+  "description": "Practice real Deadlock heavy melee parries in a black arena. Configure invisible attackers, creep waves, soul goals and timed drills.",
+  "services": [
+    {
+      "name": "persist",
+      "optional": true
+    }
+  ],
+  "persist": [
+    {
+      "name": "trainer",
+      "writers": "WRITERS_PLAYERS",
+      "fields": {
+        "p0": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p1": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p2": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p3": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p4": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p5": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p6": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p7": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p8": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p9": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p10": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p11": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p12": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p13": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p14": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p15": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p16": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p17": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p18": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p19": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p20": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p21": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p22": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p23": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p24": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p25": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p26": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p27": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p28": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        },
+        "p29": {
+          "kind": "KIND_STRING",
+          "maxBytes": 250
+        }
+      }
+    }
+  ],
+  "definitions": [
+    {
+      "entry": "citadel_ability_melee_targetdummy",
+      "copyFields": {
+        "CAbilityHoldMelee_VData.m_HoldBeginEffect": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle"
+      }
+    },
+    {
+      "entry": "citadel_ability_melee_kali",
+      "properties": {
+        "MeleeHalfAngle": 40
+      },
+      "copyFields": {
+        "CAbilityHoldMelee_VData.m_HoldBeginEffect": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle"
+      }
+    },
+    {
+      "entry": "citadel_ability_melee_thumper",
+      "textFields": {
+        "CitadelAbilityVData.m_strAG2CastCompletedAction": "lash_grapple"
+      },
+      "copyFields": {
+        "CAbilityHoldMelee_VData.m_HoldBeginEffect": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle"
+      }
+    },
+    {
+      "entry": "ability_melee_punkgoat",
+      "copyFields": {
+        "CAbilityHoldMelee_VData.m_HoldBeginEffect": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_HeavyAir]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeActivateParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeSwingParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle",
+        "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Slide]/AttackData_t.m_MeleeAttackParticle": "CAbilityHoldMelee_VData.m_mapAttacks[EMeleeHold_AttackType.EAttackType_Heavy]/AttackData_t.m_MeleeActivateParticle"
+      }
+    }
+  ]
+}

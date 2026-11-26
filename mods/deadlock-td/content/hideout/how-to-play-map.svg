@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2000" height="646" viewBox="0 0 2000 646" role="img" aria-labelledby="title desc">
+<title id="title">How to play Hidden King's Defense</title><desc id="desc">Trooper waves march down the center lane every 20 seconds, with a Colossus raid boss every fifth wave. Defenders hold a chain of structures: Guardian, Walker, Base Guards, Shrines and finally the Patron. The run ends when the Patron falls. Last hits drop Tomes and boss waves give Boons.</desc>
+<defs>
+<linearGradient id="sky" x2="1" y2="1"><stop stop-color="#342a40"/><stop offset="1" stop-color="#181720"/></linearGradient>
+<marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="26" markerHeight="24" refX="20" refY="12" orient="auto"><path d="M0 0L24 12L0 24L5 12Z" fill="#ffc660"/></marker>
+<marker id="arrowTeal" markerUnits="userSpaceOnUse" markerWidth="26" markerHeight="24" refX="20" refY="12" orient="auto"><path d="M0 0L24 12L0 24L5 12Z" fill="#8be4e2"/></marker>
+<!-- A pawn, feet at the origin. Fill and outline come from where it is used. -->
+<g id="body" stroke-width="5" stroke-linejoin="round"><path d="M-25 -60C-25 -78 25 -78 25 -60L18 -4C18 0 -18 0 -18 -4Z"/><circle cy="-94" r="19"/></g>
+<g id="you"><ellipse rx="34" ry="6" fill="#0c0a10" fill-opacity=".45"/><use xlink:href="#body" fill="#ffc660" stroke="#2a1d10"/></g>
+<g id="foe"><ellipse rx="34" ry="6" fill="#0c0a10" fill-opacity=".45"/><use xlink:href="#body" fill="#5fc4c2" stroke="#0f2629"/></g>
+<path id="next" d="M-13 -30L13 0L-13 30" fill="none" stroke="#fff0d8" stroke-opacity=".45" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<linearGradient id="lane" x2="0" y2="1"><stop stop-color="#3a3043"/><stop offset="1" stop-color="#241e2b"/></linearGradient>
+<radialGradient id="bossGlow" cx="0" cy="0" r="190" gradientUnits="userSpaceOnUse"><stop offset=".2" stop-color="#8be4e2" stop-opacity=".35"/><stop offset="1" stop-color="#8be4e2" stop-opacity="0"/></radialGradient>
+<path id="crown" d="M-26 0L-30 -32L-14 -16L0 -38L14 -16L30 -32L26 0Z"/>
+<!-- Amber structures, base at the origin. -->
+<g id="patron" stroke="#2a1d10" stroke-width="5" stroke-linejoin="round">
+<path d="M-70 0L-56 -40H56L70 0Z" fill="#c5884d"/>
+<rect x="-40" y="-120" width="80" height="82" rx="6" fill="#e0a85a"/>
+<circle cy="-160" r="46" fill="#ffc660"/><circle cy="-160" r="22" fill="#fff1c9" stroke="none"/>
+</g>
+<g id="shrine" stroke="#2a1d10" stroke-width="5" stroke-linejoin="round">
+<path d="M-30 0L-22 -18H22L30 0Z" fill="#c5884d"/><rect x="-16" y="-92" width="32" height="76" fill="#e0a85a"/><path d="M0 -132L18 -108L0 -90L-18 -108Z" fill="#ffc660"/>
+</g>
+<g id="guard" stroke="#2a1d10" stroke-width="5" stroke-linejoin="round">
+<rect x="-26" y="-14" width="52" height="14" rx="3" fill="#c5884d"/>
+<path d="M-20 -14V-80Q0 -96 20 -80V-14Z" fill="#e0a85a"/><path d="M-12 -110H12V-84H-12Z" fill="#ffc660"/>
+</g>
+<g id="walker" stroke="#2a1d10" stroke-width="5" stroke-linejoin="round">
+<path d="M-40 0L-26 -80H-6L-14 0ZM40 0L26 -80H6L14 0Z" fill="#c5884d"/>
+<path d="M-56 -80L-48 -168Q0 -190 48 -168L56 -80Z" fill="#e0a85a"/>
+<rect x="-24" y="-150" width="48" height="20" rx="6" fill="#2a1d10"/><rect x="-16" y="-145" width="32" height="10" rx="4" fill="#ffc660" stroke="none"/>
+<path d="M-56 -150L-78 -96M56 -150L78 -96" stroke="#e0a85a" stroke-width="16" stroke-linecap="round"/>
+</g>
+<g id="guardian" stroke="#2a1d10" stroke-width="5" stroke-linejoin="round">
+<rect x="-44" y="-18" width="88" height="18" rx="4" fill="#c5884d"/>
+<path d="M-30 -18L-36 -96Q0 -114 36 -96L30 -18Z" fill="#e0a85a"/><circle cy="-128" r="22" fill="#e0a85a"/>
+<path d="M18 -100H58V-56Q58 -32 38 -26Q18 -32 18 -56Z" fill="#ffc660"/>
+</g>
+</defs>
+<rect width="2000" height="646" fill="url(#sky)"/>
+<g font-family="DejaVu Sans,sans-serif">
+<rect y="370" width="2000" height="140" fill="url(#lane)"/><path d="M0 370H2000M0 510H2000" stroke="#4f4258" stroke-width="3"/><path d="M0 440H2000" stroke="#4f4258" stroke-width="3" stroke-dasharray="22 22"/><use xlink:href="#patron" x="110" y="455"/><use xlink:href="#crown" x="110" y="243" fill="#ffc660" stroke="#2a1d10" stroke-width="4" stroke-linejoin="round"/><use xlink:href="#shrine" x="284" y="455"/><use xlink:href="#shrine" x="356" y="455"/><use xlink:href="#guard" x="501" y="455"/><use xlink:href="#guard" x="569" y="455"/><use xlink:href="#walker" x="745" y="455"/><use xlink:href="#guardian" x="930" y="455"/><g><rect x="22.9" y="128.0" width="234.3" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><text x="50.9" y="172.2" font-size="34" font-weight="bold" fill="#ff8a70">Run ends</text></g><text x="110" y="566" text-anchor="middle" font-size="28" font-weight="bold" fill="#ffdfae">Patron</text><text x="320" y="566" text-anchor="middle" font-size="28" font-weight="bold" fill="#ffdfae">Shrines</text><text x="535" y="566" text-anchor="middle" font-size="28" font-weight="bold" fill="#ffdfae">Base Guards</text><text x="745" y="566" text-anchor="middle" font-size="28" font-weight="bold" fill="#ffdfae">Walker</text><text x="930" y="566" text-anchor="middle" font-size="28" font-weight="bold" fill="#ffdfae">Guardian</text><path d="M217 546L205 556L217 566" fill="none" stroke="#ffc660" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M414 546L402 556L414 566" fill="none" stroke="#ffc660" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M668 546L656 556L668 566" fill="none" stroke="#ffc660" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M835 546L823 556L835 566" fill="none" stroke="#ffc660" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><text x="520" y="612" text-anchor="middle" font-size="28" fill="#d6cbd5">Outermost falls first</text><use xlink:href="#you" x="1070" y="465"/><use xlink:href="#you" x="1145" y="465"/><use xlink:href="#you" x="1220" y="465"/><path d="M1660 318H1370" fill="none" stroke="#8be4e2" stroke-width="7" stroke-linecap="round" marker-end="url(#arrowTeal)"/><g transform="translate(1370 441) scale(0.58)"><use xlink:href="#foe"/></g><g transform="translate(1418 441) scale(0.58)"><use xlink:href="#foe"/></g><g transform="translate(1394 471) scale(0.58)"><use xlink:href="#foe"/></g><g transform="translate(1442 471) scale(0.58)"><use xlink:href="#foe"/></g><g transform="translate(1550 441) scale(0.58)"><use xlink:href="#foe"/></g><g transform="translate(1598 441) scale(0.58)"><use xlink:href="#foe"/></g><g transform="translate(1574 471) scale(0.58)"><use xlink:href="#foe"/></g><g transform="translate(1622 471) scale(0.58)"><use xlink:href="#foe"/></g><g><rect x="1364.7" y="208.0" width="300.6" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><circle cx="1408.69875" cy="240" r="15" fill="none" stroke="#8be4e2" stroke-width="5"/><path d="M1408.69875 231.0V240L1415.4 244.8" fill="none" stroke="#8be4e2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><text x="1438.7" y="252.2" font-size="34" font-weight="bold" fill="#fff0d8">Every 20 s</text></g><circle cx="1830" cy="335" r="190" fill="url(#bossGlow)"/><g transform="translate(1830 465) scale(2.15)"><use xlink:href="#foe"/></g><g><rect x="1717.9" y="66.0" width="224.2" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><text x="1745.9" y="110.2" font-size="34" font-weight="bold" fill="#a9f2ed">Colossus</text></g><text x="1830" y="168" text-anchor="middle" font-size="28" font-weight="bold" fill="#a9f2ed">Every 5th wave</text><g><rect x="1107.9" y="544.0" width="400.4" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><path d="M1135.9078124999999 563H1163.9078124999999V591H1135.9078124999999Z" fill="#ffc660" stroke="#2a1d10" stroke-width="2"/><path d="M1141.9078124999999 563V591" stroke="#2a1d10" stroke-width="3"/><text x="1181.9" y="586.8" font-size="30" font-weight="bold" fill="#fff0d8">Last hits → Tomes</text></g><g><rect x="1528.3" y="544.0" width="446.7" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><path transform="translate(1572.3234375000002 576)" d="M0 -18L5 -6L18 -5L8 4L11 17L0 10L-11 17L-8 4L-18 -5L-5 -6Z" fill="#ffc660" stroke="#2a1d10" stroke-width="2" stroke-linejoin="round"/><text x="1602.3" y="586.8" font-size="30" font-weight="bold" fill="#fff0d8">Boss waves → Boons</text></g></g></svg>

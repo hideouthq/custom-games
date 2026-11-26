@@ -6,3 +6,7 @@ updates:
       interval: weekly
     allow:
       - dependency-name: "mods/arena-pit/upstream"
+      - dependency-name: "mods/ability-draft/upstream"
+      - dependency-name: "mods/deadlock-td/upstream"
+      - dependency-name: "mods/doorman-trainer/upstream"
+      - dependency-name: "mods/parry-trainer/upstream"

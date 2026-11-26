@@ -1,0 +1,70 @@
+{
+  "name": "Hidden King's Defense",
+  "tagline": "Hold the center lane against endless trooper waves and Colossus raid bosses.",
+  "summary": "Co-op wave defense on Midtown. Protect the center lane from Guardian to Patron as waves scale up, with a raid boss every five waves.",
+  "description": "Hidden King's Defense by Atharv24 turns Midtown's center lane into a last stand. Up to twelve defenders hold a chain of structures, from the Guardian and Walker down to the Shrines and the Patron, against trooper waves that grow every round. Every fifth wave brings a Colossus raid boss. Last hits drop Tomes that make you stronger, boss waves offer a pick of three Major Boons, and a Legendary Armory sells tier 5 items. Spend souls to repair or fortify every structure. The run ends when the Patron falls.",
+  "kind": "co-op",
+  "minutes": {
+    "min": 20,
+    "max": 60
+  },
+  "goal": "Survive as many waves as you can",
+  "players": {
+    "min": 1,
+    "max": 12
+  },
+  "creators": [
+    "Atharv24"
+  ],
+  "howToPlay": [
+    {
+      "title": "Hold the lane",
+      "body": "Troopers march down the center lane every 20 seconds. Last-hit them to earn souls and Tomes before they reach the Guardian."
+    },
+    {
+      "title": "Beat the Colossus",
+      "body": "Every fifth wave is a raid boss. Clear it to pick one of three Major Boons."
+    },
+    {
+      "title": "Fortify",
+      "body": "Type /repair or /upgrade to restore or strengthen every structure, and /legendary for the tier 5 Armory."
+    }
+  ],
+  "facts": [
+    {
+      "label": "Defenders",
+      "value": "1 to 12, co-op"
+    },
+    {
+      "label": "Waves",
+      "value": "Every 20 seconds",
+      "note": "The host can pick 15 or 25"
+    },
+    {
+      "label": "Raid boss",
+      "value": "Every fifth wave"
+    },
+    {
+      "label": "Respawn",
+      "value": "5 seconds"
+    }
+  ],
+  "whatsNew": [
+    "First Hideout release of Atharv24's Hidden King's Defense 0.7.7. Its leaderboards stay local on Hideout."
+  ],
+  "released": "2026-11-26",
+  "curated": true,
+  "art": {
+    "card": "art/card-background@2x.jpg",
+    "backdrop": "art/banner-background@2x.jpg",
+    "render": "art/td-render@2x.png",
+    "overlay": "art/td-overlay@2x.png",
+    "tile": "art/td-thumb@2x.png",
+    "explainer": "art/how-to-play-map@2x.png",
+    "screenshots": [
+      "art/td-shot-colossus.jpg",
+      "art/td-shot-lane.jpg",
+      "art/td-shot-warden.jpg"
+    ]
+  }
+}

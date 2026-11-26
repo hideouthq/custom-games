@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2000" height="646" viewBox="0 0 2000 646" role="img" aria-labelledby="title desc">
+<title id="title">How to kidnap in Doorman Trainer</title><desc id="desc">Your team stands beside Door 1. Door 2 sits between you and the enemies. Luggage Cart hits an enemy and carries it into Door 2, and it comes out of Door 1 beside your team, kidnapped.</desc>
+<defs>
+<linearGradient id="sky" x2="1" y2="1"><stop stop-color="#342a40"/><stop offset="1" stop-color="#181720"/></linearGradient>
+<marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="26" markerHeight="24" refX="20" refY="12" orient="auto"><path d="M0 0L24 12L0 24L5 12Z" fill="#ffc660"/></marker>
+<marker id="arrowTeal" markerUnits="userSpaceOnUse" markerWidth="26" markerHeight="24" refX="20" refY="12" orient="auto"><path d="M0 0L24 12L0 24L5 12Z" fill="#8be4e2"/></marker>
+<!-- A pawn, feet at the origin. Fill and outline come from where it is used. -->
+<g id="body" stroke-width="5" stroke-linejoin="round"><path d="M-25 -60C-25 -78 25 -78 25 -60L18 -4C18 0 -18 0 -18 -4Z"/><circle cy="-94" r="19"/></g>
+<g id="you"><ellipse rx="34" ry="6" fill="#0c0a10" fill-opacity=".45"/><use xlink:href="#body" fill="#ffc660" stroke="#2a1d10"/></g>
+<g id="foe"><ellipse rx="34" ry="6" fill="#0c0a10" fill-opacity=".45"/><use xlink:href="#body" fill="#5fc4c2" stroke="#0f2629"/></g>
+<path id="next" d="M-13 -30L13 0L-13 30" fill="none" stroke="#fff0d8" stroke-opacity=".45" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<radialGradient id="portal" cx=".5" cy=".62" r=".6"><stop stop-color="#fff1c9"/><stop offset=".35" stop-color="#ffc660" stop-opacity=".85"/><stop offset="1" stop-color="#3a2530" stop-opacity=".95"/></radialGradient>
+<linearGradient id="floor" x2="0" y2="1"><stop stop-color="#2d2535"/><stop offset="1" stop-color="#17151d"/></linearGradient>
+<linearGradient id="trail" x2="1"><stop stop-color="#ffc660" stop-opacity=".75"/><stop offset="1" stop-color="#ffc660" stop-opacity="0"/></linearGradient>
+<!-- Doorman's doorway, base at the origin. -->
+<g id="door"><ellipse rx="86" ry="11" fill="#0c0a10" fill-opacity=".5"/><path d="M-58 0V-122A58 58 0 0 1 58 -122V0" fill="url(#portal)" stroke="#ffc660" stroke-width="10" stroke-linejoin="round"/><path d="M-36 0V-118A36 36 0 0 1 36 -118V0" fill="none" stroke="#fff6e0" stroke-opacity=".35" stroke-width="4"/><path d="M-72 0H72" stroke="#c5884d" stroke-width="10" stroke-linecap="round"/></g>
+<!-- The luggage cart, rolling left, base at the origin. -->
+<g id="cart" stroke="#2a1d10" stroke-width="5" stroke-linejoin="round">
+<path d="M70 -24V-150Q70 -166 86 -166H100" fill="none" stroke="#ffc660" stroke-width="10" stroke-linecap="round"/>
+<rect x="-84" y="-40" width="160" height="18" rx="5" fill="#c5884d"/>
+<rect x="-70" y="-108" width="70" height="68" rx="8" fill="#e0a85a"/>
+<path d="M-48 -108V-120H-22V-108" fill="none" stroke-width="6"/>
+<rect x="6" y="-92" width="58" height="52" rx="8" fill="#b9704a"/>
+<rect x="-56" y="-150" width="92" height="42" rx="8" fill="#f0c27a"/>
+<path d="M-35 -74H-35M-70 -74H0" stroke-width="4"/>
+<circle cx="-56" cy="-12" r="13" fill="#3a2c22" stroke="#ffc660"/><circle cx="48" cy="-12" r="13" fill="#3a2c22" stroke="#ffc660"/>
+</g>
+</defs>
+<rect width="2000" height="646" fill="url(#sky)"/>
+<g font-family="DejaVu Sans,sans-serif">
+<rect y="450" width="2000" height="196" fill="url(#floor)"/><path d="M0 450H2000" stroke="#4a3d50" stroke-width="3"/><path d="M1200 238C1150 40 690 40 640 232" fill="none" stroke="#ffc660" stroke-width="7" stroke-linecap="round" stroke-dasharray="4 16" marker-end="url(#arrow)"/><g transform="translate(170 450) scale(1.15)"><use xlink:href="#you"/></g><g transform="translate(290 450) scale(1.15)"><use xlink:href="#you"/></g><g transform="translate(640 450) scale(1.15)"><use xlink:href="#door"/></g><g fill="none" stroke="#8be4e2" stroke-width="6" stroke-linecap="round"><path d="M398 310L380 292M450 296V272M502 310L520 292"/></g><g transform="translate(450 450) scale(1.15)"><use xlink:href="#foe"/></g><g><rect x="311.5" y="178.0" width="277.1" height="64" rx="32.0" fill="#ffc660"/><text x="339.5" y="222.2" font-size="34" font-weight="bold" fill="#2a1d10">Kidnapped!</text></g><g transform="translate(1200 450) scale(1.15)"><use xlink:href="#door"/></g><path d="M1340 352H1290" fill="none" stroke="#ffc660" stroke-width="7" stroke-linecap="round" marker-end="url(#arrow)"/><g transform="translate(1440 436) rotate(-16)"><ellipse rx="34" ry="6" fill="#0c0a10" fill-opacity=".3"/><g transform="scale(1.15)"><use xlink:href="#body" fill="#5fc4c2" stroke="#0f2629"/></g></g><g fill="none" stroke="#fff0d8" stroke-width="6" stroke-linecap="round"><path d="M1500 300L1520 316M1494 340H1520M1500 380L1520 366"/></g><g stroke="#ffc660" stroke-opacity=".6" stroke-width="6" stroke-linecap="round"><path d="M1770 300H1860M1790 355H1920M1770 410H1880"/></g><g transform="translate(1640 450) scale(1.15)"><use xlink:href="#cart"/></g><g><rect x="519.4" y="528.0" width="241.2" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><circle cx="569.4" cy="560" r="22" fill="#ffc660"/><text x="569.4" y="570" text-anchor="middle" font-size="28" font-weight="bold" fill="#2a1d10">1</text><text x="605.4" y="572.2" font-size="34" font-weight="bold" fill="#fff0d8">Door 1</text></g><g><rect x="1079.4" y="528.0" width="241.2" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><circle cx="1129.4" cy="560" r="22" fill="#ffc660"/><text x="1129.4" y="570" text-anchor="middle" font-size="28" font-weight="bold" fill="#2a1d10">2</text><text x="1165.4" y="572.2" font-size="34" font-weight="bold" fill="#fff0d8">Door 2</text></g><g><rect x="1454.2" y="528.0" width="371.6" height="64" rx="32.0" fill="#15101C" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/><circle cx="1504.2" cy="560" r="22" fill="#ffc660"/><text x="1504.2" y="570" text-anchor="middle" font-size="28" font-weight="bold" fill="#2a1d10">3</text><text x="1540.2" y="572.2" font-size="34" font-weight="bold" fill="#fff0d8">Luggage Cart</text></g><text x="230" y="572" text-anchor="middle" font-size="32" font-weight="bold" fill="#ffdfae">Your team</text></g></svg>

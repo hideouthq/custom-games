@@ -1,0 +1,69 @@
+{
+  "name": "Parry Trainer",
+  "tagline": "Invisible attackers, real heavy melees. Learn to parry by sound and timing.",
+  "summary": "A solo parry drill in a black arena. Hidden attackers wind up real heavy melees from a range you choose; add creep waves, timers and soul goals.",
+  "description": "Parry Trainer by mapleroyal puts you in a quiet black arena with a random hero and invisible attackers that throw real Deadlock heavy melees. Set the distance they start from, how long they wait between swings, and a second attacker with its own rhythm. Add lane troopers and neutral camps to farm between parries, play to a timer or to parry and soul goals, and choose what a miss costs. Templates go from Easiest to Hardest, and your drills and hero builds can be saved. A scorecard at the end shows your parry rate, hits taken and souls.",
+  "minutes": {
+    "min": 5,
+    "max": 30
+  },
+  "goal": "Parry every heavy melee",
+  "players": {
+    "min": 1,
+    "max": 1
+  },
+  "creators": [
+    "mapleroyal"
+  ],
+  "howToPlay": [
+    {
+      "title": "Open the menu",
+      "body": "Press the scoreboard key (Tab) to set up a session: a timer, goals or unlimited. Pick a template or tune the attackers yourself."
+    },
+    {
+      "title": "Parry the swing",
+      "body": "Listen for the windup and parry as the heavy melee lands. A catch stuns the attacker. Keep moving: standing still drains your health."
+    },
+    {
+      "title": "Beat your score",
+      "body": "Survive the timer or reach your goals to win. The scorecard shows parries, hits taken, accuracy and souls."
+    }
+  ],
+  "facts": [
+    {
+      "label": "Attackers",
+      "value": "1 or 2, invisible"
+    },
+    {
+      "label": "Start distance",
+      "value": "6.9 to 13.4 m",
+      "note": "Adjustable"
+    },
+    {
+      "label": "Templates",
+      "value": "Easiest to Hardest"
+    },
+    {
+      "label": "Extras",
+      "value": "Troopers and neutral camps"
+    }
+  ],
+  "whatsNew": [
+    "First Hideout release of mapleroyal's Parry Trainer 0.4.4."
+  ],
+  "released": "2026-11-26",
+  "curated": true,
+  "art": {
+    "card": "art/card-background@2x.jpg",
+    "backdrop": "art/banner-background@2x.jpg",
+    "render": "art/parry-render@2x.png",
+    "overlay": "art/parry-overlay@2x.png",
+    "tile": "art/parry-thumb@2x.png",
+    "explainer": "art/how-to-play-map@2x.png",
+    "screenshots": [
+      "art/parry-shot-double.jpg",
+      "art/parry-shot-victorious.jpg",
+      "art/parry-shot-scorecard.jpg"
+    ]
+  }
+}

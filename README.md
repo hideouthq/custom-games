@@ -8,8 +8,12 @@ Deadlock custom game modes that Hideout hosts and joins, and the tools that publ
 | Rooftop Rally (`mods/rooftop-rally`) | A Yamato free-for-all with an accelerating orb, custom blocks and a choice of Power Slash, Blink or Time Freeze |
 | Pillars (`mods/pillars`) | Last player standing on pillars over a void, with a random drop every few seconds and one life a round |
 | [Shattered Arena](mods/arena-pit) by CosmicCapt | Up to 6v6 on a pit arena with tickets, trooper escorts and an optional last-team-standing bonus round |
+| [Hidden King's Defense](mods/deadlock-td) by Atharv24 | Co-op wave defense of Midtown's center lane, with Colossus raid bosses every fifth wave |
+| [Ability Draft](mods/ability-draft) by sh3lk | 6v6 draft of heroes and their abilities, then a normal match with the mixed kits |
+| [Doorman Trainer](mods/doorman-trainer) by BeeeFX | A solo drill for Doorman's door, door, cart kidnap, with a ladder, endless waves and a Mid-Boss mode |
+| [Parry Trainer](mods/parry-trainer) by mapleroyal | A solo heavy-melee parry drill against invisible attackers, with creeps, timers and goals |
 
-All four run on one [Modlock](https://github.com/hideouthq/modlock) runtime, pinned in `runtime.json`, because a game session runs one runtime. `feed/` builds and signs the feed Hideout reads.
+Every mode runs on one [Modlock](https://github.com/hideouthq/modlock) runtime, pinned in `runtime.json`, because a game session runs one runtime. `feed/` builds and signs the feed Hideout reads.
 
 ## Set up
 
@@ -21,7 +25,7 @@ cd custom-games
 python3 scripts/runtime.py install
 ```
 
-`install` downloads the pinned Go, Zig and Bun into `.tools`, and clones the Modlock fork at the pinned commit into `.tools/modlock`. Each Hideout-authored mode’s asset SDK is a submodule at `mods/<mode>/tools/modlock-sdk`.
+`install` downloads the pinned Go, Zig and Bun into `.tools`, and clones the Modlock fork at the pinned commit into `.tools/modlock`. Each community mode's upstream is a submodule at `mods/<mode>/upstream`, built by `scripts/community.py`. Each Hideout-authored mode’s asset SDK is a submodule at `mods/<mode>/tools/modlock-sdk`.
 
 ## Work on a mode
 
@@ -66,4 +70,4 @@ python3 scripts/runtime.py build
 
 ## License
 
-Hideout’s modes and scripts are free software under the [GNU General Public License v3.0](LICENSE). CosmicCapt’s Shattered Arena uses the [MIT license](mods/arena-pit/upstream/LICENSE). The Modlock SDK submodules keep their own license.
+Hideout’s modes and scripts are free software under the [GNU General Public License v3.0](LICENSE). The community modes keep their upstream [MIT licenses](mods/arena-pit/upstream/LICENSE), shipped in each package. The Modlock SDK submodules keep their own license.

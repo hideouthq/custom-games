@@ -1,0 +1,178 @@
+diff --git a/components/scores/leaderboard_manager.ts b/components/scores/leaderboard_manager.ts
+index 26bed99..940f3a6 100644
+--- a/components/scores/leaderboard_manager.ts
++++ b/components/scores/leaderboard_manager.ts
+@@ -1,4 +1,5 @@
+ import {
++  bindScorePlayer,
+   type BoardPage,
+   type BoardWindow,
+   log,
+@@ -8,6 +9,16 @@ import {
+   reportScore,
+ } from 'modlock'
+ 
++/** A board page, or the placeholder shown while Modlock's asynchronous read is in flight. */
++export type LeaderboardPage = BoardPage & { loading?: boolean }
++
++const loadingPage: LeaderboardPage = { rows: [], loading: true }
++
++/** The connection serving a player now, which the score service needs instead of the bare player. */
++function connectionOf(player: Player) {
++  return players().find((conn) => conn.player.slot === player.slot)
++}
++
+ import {
+   BOARD_CREEPS_SLAIN,
+   BOARD_HIGHEST_WAVE,
+@@ -59,7 +70,7 @@ export class LeaderboardManager {
+   readonly sessionBestBySlot = new Map<number, { wave: number; kills: number }>()
+   private readonly boardCache = new Map<
+     string,
+-    { page: BoardPage | undefined; expiresAt: number }
++    { page: LeaderboardPage | undefined; expiresAt: number }
+   >()
+ 
+   constructor(options?: LeaderboardOptions) {
+@@ -222,45 +233,50 @@ export class LeaderboardManager {
+       })
+     }
+ 
+-    let waveAccepted = true
+-    let creepsAccepted = true
++    const conn = connectionOf(player)
++    const enrolled = conn && bindScorePlayer(conn)
++    let pending = 0
++    let accepted = true
++    const settle = (error?: string) => {
++      if (error) {
++        accepted = false
++        log(`Score report for ${this.runId} slot ${player.slot} was refused: ${error}`)
++      }
++      pending -= 1
++      if (pending > 0) return
++      this.lastReportAccepted = accepted
++      if (accepted) this.acceptedReportsCount += 1
++    }
++    if (!enrolled) {
++      this.lastReportAccepted = false
++    }
+     if (decision.shouldReportWave) {
+       this.reportedBestBySlot.set(player.slot, {
+         wave: decision.waveScore,
+         kills: decision.safeKills,
+       })
+-      waveAccepted = reportScore(
+-        player,
+-        this.primaryBoard,
+-        decision.waveScore,
+-        {
++      if (enrolled) {
++        pending += 1
++        reportScore(enrolled, this.primaryBoard, decision.waveScore, settle, {
+           tiebreak: decision.tiebreak,
+           key: `${this.runId}-w-${player.slot}-${decision.waveScore}-${decision.safeKills}`,
+-        },
+-      )
++        })
++      }
+     }
+     if (decision.creepsDelta >= 1) {
+       this.reportSeq += 1
+       this.reportedKillsBySlot.set(player.slot, decision.safeKills)
+-      creepsAccepted = reportScore(
+-        player,
+-        this.secondaryBoard,
+-        decision.creepsDelta,
+-        {
++      if (enrolled) {
++        pending += 1
++        reportScore(enrolled, this.secondaryBoard, decision.creepsDelta, settle, {
+           key: `${this.runId}-c-${player.slot}-${this.reportSeq}`,
+-        },
+-      )
+-    }
+-
+-    const accepted = waveAccepted && creepsAccepted
+-    this.lastReportAccepted = accepted
+-    if (accepted) {
+-      this.acceptedReportsCount += 1
++        })
++      }
+     }
+ 
+     this.boardCache.clear()
+     log(
+-      `Reported score checkpoint ${this.runId} for slot ${player.slot}: Wave ${decision.waveScore}, totalKills=${decision.safeKills} (+${decision.creepsDelta} delta), scoresAccepted=${accepted} (acceptedCount=${this.acceptedReportsCount})`,
++      `Reported score checkpoint ${this.runId} for slot ${player.slot}: Wave ${decision.waveScore}, totalKills=${decision.safeKills} (+${decision.creepsDelta} delta), enrolled=${enrolled !== undefined}`,
+     )
+     return true
+   }
+@@ -338,15 +354,22 @@ export class LeaderboardManager {
+     window: BoardWindow,
+     now: number,
+     limit = 10,
+-  ): BoardPage | undefined {
++  ): LeaderboardPage | undefined {
+     const cacheKey = `${player.slot}:${window}:${limit}`
+     const cached = this.boardCache.get(cacheKey)
+-    if (cached && now < cached.expiresAt && now + 2.0 >= cached.expiresAt) {
++    if (cached && (cached.page?.loading || now < cached.expiresAt)) {
+       return cached.page
+     }
+-    const page = readBoard(this.primaryBoard, { window, limit, player })
+-    const ttl = page === undefined ? 0.75 : page.loading ? 0.4 : 1.5
+-    this.boardCache.set(cacheKey, { page, expiresAt: now + ttl })
+-    return page
++    const conn = connectionOf(player)
++    if (!conn) return undefined
++    const entry: { page: LeaderboardPage | undefined; expiresAt: number } = { page: cached?.page ?? loadingPage, expiresAt: now + 0.4 }
++    this.boardCache.set(cacheKey, entry)
++    readBoard(this.primaryBoard, { window, limit, player: conn }, (page, error) => {
++      if (this.boardCache.get(cacheKey) !== entry) return
++      entry.page = page
++      entry.expiresAt = now + (page === undefined ? 0.75 : 1.5)
++      if (error) log(`Reading ${this.primaryBoard} failed: ${error}`)
++    })
++    return entry.page
+   }
+ }
+diff --git a/mods/deadlock_td/td_hud.tsx b/mods/deadlock_td/td_hud.tsx
+index c414849..68266c0 100644
+--- a/mods/deadlock_td/td_hud.tsx
++++ b/mods/deadlock_td/td_hud.tsx
+@@ -579,7 +579,7 @@ function DefeatOverlay(props: {
+   kills: number
+   playerSlot: number
+   leaderboard: LeaderboardManager
+-  boardPage: BoardPage | undefined
++  boardPage: import('@components/scores/leaderboard_manager').LeaderboardPage | undefined
+   onRestart: () => void
+ }) {
+   const { wave, kills, playerSlot, leaderboard, boardPage, onRestart } = props
+diff --git a/ui/hud_controller.tsx b/ui/hud_controller.tsx
+index ed57da1..60eaf7e 100644
+--- a/ui/hud_controller.tsx
++++ b/ui/hud_controller.tsx
+@@ -63,7 +63,7 @@ export interface HudSlotContext {
+   readonly legendaryShopOpen: boolean
+   readonly leaderboardOpen: boolean
+   readonly leaderboardWindow: BoardWindow
+-  readonly boardPage: BoardPage | undefined
++  readonly boardPage: import('@components/scores/leaderboard_manager').LeaderboardPage | undefined
+   readonly playerSouls: number
+   readonly ownedLegendaryNames: readonly string[]
+   readonly displayWave: number
+diff --git a/ui/modals/leaderboard_modal.tsx b/ui/modals/leaderboard_modal.tsx
+index a5ded5d..6e44ec7 100644
+--- a/ui/modals/leaderboard_modal.tsx
++++ b/ui/modals/leaderboard_modal.tsx
+@@ -34,7 +34,7 @@ export function LeaderboardModal(props: {
+   player: Player
+   window: BoardWindow
+   leaderboard: LeaderboardManager
+-  boardPage: BoardPage | undefined
++  boardPage: import('@components/scores/leaderboard_manager').LeaderboardPage | undefined
+   currentWave: number
+   currentKills: number
+   state: HudStateStore

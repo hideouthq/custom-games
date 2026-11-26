@@ -13,8 +13,15 @@ MODS = {
     "rooftop-rally": ("new_deadlock_game", "rooftop_arena", "project.json", "sdkRevision"),
     "pillars": ("pillars", "pillars_arena", "project.json", "sdkRevision"),
 }
-COMMUNITY_MODE = "arena-pit"
-COMMUNITY_LINK = f"mods/{COMMUNITY_MODE}/upstream"
+# Community modes build from the upstream repository their submodule pins.
+COMMUNITY = {
+    "arena-pit": "https://github.com/CosmicCapt/Shattered-Arena.git",
+    "ability-draft": "https://github.com/sh3lk/ability-draft.git",
+    "deadlock-td": "https://github.com/Atharv24/deadlock-tower-defense.git",
+    "doorman-trainer": "https://github.com/BeeeFX/DoormanTrainer.git",
+    "parry-trainer": "https://github.com/mapleroyal/parry-trainer.git",
+}
+COMMUNITY_LINKS = {f"mods/{mode}/upstream": url for mode, url in COMMUNITY.items()}
 ROOT_FILES = {"README.md", "LICENSE", ".gitignore", ".gitattributes", ".gitmodules", "runtime.json", "release.json"}
 ROOT_DIRS = {"feed", "mods", "scripts", ".github"}
 PRIVATE_DIRS = {
@@ -56,7 +63,7 @@ def main():
             len(parts) > 1 and parts[0] not in ROOT_DIRS
         ):
             errors.append(f"Unexpected repository path: {name}")
-        if parts[0] == "mods" and (len(parts) < 3 or parts[1] not in {*MODS, COMMUNITY_MODE}):
+        if parts[0] == "mods" and (len(parts) < 3 or parts[1] not in {*MODS, *COMMUNITY}):
             errors.append(f"Unexpected mode path: {name}")
         if mode == "120000":
             errors.append(f"Tracked symlink is outside the source layout: {name}")
@@ -73,7 +80,7 @@ def main():
             errors.append(f"Submodule entries belong in root .gitmodules: {name}")
 
     expected_links = {f"mods/{name}/tools/modlock-sdk" for name in MODS}
-    expected_links.add(COMMUNITY_LINK)
+    expected_links.update(COMMUNITY_LINKS)
     actual_links = {path for path, (mode, _) in entries.items() if mode == "160000"}
     if actual_links != expected_links:
         errors.append("Gitlinks differ from the expected mode dependencies")
@@ -85,8 +92,7 @@ def main():
         if len(declared) != len(expected_links) or set(declared) != expected_links:
             errors.append("Root .gitmodules must declare exactly the mode dependency paths")
         for section in config.sections():
-            expected_url = ("https://github.com/CosmicCapt/Shattered-Arena.git" if config.get(section, "path") == COMMUNITY_LINK
-                            else "https://github.com/paralin/modlock-sdk.git")
+            expected_url = COMMUNITY_LINKS.get(config.get(section, "path"), "https://github.com/paralin/modlock-sdk.git")
             if config.get(section, "url", fallback="") != expected_url:
                 errors.append(f"Unexpected dependency source in .gitmodules section {section}")
     else:
@@ -120,7 +126,7 @@ def main():
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
-    print(f"Checked {len(entries)} staged entries, {len(MODS) + 1} game modes and their dependencies.")
+    print(f"Checked {len(entries)} staged entries, {len(MODS) + len(COMMUNITY)} game modes and their dependencies.")
     return 0
 
 

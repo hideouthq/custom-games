@@ -6,6 +6,10 @@ case "$(basename "$project")" in
     bebop-wars)     gamma=(0.84 0.93 1.04); contrast=4.7 ;;
     rooftop-rally)  gamma=(1.04 0.95 0.99); contrast=4.9 ;;
     pillars)        gamma=(0.98 0.89 1.01); contrast=5.4 ;;
+    doorman-trainer) gamma=(1.00 0.95 0.98); contrast=4.8 ;;
+    parry-trainer)   gamma=(1.00 0.97 1.00); contrast=4.6 ;;
+    deadlock-td)     gamma=(1.02 0.96 0.97); contrast=4.9 ;;
+    ability-draft)   gamma=(1.03 0.95 0.96); contrast=4.8 ;;
     *) exit 1 ;;
 esac
 
