@@ -5,7 +5,8 @@
     "typeRoots": ["../.tools/modlock/node_modules/@types"],
     "paths": {
       "modlock": ["../.tools/modlock/js/src/index.ts"],
-      "modlock/console": ["../.tools/modlock/js/src/console.ts"]
+      "modlock/console": ["../.tools/modlock/js/src/console.ts"],
+      "modlock/kit": ["../.tools/modlock/js/src/kit/index.ts"]
     }
   },
   "include": ["*.ts"]

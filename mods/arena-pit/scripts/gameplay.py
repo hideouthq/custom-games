@@ -35,6 +35,8 @@ def stage(folder):
     if json.loads((folder / "mod.json").read_text()) != json.loads((PROJECT / "mod.json").read_text()):
         raise ValueError("Review gameplay/mod.json against the updated upstream manifest")
     subprocess.run(["git", "apply", str(MODE / "scripts/native-rifts.patch")], cwd=folder, check=True)
+    # Modlock moved the game-mode helpers, bystanderStates among them, to modlock/kit.
+    subprocess.run(["git", "apply", str(MODE / "scripts/modlock-kit.patch")], cwd=folder, check=True)
 
 
 def main(verb, *options):

@@ -1,0 +1,20 @@
+diff --git a/match/match.ts b/match/match.ts
+index 4d6b093..19cbbc4 100644
+--- a/match/match.ts
++++ b/match/match.ts
+@@ -10,7 +10,6 @@
+ // The map is only reloaded after a match, so every hero, item and soul starts fresh for the next one.
+ // The hero pick runs on the match map (a reload in between made the mod's screens unreliable).
+ import {
+-  bystanderStates,
+   Cast,
+   cursorFree,
+   freeCursor,
+@@ -25,6 +24,7 @@ import {
+   serverCommand,
+   type Want,
+ } from 'modlock'
++import { bystanderStates } from 'modlock/kit'
+ import { run } from 'modlock/console'
+ 
+ import { botJoined, botsJoining, botsReset, botsTick, replaceBot } from './bots' // Bots

@@ -347,14 +347,14 @@ def test() -> None:
     run(["cmake", "-S", SOURCE, "-B", BUILD, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release",
          f"-DCMAKE_TOOLCHAIN_FILE={SOURCE / 'cmake/zig-windows.cmake'}", "-DBUILD_TESTING=ON"],
         log="native-test-configure.log")
-    # wasm_definition_changes_test resolves schema slots in a loaded schemasystem.dll on Windows, so it runs only in
-    # the fork's Linux build.
-    suites = ("ability_upgrades_test", "ability_input_hook_test", "input_changes_test", "console_variables_test")
-    run(["cmake", "--build", BUILD, "--target", *suites, "--parallel", "4"], log="native-test-build.log")
+    # The native tests build into one executable. These suites run under Proton without the game;
+    # wasm_definition_changes_test resolves schema slots in a loaded schemasystem.dll, so it runs only in the fork's
+    # Linux build.
+    suites = ("AbilityUpgrades", "AbilityInputHook", "InputChangesTest", "ConsoleVariables")
+    run(["cmake", "--build", BUILD, "--target", "modlock_tests", "--parallel", "4"], log="native-test-build.log")
     folder = LOCAL / "native-tests/bin"
     folder.mkdir(parents=True, exist_ok=True)
-    for suite in suites:
-        shutil.copy2(BUILD / f"{suite}.exe", folder)
+    shutil.copy2(BUILD / "modlock_tests.exe", folder)
     for path in host().parent.glob("*.dll"):
         shutil.copy2(path, folder)
     env = environment()
@@ -366,17 +366,17 @@ def test() -> None:
     env.update({"STEAM_COMPAT_DATA_PATH": str(prefix),
                 "STEAM_COMPAT_CLIENT_INSTALL_PATH": str(Path.home() / ".steam/steam"),
                 "SteamAppId": "0", "SteamGameId": "0", "WINEDEBUG": "-all"})
-    for suite in suites:
-        report = folder / f"{suite}.xml"
-        report.unlink(missing_ok=True)
-        run([proton, "run", folder / f"{suite}.exe", f"--gtest_output=xml:{report.name}"], cwd=folder,
-            log=f"{suite}.log", env=env)
-        if not report.is_file():
-            raise RuntimeError(f"Native test process returned without producing {report}")
-        result = ET.parse(report).getroot()
-        if int(result.get("tests", "0")) == 0 or any(int(result.get(key, "0")) for key in ("failures", "errors", "disabled")):
-            raise RuntimeError(f"Native tests did not all pass: {report}")
-        print(f"{suite}: {result.get('tests')} passed. Report: {report}")
+    report = folder / "modlock_tests.xml"
+    report.unlink(missing_ok=True)
+    run([proton, "run", folder / "modlock_tests.exe", "--gtest_filter=" + ":".join(f"{suite}.*" for suite in suites),
+         f"--gtest_output=xml:{report.name}"], cwd=folder, log="native-tests.log", env=env)
+    if not report.is_file():
+        raise RuntimeError(f"Native test process returned without producing {report}")
+    result = ET.parse(report).getroot()
+    ran = {suite.get("name"): int(suite.get("tests", "0")) for suite in result.iter("testsuite")}
+    if any(not ran.get(suite) for suite in suites) or any(int(result.get(key, "0")) for key in ("failures", "errors", "disabled")):
+        raise RuntimeError(f"Native tests did not all pass: {report}")
+    print(f"{result.get('tests')} native tests passed in {', '.join(suites)}. Report: {report}")
 
 
 def doctor() -> None:

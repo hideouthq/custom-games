@@ -1,7 +1,6 @@
 import {
   Buttons,
   Layers,
-  Strays,
   blockInput,
   createParticle,
   entityClass,
@@ -26,6 +25,7 @@ import {
   type WorldObject,
 } from 'modlock'
 import { apply, arena } from 'modlock/console'
+import { Strays } from 'modlock/kit'
 import { ballEffect, blockEffect, hero, rules } from './config'
 import { Block } from './block'
 import { blinkDestination, movementHeading } from './blink'
